@@ -14,7 +14,8 @@
     "next": "14.2.4",
     "react": "^18",
     "react-countdown": "^2.3.5",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "vercel": "^34.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",
