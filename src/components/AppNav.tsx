@@ -26,30 +26,8 @@ function AppTrack() {
         </Canvas>
         { appState.section === 'landing' ?
             <div className="absolute top-0 w-full py-16 flex items-center justify-center">
-                <button onClick={() => setAppState({section: 'ext'})}>
-                    Connect Wallet
-                </button>
-            </div>
-            : null
-        }
-        { appState.section === 'ext' ?
-            <div className="absolute top-0 w-full py-16 flex items-center justify-center">
                 <button onClick={() => setAppState({section: 'map'})}>
-                    Go Inside
-                </button>
-            </div>
-            : null
-        }
-        { appState.section === 'map' || appState.section === 'vaults' || appState.section === 'quests' ?
-            <div className="absolute top-0 w-full py-16 flex items-center justify-center">
-                <button className="px-6" onClick={() => setAppState({section: 'vaults'})}>
-                    Vaults
-                </button>
-                <button className="px-6" onClick={() => setAppState({section: 'map'})}>
-                    Map Room
-                </button>
-                <button className="px-6" onClick={() => setAppState({section: 'quests'})}>
-                    Quests
+                    Connect Wallet
                 </button>
             </div>
             : null
