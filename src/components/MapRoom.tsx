@@ -105,24 +105,26 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
           </group>
           <mesh geometry={nodes.Plane004.geometry} material={nodes.Plane004.material}
                 position={[-0.012, -0.985, -9.885]} scale={2.141}/>
-          <mesh geometry={nodes.Mansion_Door.geometry} material={nodes.Mansion_Door.material}
-                position={[-5.584, -1, -17.712]} rotation={[0, 1.045, 0]}/>
-          <mesh geometry={nodes.Mansion_Door001.geometry} material={nodes.Mansion_Door001.material}
-                position={[6.225, -0.517, -20.832]} rotation={[0, -1.044, 0]}/>
-          <mesh geometry={nodes.Mansion_Door002.geometry}
-                material={nodes.Mansion_Door002.material}
-                onPointerOver={() => setRightDoorHover(true)}
-                onPointerOut={() => setRightDoorHover(false)}
-                onClick={() => setAppState({section: 'quests'})}
-                rotation={rightDoorHover ? [0, -Math.PI * 0.5, 0] : [0, -0.62, 0]}
-                position={[5.948, -0.517, -20.566]}/>
-          <mesh geometry={nodes.Mansion_Door003.geometry}
-                material={nodes.Mansion_Door003.material}
-                onPointerOver={() => setLeftDoorHover(true)}
-                onPointerOut={() => setLeftDoorHover(false)}
-                onClick={() => setAppState({section: 'vaults'})}
-                rotation={leftDoorHover ? [0, Math.PI * 0.5, 0] : [0, 0.686, 0]}
-                position={[-6.063, 0.241, -16.933]}/>
+          <group onPointerOver={() => setRightDoorHover(true)}
+                 onPointerOut={() => setRightDoorHover(false)}
+                 onClick={() => setAppState({section: 'quests'})}>
+              <mesh geometry={nodes.Mansion_Door001.geometry} material={nodes.Mansion_Door001.material}
+                    position={[6.225, -0.517, -20.832]} rotation={[0, -1.044, 0]}/>
+              <mesh geometry={nodes.Mansion_Door002.geometry}
+                    material={nodes.Mansion_Door002.material}
+                    rotation={rightDoorHover ? [0, -Math.PI * 0.5, 0] : [0, -0.62, 0]}
+                    position={[5.948, -0.517, -20.566]}/>
+          </group>
+          <group onPointerOver={() => setLeftDoorHover(true)}
+                 onPointerOut={() => setLeftDoorHover(false)}
+                 onClick={() => setAppState({section: 'vaults'})}>
+              <mesh geometry={nodes.Mansion_Door.geometry} material={nodes.Mansion_Door.material}
+                    position={[-5.584, -1, -17.712]} rotation={[0, 1.045, 0]}/>
+              <mesh geometry={nodes.Mansion_Door003.geometry}
+                    material={nodes.Mansion_Door003.material}
+                    rotation={leftDoorHover ? [0, Math.PI * 0.5, 0] : [0, 0.686, 0]}
+                    position={[-6.063, 0.241, -16.933]}/>
+          </group>
           <group position={[-2.071, 0.863, -13.839]} rotation={[Math.PI / 2, 0, 0]} scale={[1.936, 1, 1]}>
               <mesh geometry={nodes.Cube012_ToShapeMesh_Piece002.geometry}
                     material={nodes.Cube012_ToShapeMesh_Piece002.material}/>
@@ -161,6 +163,8 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
                   <meshStandardMaterial color="red"/>
               </mesh>
               : null}
+          <directionalLight intensity={2.5} position={[5, 2, 2]}/>
+          <directionalLight intensity={5.5} position={[-2, 5, -2]}/>
       </group>
   )
 }

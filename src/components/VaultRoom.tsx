@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, {useContext, useEffect, useRef, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {useThree} from "@react-three/fiber"
@@ -9,66 +9,71 @@ import {SafeDoor} from "@/components/SafeDoor"
 
 type GLTFResult = GLTF & {
   nodes: {
-    Cube: THREE.Mesh
-    Cube011: THREE.Mesh
-    Cube012: THREE.Mesh
-    Cube013: THREE.Mesh
-    Cube014: THREE.Mesh
-    Cube015: THREE.Mesh
-    Cube016: THREE.Mesh
-    Plane: THREE.Mesh
-    Cube017: THREE.Mesh
-    Cube018: THREE.Mesh
-    Cube019: THREE.Mesh
-    Cube020: THREE.Mesh
-    Cube021: THREE.Mesh
-    WorkLight_Body_1: THREE.Mesh
-    WorkLight_Body_2: THREE.Mesh
-    WorkLight_Body_3: THREE.Mesh
-    WorkLight_Foot: THREE.Mesh
-    WorkLight_Handle: THREE.Mesh
-    WorkLight_Body001_1: THREE.Mesh
-    WorkLight_Body001_2: THREE.Mesh
-    WorkLight_Body001_3: THREE.Mesh
-    WorkLight_Foot001: THREE.Mesh
-    WorkLight_Handle001: THREE.Mesh
-    Cube032: THREE.Mesh
-    Cube033: THREE.Mesh
-    Cube034: THREE.Mesh
-    Cube035: THREE.Mesh
-    Cube036: THREE.Mesh
-    Cube037: THREE.Mesh
-    Cube038: THREE.Mesh
-    NurbsPath: THREE.Mesh
-    NurbsPath001: THREE.Mesh
-    NurbsPath002: THREE.Mesh
-    NurbsPath003: THREE.Mesh
-    NurbsPath004: THREE.Mesh
-    NurbsPath005: THREE.Mesh
-    NurbsPath006: THREE.Mesh
-    NurbsPath007: THREE.Mesh
-    Body: THREE.Mesh
-    Body001: THREE.Mesh
-    Body002: THREE.Mesh
-    Body003: THREE.Mesh
-    Body004: THREE.Mesh
-    Body005: THREE.Mesh
-    Body006: THREE.Mesh
-    Body007: THREE.Mesh
-    Body008: THREE.Mesh
-    Body009: THREE.Mesh
+    SceneBackdrop: THREE.Mesh
+    Room_1: THREE.Mesh
+    Room_2: THREE.Mesh
+    TutorialPoster: THREE.Mesh
+    WorkLightClose_1: THREE.Mesh
+    WorkLightClose_2: THREE.Mesh
+    WorkLightClose_3: THREE.Mesh
+    WorkLightFar_1: THREE.Mesh
+    WorkLightFar_2: THREE.Mesh
+    WorkLightFar_3: THREE.Mesh
+    BackBoards_1: THREE.Mesh
+    BackBoards_2: THREE.Mesh
+    BackBoards_3: THREE.Mesh
+    BackBoardsSide_1: THREE.Mesh
+    BackBoardsSide_2: THREE.Mesh
+    Cable: THREE.Mesh
+    Cable001: THREE.Mesh
+    Cable002: THREE.Mesh
+    Cable003: THREE.Mesh
+    Cable004: THREE.Mesh
+    Cable005: THREE.Mesh
+    Cable006: THREE.Mesh
+    Cable007: THREE.Mesh
+    Body9: THREE.Mesh
+    Body10: THREE.Mesh
+    Body5: THREE.Mesh
+    Body6: THREE.Mesh
+    Body7: THREE.Mesh
+    Body8: THREE.Mesh
+    Body1: THREE.Mesh
+    Body2: THREE.Mesh
+    Body4: THREE.Mesh
+    Body3: THREE.Mesh
+    Board: THREE.Mesh
+    Board002: THREE.Mesh
+    Board003: THREE.Mesh
+    Board004: THREE.Mesh
+    Board005: THREE.Mesh
+    Board006: THREE.Mesh
+    Board007: THREE.Mesh
+    Board008: THREE.Mesh
+    Board009: THREE.Mesh
+    Board010: THREE.Mesh
+    Board011: THREE.Mesh
+    LightBoard: THREE.Mesh
+    StrutBoard: THREE.Mesh
+    StrutBoard001: THREE.Mesh
+    StrutBoard002: THREE.Mesh
+    StrutBoardBottomCross: THREE.Mesh
+    StrutBoardMiddleCross: THREE.Mesh
+    BigFloorPlank: THREE.Mesh
+    Nails: THREE.Mesh
   }
   materials: {}
 }
 
 export function VaultRoom(props: JSX.IntrinsicElements['group']) {
-  const { nodes, materials } = useGLTF('/safeRoom.glb') as GLTFResult
+  const { nodes } = useGLTF('/vaultRoom.glb') as GLTFResult
   const camera = useThree((state) => state.camera as PerspectiveCamera)
   const [appState, setAppState] = useContext(AppContext)
   const [place, setPlace] =
       useState('home' as 'home' | 's1' | 's2' | 's3' | 's4' | 's5' | 's6' | 's7' | 's8' | 's9' | 's10' | 'tut')
   const returnButton = useRef<THREE.Mesh>(null!)
-  const vaultTutTex = useTexture('/vaultsTut.webp', (loader) => loader.flipY = false)
+  const vaultRoomTex = useTexture('/FinalTextureVaultRoom.webp', (loader) => loader.flipY = false)
+  const material = useMemo(() => new THREE.MeshBasicMaterial({map: vaultRoomTex}), [vaultRoomTex])
 
   useEffect(() => {
     switch (place) {
@@ -171,102 +176,110 @@ export function VaultRoom(props: JSX.IntrinsicElements['group']) {
                     onClick={() => setPlace('s10')}
                     rotation={appState.vault10 === 'unlocked' ? [0, Math.PI * 0.5, 0] : [0, -0.983, 0]}/>
 
-          <mesh geometry={nodes.Plane.geometry}
+          <mesh geometry={nodes.TutorialPoster.geometry}
+                material={material}
                 position={[-1.937, -0.143, -9.879]}
                 onClick={() => setPlace('tut')}
-                rotation={[Math.PI / 2, 0, -0.571]}>
-            <meshBasicMaterial map={vaultTutTex}/>
-          </mesh>
+                rotation={[Math.PI / 2, 0, -0.571]}/>
 
-          <mesh geometry={nodes.Cube.geometry} material={nodes.Cube.material} position={[0, -0.453, -5.491]}/>
-          <mesh geometry={nodes.Cube011.geometry} material={nodes.Cube011.material} position={[0.667, -1.203, -7.398]}
-                rotation={[Math.PI / 2, 0, 1.023]}/>
-          <mesh geometry={nodes.Cube012.geometry} material={nodes.Cube012.material} position={[0.667, -0.383, -7.398]}
-                rotation={[Math.PI / 2, 0, 0.998]}/>
-          <mesh geometry={nodes.Cube013.geometry} material={nodes.Cube013.material} position={[0.202, 0.44, -8.296]}
-                rotation={[Math.PI / 2, 0, 1.031]}/>
-          <mesh geometry={nodes.Cube014.geometry} material={nodes.Cube014.material} position={[2.11, -0.383, -6.037]}
-                rotation={[Math.PI / 2, 0, -0.596]}/>
-          <mesh geometry={nodes.Cube015.geometry} material={nodes.Cube015.material} position={[2.11, -1.165, -6.037]}
-                rotation={[1.596, 0.038, -0.596]}/>
-          <mesh geometry={nodes.Cube016.geometry} material={nodes.Cube016.material} position={[2.039, 0.43, -5.989]}
-                rotation={[Math.PI / 2, 0, -0.596]}/>
-          <mesh geometry={nodes.Cube017.geometry} material={nodes.Cube017.material} position={[1.507, -0.519, -6.925]}
-                rotation={[Math.PI / 2, 0, -0.596]}/>
-          <mesh geometry={nodes.Cube018.geometry} material={nodes.Cube018.material} position={[1.507, -1.165, -6.925]}
-                rotation={[1.596, 0.038, -0.596]}/>
-          <mesh geometry={nodes.Cube019.geometry} material={nodes.Cube019.material} position={[1.437, 0.305, -6.878]}
-                rotation={[Math.PI / 2, 0, -0.596]}/>
-          <mesh geometry={nodes.Cube020.geometry} material={nodes.Cube020.material} position={[1.28, 0.44, -6.498]}
-                rotation={[Math.PI / 2, 0, 0.993]}/>
-          <mesh geometry={nodes.Cube021.geometry} material={nodes.Cube021.material} position={[1.12, 0.438, -7.346]}
-                rotation={[Math.PI / 2, 0, -0.596]}/>
+          <group position={[0, -0.453, -5.491]}>
+            <mesh geometry={nodes.Room_1.geometry} material={material}/>
+            <mesh geometry={nodes.Room_2.geometry} material={material}/>
+          </group>
+
           <group position={[-2.163, -1.331, -6.438]} rotation={[-Math.PI, 1.183, -Math.PI]}>
-            <mesh geometry={nodes.WorkLight_Body_1.geometry} material={nodes.WorkLight_Body_1.material}/>
-            <mesh geometry={nodes.WorkLight_Body_2.geometry} material={nodes.WorkLight_Body_2.material}/>
-            <mesh geometry={nodes.WorkLight_Body_3.geometry} material={nodes.WorkLight_Body_3.material}/>
+            <mesh geometry={nodes.WorkLightClose_1.geometry} material={material}/>
+            <mesh geometry={nodes.WorkLightClose_2.geometry} material={material}/>
+            <mesh geometry={nodes.WorkLightClose_3.geometry} material={material}/>
           </group>
-          <mesh geometry={nodes.WorkLight_Foot.geometry} material={nodes.WorkLight_Foot.material}
-                position={[-2.183, -1.359, -6.468]} rotation={[-Math.PI, 1.183, -Math.PI]}/>
-          <mesh geometry={nodes.WorkLight_Handle.geometry} material={nodes.WorkLight_Handle.material}
-                position={[-2.131, -1.359, -6.417]} rotation={[-Math.PI, 1.183, -Math.PI]}/>
           <group position={[-1.253, -1.185, -9.002]} rotation={[-2.739, -0.703, -2.932]}>
-            <mesh geometry={nodes.WorkLight_Body001_1.geometry} material={nodes.WorkLight_Body001_1.material}/>
-            <mesh geometry={nodes.WorkLight_Body001_2.geometry} material={nodes.WorkLight_Body001_2.material}/>
-            <mesh geometry={nodes.WorkLight_Body001_3.geometry} material={nodes.WorkLight_Body001_3.material}/>
+            <mesh geometry={nodes.WorkLightFar_1.geometry} material={material}/>
+            <mesh geometry={nodes.WorkLightFar_2.geometry} material={material}/>
+            <mesh geometry={nodes.WorkLightFar_3.geometry} material={material}/>
           </group>
-          <mesh geometry={nodes.WorkLight_Foot001.geometry} material={nodes.WorkLight_Foot001.material}
-                position={[-1.274, -1.214, -9.032]} rotation={[-3.056, -0.728, -Math.PI]}/>
-          <mesh geometry={nodes.WorkLight_Handle001.geometry} material={nodes.WorkLight_Handle001.material}
-                position={[-1.221, -1.214, -8.981]} rotation={[-3.056, -0.728, -Math.PI]}/>
-          <mesh geometry={nodes.Cube032.geometry} material={nodes.Cube032.material} position={[0.642, 0.047, -8.326]}/>
-          <mesh geometry={nodes.Cube033.geometry} material={nodes.Cube033.material} position={[0, -0.453, -5.491]}/>
-          <mesh geometry={nodes.Cube034.geometry} material={nodes.Cube034.material} position={[0.461, -0.592, -7.611]}
-                rotation={[0, 0.573, Math.PI / 2]}/>
-          <mesh geometry={nodes.Cube035.geometry} material={nodes.Cube035.material} position={[1.035, -0.383, -6.721]}
-                rotation={[0, 0.573, Math.PI / 2]}/>
-          <mesh geometry={nodes.Cube036.geometry} material={nodes.Cube036.material} position={[1.16, 0.43, -6.527]}
-                rotation={[0, 0.573, Math.PI / 2]}/>
-          <mesh geometry={nodes.Cube037.geometry} material={nodes.Cube037.material} position={[1.618, -0.584, -5.817]}
-                rotation={[0, 0.573, Math.PI / 2]}/>
-          <mesh geometry={nodes.Cube038.geometry} material={nodes.Cube038.material} position={[-0.566, -0.613, -9.204]}
-                rotation={[0, 0.573, Math.PI / 2]}/>
-          <mesh geometry={nodes.NurbsPath.geometry} material={nodes.NurbsPath.material}
+          <group position={[0.642, 0.047, -8.326]}>
+            <mesh geometry={nodes.BackBoards_1.geometry} material={material}/>
+            <mesh geometry={nodes.BackBoards_2.geometry} material={material}/>
+            <mesh geometry={nodes.BackBoards_3.geometry} material={material}/>
+          </group>
+          <group position={[0, -0.453, -5.491]}>
+            <mesh geometry={nodes.BackBoardsSide_1.geometry} material={material}/>
+            <mesh geometry={nodes.BackBoardsSide_2.geometry} material={material}/>
+          </group>
+          <mesh geometry={nodes.Cable.geometry} material={material}
                 position={[1.641, -1.423, -7.393]}/>
-          <mesh geometry={nodes.NurbsPath001.geometry} material={nodes.NurbsPath001.material}
+          <mesh geometry={nodes.Cable001.geometry} material={material}
                 position={[1.554, -1.423, -7.282]}/>
-          <mesh geometry={nodes.NurbsPath002.geometry} material={nodes.NurbsPath002.material}
+          <mesh geometry={nodes.Cable002.geometry} material={material}
                 position={[-1.847, -1.423, -7.282]}/>
-          <mesh geometry={nodes.NurbsPath003.geometry} material={nodes.NurbsPath003.material}
+          <mesh geometry={nodes.Cable003.geometry} material={material}
                 position={[-1.832, -1.423, -6.883]}/>
-          <mesh geometry={nodes.NurbsPath004.geometry} material={nodes.NurbsPath004.material}
+          <mesh geometry={nodes.Cable004.geometry} material={material}
                 position={[-2.097, -1.423, -8.218]}/>
-          <mesh geometry={nodes.NurbsPath005.geometry} material={nodes.NurbsPath005.material}
+          <mesh geometry={nodes.Cable005.geometry} material={material}
                 position={[1.726, -1.423, -7.494]}/>
-          <mesh geometry={nodes.NurbsPath006.geometry} material={nodes.NurbsPath006.material}
+          <mesh geometry={nodes.Cable006.geometry} material={material}
                 position={[1.819, -1.423, -7.444]}/>
-          <mesh geometry={nodes.NurbsPath007.geometry} material={nodes.NurbsPath007.material}
+          <mesh geometry={nodes.Cable007.geometry} material={material}
                 position={[-1.365, -1.423, -5.385]}/>
-          <mesh geometry={nodes.Body.geometry} material={nodes.Body.material} position={[0.942, 0.851, -7.138]}
+          <mesh geometry={nodes.Body9.geometry} material={material} position={[0.942, 0.851, -7.138]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body001.geometry} material={nodes.Body001.material} position={[0.338, 0.851, -8.044]}
+          <mesh geometry={nodes.Body10.geometry} material={material} position={[0.338, 0.851, -8.044]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body002.geometry} material={nodes.Body002.material} position={[1.532, 0.027, -6.252]}
+          <mesh geometry={nodes.Body5.geometry} material={material} position={[1.532, 0.027, -6.252]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body003.geometry} material={nodes.Body003.material} position={[0.929, 0.027, -7.157]}
+          <mesh geometry={nodes.Body6.geometry} material={material} position={[0.929, 0.027, -7.157]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body004.geometry} material={nodes.Body004.material} position={[0.324, 0.027, -8.066]}
+          <mesh geometry={nodes.Body7.geometry} material={material} position={[0.324, 0.027, -8.066]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body005.geometry} material={nodes.Body005.material} position={[-0.238, 0.027, -8.909]}
+          <mesh geometry={nodes.Body8.geometry} material={material} position={[-0.238, 0.027, -8.909]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body006.geometry} material={nodes.Body006.material} position={[1.532, -0.792, -6.252]}
+          <mesh geometry={nodes.Body1.geometry} material={material} position={[1.532, -0.792, -6.252]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body007.geometry} material={nodes.Body007.material} position={[0.929, -0.792, -7.157]}
+          <mesh geometry={nodes.Body2.geometry} material={material} position={[0.929, -0.792, -7.157]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body008.geometry} material={nodes.Body008.material} position={[-0.238, -0.792, -8.909]}
+          <mesh geometry={nodes.Body4.geometry} material={material} position={[-0.238, -0.792, -8.909]}
                 rotation={[0, -0.983, 0]}/>
-          <mesh geometry={nodes.Body009.geometry} material={nodes.Body009.material} position={[0.324, -0.792, -8.066]}
+          <mesh geometry={nodes.Body3.geometry} material={material} position={[0.324, -0.792, -8.066]}
                 rotation={[0, -0.983, 0]}/>
+          <mesh geometry={nodes.Board.geometry} material={material} position={[0.461, -0.415, -7.611]}
+                rotation={[0, 0.654, 1.569]} scale={0.67}/>
+          <mesh geometry={nodes.Board002.geometry} material={material} position={[1.618, -0.414, -5.819]}
+                rotation={[0, 0.654, -1.573]} scale={0.67}/>
+          <mesh geometry={nodes.Board003.geometry} material={material} position={[1.026, -0.383, -6.732]}
+                rotation={[0, 0.654, 1.569]} scale={0.67}/>
+          <mesh geometry={nodes.Board004.geometry} material={material} position={[1.189, 0.43, -6.548]}
+                rotation={[0, 0.566, 1.545]} scale={0.67}/>
+          <mesh geometry={nodes.Board005.geometry} material={material} position={[-0.02, 0.372, -8.356]}
+                rotation={[0.028, 0.653, 1.552]} scale={0.67}/>
+          <mesh geometry={nodes.Board006.geometry} material={material} position={[1.507, -0.519, -6.925]}
+                rotation={[Math.PI / 2, 0, -0.582]} scale={0.67}/>
+          <mesh geometry={nodes.Board007.geometry} material={material} position={[1.229, 0.291, -6.742]}
+                rotation={[Math.PI / 2, 0, -0.596]} scale={0.67}/>
+          <mesh geometry={nodes.Board008.geometry} material={material} position={[0.994, 0.438, -7.261]}
+                rotation={[Math.PI / 2, 0, -0.596]} scale={0.67}/>
+          <mesh geometry={nodes.Board009.geometry} material={material} position={[2.097, 0.437, -6.019]}
+                rotation={[Math.PI / 2, 0, -0.582]} scale={0.67}/>
+          <mesh geometry={nodes.Board010.geometry} material={material} position={[2.11, -0.377, -6.037]}
+                rotation={[Math.PI / 2, 0, -0.596]} scale={0.67}/>
+          <mesh geometry={nodes.Board011.geometry} material={material} position={[2.075, -1.166, -6.013]}
+                rotation={[1.591, 0.03, -0.596]} scale={0.67}/>
+          <mesh geometry={nodes.LightBoard.geometry} material={material}
+                position={[-1.307, -1.34, -9.112]} rotation={[-3.008, 0.939, 3.044]} scale={0.67}/>
+          <mesh geometry={nodes.StrutBoard.geometry} material={material}
+                position={[0.667, 0.444, -7.398]} rotation={[Math.PI / 2, 0, 0.998]}/>
+          <mesh geometry={nodes.StrutBoard001.geometry} material={material}
+                position={[1.295, 0.444, -6.483]} rotation={[Math.PI / 2, 0, 1.036]}/>
+          <mesh geometry={nodes.StrutBoard002.geometry} material={material}
+                position={[-0.566, -0.613, -9.204]} rotation={[0, 0.573, Math.PI / 2]}/>
+          <mesh geometry={nodes.StrutBoardBottomCross.geometry} material={material}
+                position={[0.667, -1.201, -7.398]} rotation={[-Math.PI / 2, 0, -1.022]}/>
+          <mesh geometry={nodes.StrutBoardMiddleCross.geometry} material={material}
+                position={[0.667, -0.383, -7.398]} rotation={[Math.PI / 2, 0, 0.998]}/>
+          <mesh geometry={nodes.BigFloorPlank.geometry} material={material}
+                position={[-0.805, -1.418, -8.41]} rotation={[0, -1.092, 0]}/>
+          <mesh geometry={nodes.Nails.geometry} material={material} position={[1.013, -1.203, -6.687]}
+                rotation={[0, 0.654, 1.569]}/>
         </group>
 
         <mesh ref={returnButton}
@@ -282,8 +295,15 @@ export function VaultRoom(props: JSX.IntrinsicElements['group']) {
           <planeGeometry args={[0.1, 0.1]}/>
           <meshStandardMaterial color="red"/>
         </mesh>
+
+        <mesh geometry={nodes.SceneBackdrop.geometry}
+              position={[-0.322, 0.027, -11.265]}>
+          <meshBasicMaterial color="black"/>
+        </mesh>
+        <directionalLight intensity={0.5} position={[-2.163, -1.331, 8.438]} color={'#ffc876'}/>
+
       </group>
   )
 }
 
-useGLTF.preload('/safeRoom.glb')
+useGLTF.preload('/vaultRoom.glb')

@@ -22,10 +22,6 @@ function AppTrack() {
     return <div className="absolute w-full h-full">
         <Canvas>
             {appState.section === 'landing' ? <Landing /> : <HouseModel />}
-            {appState.section === 'landing' ? null : <>
-                <directionalLight intensity={2.5} position={[5, 2, 2]} />
-                <directionalLight intensity={5.5} position={[-2, 5, -2]} />
-            </>}
         </Canvas>
         {appState.section === 'landing' ?
             <div className="absolute top-0 w-full py-16 flex flex-col items-center justify-center">
