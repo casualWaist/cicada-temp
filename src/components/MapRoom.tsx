@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useState} from 'react'
 import {useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {useThree} from "@react-three/fiber"
@@ -7,49 +7,56 @@ import {PerspectiveCamera} from "three"
 import {AppContext} from "@/components/AppState"
 
 type GLTFResult = GLTF & {
-  nodes: {
-    Cube: THREE.Mesh
-    Plane001_1: THREE.Mesh
-    Plane001_2: THREE.Mesh
-    Plane001_3: THREE.Mesh
-    Plane003: THREE.Mesh
-    Cube004: THREE.Mesh
-    Cube007_1: THREE.Mesh
-    Cube007_2: THREE.Mesh
-    Cube006: THREE.Mesh
-    Cube009: THREE.Mesh
-    Cube009_1: THREE.Mesh
-    Plane007_1: THREE.Mesh
-    Plane007_2: THREE.Mesh
-    Plane008: THREE.Mesh
-    Plane008_1: THREE.Mesh
-    Plane004: THREE.Mesh
-    Mansion_Door: THREE.Mesh
-    Mansion_Door001: THREE.Mesh
-    Mansion_Door002: THREE.Mesh
-    Mansion_Door003: THREE.Mesh
-    Cube012_ToShapeMesh_Piece002: THREE.Mesh
-    Cube012_ToShapeMesh_Piece002_1: THREE.Mesh
-    Cube012_ToShapeMesh_Piece003: THREE.Mesh
-    Cube012_ToShapeMesh_Piece003_1: THREE.Mesh
-    Plane003_1: THREE.Mesh
-    Plane003_2: THREE.Mesh
-    Plane003_3: THREE.Mesh
-    Plane003_4: THREE.Mesh
-    FireplaceHole001: THREE.Mesh
-  }
-  materials: {}
+    nodes: {
+        Rug: THREE.Mesh
+        DoorFrameRight: THREE.Mesh
+        DoorQuests: THREE.Mesh
+        DoorVaults: THREE.Mesh
+        StaticDoorVaults: THREE.Mesh
+        RoadmapFrame_1: THREE.Mesh
+        RoadmapFrame_2: THREE.Mesh
+        TokenomicsFrame_1: THREE.Mesh
+        TokenomicsFrame_2: THREE.Mesh
+        Firewood_1: THREE.Mesh
+        Firewood_2: THREE.Mesh
+        Firewood_3: THREE.Mesh
+        Firewood_4: THREE.Mesh
+        Firebricks: THREE.Mesh
+        Fireplace_1: THREE.Mesh
+        Fireplace_2: THREE.Mesh
+        Fireplace_3: THREE.Mesh
+        Tokenomics: THREE.Mesh
+        TokenomicsLight_1: THREE.Mesh
+        TokenomicsLight_2: THREE.Mesh
+        Roadmap: THREE.Mesh
+        RoadmapLight_1: THREE.Mesh
+        RoadmapLight_2: THREE.Mesh
+        Room_1: THREE.Mesh
+        Room_2: THREE.Mesh
+        Room_3: THREE.Mesh
+        Room_4: THREE.Mesh
+        Room_5: THREE.Mesh
+        Cicada: THREE.Mesh
+        LightTriangleQuest_1: THREE.Mesh
+        LightTriangleQuest_2: THREE.Mesh
+        EyeTriangleVault_1: THREE.Mesh
+        EyeTriangleVault_2: THREE.Mesh
+        BlackWalls: THREE.Mesh
+        DoorFrameQuest_1: THREE.Mesh
+        DoorFrameQuest_2: THREE.Mesh
+    }
+    materials: {}
 }
 
 export function MapRoom(props: JSX.IntrinsicElements['group']) {
-  const { nodes, materials } = useGLTF('/mapRoom.glb') as GLTFResult
+  const { nodes } = useGLTF('/mapRoom.glb') as GLTFResult
     const camera = useThree((state) => state.camera as PerspectiveCamera)
     const [appState, setAppState] = useContext(AppContext)
-    const [leftDoorHover, setLeftDoorHover] = useState(false)
-    const [rightDoorHover, setRightDoorHover] = useState(false)
+    const [vaultDoorHover, setVaultDoorHover] = useState(false)
+    const [questDoorHover, setQuestDoorHover] = useState(false)
     const [place, setPlace] = useState('home' as 'home' | 'tok' | 'map')
-    const mapTex = useTexture('/map.png', (loader) => loader.flipY = false)
-    const tokTex = useTexture('/TokenomicsTex.webp', (loader) => loader.flipY = false)
+    const roomTex = useTexture('/FinalTextureMapRoom.webp', (loader) => loader.flipY = false)
+    const material = useMemo(() => new THREE.MeshBasicMaterial({map: roomTex}), [roomTex])
 
     useEffect(() => {
         switch (place) {
@@ -71,80 +78,95 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
 
   return (
       <group {...props} dispose={null}>
-          <mesh geometry={nodes.Cube.geometry} material={nodes.Cube.material} position={[0, 0, -8.515]}/>
-          <group position={[0, 0, -8.515]} rotation={[Math.PI / 2, 0, 0]}>
-              <mesh geometry={nodes.Plane001_1.geometry} material={nodes.Plane001_1.material}/>
-              <mesh geometry={nodes.Plane001_2.geometry} material={nodes.Plane001_2.material}/>
-              <mesh geometry={nodes.Plane001_3.geometry} material={nodes.Plane001_3.material}/>
+          <group onPointerOver={() => setQuestDoorHover(true)}
+                 onPointerOut={() => setQuestDoorHover(false)}
+                 onClick={() => setAppState({section: 'quests'})}>
+              <mesh geometry={nodes.DoorFrameRight.geometry} material={material}
+                    position={[6.225, -0.517, -20.832]} rotation={[0, -1.044, 0]}/>
+              <mesh geometry={nodes.DoorQuests.geometry}
+                    material={material}
+                    position={[6.705, 0.724, -20.054]}
+                    rotation={questDoorHover ? [0, Math.PI * 0.25, 0] : [0, -0.62, 0]}/>
           </group>
-          <mesh geometry={nodes.Plane003.geometry} material={nodes.Plane003.material} position={[0, 0.459, -12.753]}
-                rotation={[Math.PI / 2, 0, 0]} scale={0.291}/>
-          <mesh geometry={nodes.Cube004.geometry}
-                material={nodes.Cube004.material}
-                onClick={() => setPlace('tok')}
-                position={[0, 0, -8.515]}/>
+          <group onPointerOver={() => setVaultDoorHover(true)}
+                 onPointerOut={() => setVaultDoorHover(false)}
+                 onClick={() => setAppState({section: 'vaults'})}>
+              <mesh geometry={nodes.DoorVaults.geometry}
+                    material={material}
+                    position={[-6.063, 0.241, -16.933]}
+                    rotation={vaultDoorHover ? [0, Math.PI * 0.5, 0] : [0, 0.686, 0]}/>
+              <mesh geometry={nodes.StaticDoorVaults.geometry} material={material}
+                    position={[-5.584, -1, -17.712]} rotation={[0, 1.045, 0]}/>
+          </group>
+          <group onClick={() => setPlace('map')}>
+              <mesh geometry={nodes.Roadmap.geometry} material={material} position={[4.144, 0, -8.515]}/>
+              <group position={[2.072, 0.863, -13.839]} rotation={[Math.PI / 2, 0, 0]} scale={[1.936, 1, 1]}>
+                  <mesh geometry={nodes.RoadmapFrame_1.geometry} material={material}/>
+                  <mesh geometry={nodes.RoadmapFrame_2.geometry} material={material}/>
+              </group>
+          </group>
+          <group onClick={() => setPlace('map')}>
+              <mesh geometry={nodes.Tokenomics.geometry} material={material}
+                    position={[0, 0, -8.515]}/>
+              <group position={[-2.071, 0.863, -13.839]}
+                     rotation={[Math.PI / 2, 0, 0]} scale={[1.936, 1, 1]}>
+                  <mesh geometry={nodes.TokenomicsFrame_1.geometry} material={material}/>
+                  <mesh geometry={nodes.TokenomicsFrame_2.geometry} material={material}/>
+              </group>
+          </group>
+
+          <mesh geometry={nodes.Rug.geometry} material={material} position={[-0.012, -0.985, -9.885]}
+                scale={2.141}/>
+          <group position={[-0.042, -0.681, -13.358]} rotation={[Math.PI, 0, Math.PI]} scale={0.817}>
+              <mesh geometry={nodes.Firewood_1.geometry} material={material}/>
+              <mesh geometry={nodes.Firewood_2.geometry} material={material}/>
+              <mesh geometry={nodes.Firewood_3.geometry} material={material}/>
+              <mesh geometry={nodes.Firewood_4.geometry} material={material}/>
+          </group>
+          <mesh geometry={nodes.Firebricks.geometry} material={material}
+                position={[-0.006, -0.398, -14.13]} scale={0.464}/>
+          <group position={[0, 0, -8.515]}>
+              <mesh geometry={nodes.Fireplace_1.geometry} material={material}/>
+              <mesh geometry={nodes.Fireplace_2.geometry} material={material}/>
+              <mesh geometry={nodes.Fireplace_3.geometry} material={material}/>
+          </group>
+
           <group position={[-2.122, 1.227, -13.389]} rotation={[0, -0.35, 0]}>
-              <mesh geometry={nodes.Cube007_1.geometry} material={nodes.Cube007_1.material}/>
-              <mesh geometry={nodes.Cube007_2.geometry} material={nodes.Cube007_2.material}/>
+              <mesh geometry={nodes.TokenomicsLight_1.geometry} material={material}/>
+              <mesh geometry={nodes.TokenomicsLight_2.geometry} material={material}/>
           </group>
-          <mesh geometry={nodes.Cube006.geometry}
-                material={nodes.Cube006.material}
-                onClick={() => setPlace('map')}
-                position={[4.144, 0, -8.515]}/>
           <group position={[2.095, 1.227, -13.379]} rotation={[0, 0.352, 0]}>
-              <mesh geometry={nodes.Cube009.geometry} material={nodes.Cube009.material}/>
-              <mesh geometry={nodes.Cube009_1.geometry} material={nodes.Cube009_1.material}/>
+              <mesh geometry={nodes.RoadmapLight_1.geometry} material={material}/>
+              <mesh geometry={nodes.RoadmapLight_2.geometry} material={material}/>
           </group>
+          <group position={[0, 0, -8.515]} rotation={[Math.PI / 2, 0, 0]}>
+              <mesh geometry={nodes.Room_1.geometry} material={material}/>
+              <mesh geometry={nodes.Room_2.geometry} material={material}/>
+              <mesh geometry={nodes.Room_3.geometry} material={material}/>
+              <mesh geometry={nodes.Room_4.geometry} material={material}/>
+              <mesh geometry={nodes.Room_5.geometry} material={material}/>
+          </group>
+          <mesh geometry={nodes.Cicada.geometry}
+                material={material}
+                position={[0, 0.459, -12.885]}
+                rotation={[Math.PI / 2, 0, 0]} scale={0.291}/>
           <group position={[6.148, 2.093, -20.765]} rotation={[Math.PI / 2, 0, 1.045]} scale={0.209}>
-              <mesh geometry={nodes.Plane007_1.geometry} material={nodes.Plane007_1.material}/>
-              <mesh geometry={nodes.Plane007_2.geometry} material={nodes.Plane007_2.material}/>
+              <mesh geometry={nodes.LightTriangleQuest_1.geometry} material={material}/>
+              <mesh geometry={nodes.LightTriangleQuest_2.geometry} material={material}/>
+          </group>
+          <group position={[0, 0, -8.515]} rotation={[Math.PI / 2, 0, 0]}>
+              <mesh geometry={nodes.DoorFrameQuest_1.geometry} material={material}/>
+              <mesh geometry={nodes.DoorFrameQuest_2.geometry} material={material}/>
           </group>
           <group position={[-5.496, 1.604, -17.655]} rotation={[Math.PI / 2, 0, -1.034]} scale={0.209}>
-              <mesh geometry={nodes.Plane008.geometry} material={nodes.Plane008.material}/>
-              <mesh geometry={nodes.Plane008_1.geometry} material={nodes.Plane008_1.material}/>
+              <mesh geometry={nodes.EyeTriangleVault_1.geometry} material={material}/>
+              <mesh geometry={nodes.EyeTriangleVault_2.geometry} material={material}/>
           </group>
-          <mesh geometry={nodes.Plane004.geometry} material={nodes.Plane004.material}
-                position={[-0.012, -0.985, -9.885]} scale={2.141}/>
-          <group onPointerOver={() => setRightDoorHover(true)}
-                 onPointerOut={() => setRightDoorHover(false)}
-                 onClick={() => setAppState({section: 'quests'})}>
-              <mesh geometry={nodes.Mansion_Door001.geometry} material={nodes.Mansion_Door001.material}
-                    position={[6.225, -0.517, -20.832]} rotation={[0, -1.044, 0]}/>
-              <mesh geometry={nodes.Mansion_Door002.geometry}
-                    material={nodes.Mansion_Door002.material}
-                    rotation={rightDoorHover ? [0, -Math.PI * 0.5, 0] : [0, -0.62, 0]}
-                    position={[5.948, -0.517, -20.566]}/>
-          </group>
-          <group onPointerOver={() => setLeftDoorHover(true)}
-                 onPointerOut={() => setLeftDoorHover(false)}
-                 onClick={() => setAppState({section: 'vaults'})}>
-              <mesh geometry={nodes.Mansion_Door.geometry} material={nodes.Mansion_Door.material}
-                    position={[-5.584, -1, -17.712]} rotation={[0, 1.045, 0]}/>
-              <mesh geometry={nodes.Mansion_Door003.geometry}
-                    material={nodes.Mansion_Door003.material}
-                    rotation={leftDoorHover ? [0, Math.PI * 0.5, 0] : [0, 0.686, 0]}
-                    position={[-6.063, 0.241, -16.933]}/>
-          </group>
-          <group position={[-2.071, 0.863, -13.839]} rotation={[Math.PI / 2, 0, 0]} scale={[1.936, 1, 1]}>
-              <mesh geometry={nodes.Cube012_ToShapeMesh_Piece002.geometry}
-                    material={nodes.Cube012_ToShapeMesh_Piece002.material}/>
-              <mesh geometry={nodes.Cube012_ToShapeMesh_Piece002_1.geometry}
-                    material={nodes.Cube012_ToShapeMesh_Piece002_1.material}/>
-          </group>
-          <group position={[2.072, 0.863, -13.839]} rotation={[Math.PI / 2, 0, 0]} scale={[1.936, 1, 1]}>
-              <mesh geometry={nodes.Cube012_ToShapeMesh_Piece003.geometry}
-                    material={nodes.Cube012_ToShapeMesh_Piece003.material}/>
-              <mesh geometry={nodes.Cube012_ToShapeMesh_Piece003_1.geometry}
-                    material={nodes.Cube012_ToShapeMesh_Piece003_1.material}/>
-          </group>
-          <group position={[-0.027, -0.979, -13.367]} rotation={[Math.PI, 0, Math.PI]} scale={0.817}>
-              <mesh geometry={nodes.Plane003_1.geometry} material={nodes.Plane003_1.material}/>
-              <mesh geometry={nodes.Plane003_2.geometry} material={nodes.Plane003_2.material}/>
-              <mesh geometry={nodes.Plane003_3.geometry} material={nodes.Plane003_3.material}/>
-              <mesh geometry={nodes.Plane003_4.geometry} material={nodes.Plane003_4.material}/>
-          </group>
-          <mesh geometry={nodes.FireplaceHole001.geometry} material={nodes.FireplaceHole001.material}
-                position={[-0.006, -0.398, -14.13]} scale={0.464}/>
+          <mesh geometry={nodes.BlackWalls.geometry}
+                position={[0, 0, -8.515]}
+                rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="black"/>
+          </mesh>
 
           {place === 'map' ?
               <mesh position={[1, 0.5, -12.5]}
