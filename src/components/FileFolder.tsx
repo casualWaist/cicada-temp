@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import React, {useContext, useEffect, useMemo, useState} from 'react'
-import {Html, useGLTF} from '@react-three/drei'
+import {Html, useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
@@ -17,13 +17,13 @@ type GLTFResult = GLTF & {
 
 type FileFolderProps = {
   active: boolean
-  title: string
+  quest: 1|2|3|4|5|6|7|8|9|10
   activateFunc: () => void
   closeFunc: () => void
   resetPages: () => void
 }
 
-export function FileFolder({active, title, activateFunc, closeFunc, resetPages, ...props}:
+export function FileFolder({active, quest, activateFunc, closeFunc, resetPages, ...props}:
                                JSX.IntrinsicElements['group'] & FileFolderProps) {
 
   const { nodes } = useGLTF('/fileFolder.glb') as GLTFResult
@@ -46,6 +46,16 @@ export function FileFolder({active, title, activateFunc, closeFunc, resetPages, 
     }
     return [position, rotation]
   }, [active, props.position, camera.position])
+    const titleTexture = useTexture(
+        '/TextTexture.webp',
+        (loader) => {
+            loader.wrapS = loader.wrapT = THREE.RepeatWrapping
+            loader.repeat.set(0.2, 0.2)
+            const offY = quest > 5 ? 0.2 : 0
+            const offX = 0.2 * (quest - 1 % 5)
+            loader.offset.set(offX, offY)
+        }
+    )
 
     useEffect(() => {
         if (!active) setOpen(false)
@@ -70,6 +80,12 @@ export function FileFolder({active, title, activateFunc, closeFunc, resetPages, 
                 event.stopPropagation()
               }}
         >
+            <mesh position={[0.115, 0.01, 0]}
+                  rotation={[-Math.PI * 0.5, 0, 0]}
+            >
+                <planeGeometry args={[0.05, 0.05]}/>
+                <meshBasicMaterial map={titleTexture} />
+            </mesh>
             <meshBasicMaterial color="yellow" side={THREE.DoubleSide}/>
         </mesh>
 
@@ -95,12 +111,13 @@ export function FileFolder({active, title, activateFunc, closeFunc, resetPages, 
 useGLTF.preload('/fileFolder.glb')
 
 type FilePageProps = {
-    page: number
+    quest: 1|2|3|4|5|6|7|8|9|10
+    page: 1|2|3
     activePage: number
     turnThePage: () => void
 }
 
-export function FilePage({page, activePage, turnThePage, ...props}:
+export function FilePage({quest, page, activePage, turnThePage, ...props}:
                              JSX.IntrinsicElements['mesh'] & FilePageProps) {
   const { nodes} = useGLTF('/fileFolder.glb') as GLTFResult
   const [appState, setAppState] = useContext(AppContext)
@@ -108,21 +125,75 @@ export function FilePage({page, activePage, turnThePage, ...props}:
   return <mesh geometry={nodes.Page.geometry}
                onClick={(event) => {
                    event.stopPropagation()
-                   turnThePage()
+                   let nextPage = page + 1 as 1|2|3
+                   if (nextPage > 3) nextPage = 1 as 1|2|3
+                   if (appState[questString(quest)][subQString(nextPage)] !== 'unavailable'){
+                       turnThePage()
+                   }
                }}
                rotation={page < activePage ? [0, 0, Math.PI] : [0, 0, 0]}
                {...props}
   >
+      { props.children }
     <meshBasicMaterial color={page > activePage ? "grey" : "white"} side={THREE.DoubleSide} />
-      {page === activePage && <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-             position={[0.16, 0.00005, 0.07]}
-             onClick={(event) => {
-                 event.stopPropagation()
-                 setAppState({buyingHint: true})
-             }}
-      >
-          <planeGeometry args={[0.05, 0.05]}/>
-          <meshBasicMaterial color="green"/>
-      </mesh>}
+      {page === activePage && <HintButton page={page} quest={quest} />}
   </mesh>
+}
+
+function HintButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
+    const [appState, setAppState] = useContext(AppContext)
+    const titleTexture = useTexture(
+        '/TextTextureHint.webp',
+        (loader) => {
+            loader.wrapS = loader.wrapT = THREE.RepeatWrapping
+            loader.repeat.set(0.2, 0.2)
+            const offY = 0.4
+            let offX = 0
+            switch (appState[questString(quest)][subQString(page)]) {
+                case 'started':
+                    offX = 0
+                    break
+                case 'hinted':
+                    offX = 0.2
+                    break
+                case 'completed':
+                    offX = 0.4
+                    break
+            }
+            loader.offset.set(offX, offY)
+        }
+    )
+
+    if (appState[questString(quest)][subQString(page)] !== 'started') {
+        return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
+                     position={[0.16, 0.00005, 0.07]}>
+            <planeGeometry args={[0.05, 0.05]}/>
+            <meshBasicMaterial map={titleTexture}/>
+        </mesh>
+    }
+
+    return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
+                 position={[0.16, 0.00005, 0.07]}
+                 onClick={(event) => {
+                     event.stopPropagation()
+                     setAppState({
+                         buyingHint: true,
+                         hintToBuy: {
+                             quest:quest,
+                             subQ: page
+                         }
+                     })
+                 }}
+    >
+        <planeGeometry args={[0.05, 0.05]}/>
+        <meshBasicMaterial map={titleTexture} color={"#afff9e"}/>
+    </mesh>
+}
+
+export function questString(quest: 1|2|3|4|5|6|7|8|9|10): 'quest1' | 'quest2' | 'quest3' | 'quest4' | 'quest5' | 'quest6' | 'quest7' | 'quest8' | 'quest9' | 'quest10' {
+    return `quest${quest}` as 'quest1' | 'quest2' | 'quest3' | 'quest4' | 'quest5' | 'quest6' | 'quest7' | 'quest8' | 'quest9' | 'quest10'
+}
+
+function subQString(page: 1|2|3): 'subQ1' | 'subQ2' | 'subQ3' {
+    return `subQ${page}` as 'subQ1' | 'subQ2' | 'subQ3'
 }

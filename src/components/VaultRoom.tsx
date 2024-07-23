@@ -164,87 +164,107 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
     <group {...props} dispose={null}>
       <group>
         <SafeDoor
+          active={false}
+          vault={1}
           position={[1.449, -0.792, -5.844]}
           onClick={() => setPlace('s1')}
           rotation={[0, Math.PI * 0.5, 0]}
         />
         <SafeDoor
+          active={place === 's2'}
+          vault={2}
           position={[0.846, -0.792, -6.75]}
           onClick={() => setPlace('s2')}
           rotation={
-            appState.vault2 === 'unlocked'
+            appState.quest2.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's3'}
+          vault={3}
           position={[0.24, -0.792, -7.658]}
           onClick={() => setPlace('s3')}
           rotation={
-            appState.vault3 === 'unlocked'
+            appState.quest3.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's4'}
+          vault={4}
           position={[-0.322, -0.792, -8.502]}
           onClick={() => setPlace('s4')}
           rotation={
-            appState.vault4 === 'unlocked'
+            appState.quest4.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's5'}
+          vault={5}
           position={[1.449, 0.027, -5.844]}
           onClick={() => setPlace('s5')}
           rotation={
-            appState.vault5 === 'unlocked'
+            appState.quest5.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's6'}
+          vault={6}
           position={[0.846, 0.027, -6.75]}
           onClick={() => setPlace('s6')}
           rotation={
-            appState.vault6 === 'unlocked'
+            appState.quest6.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's7'}
+          vault={7}
           position={[0.24, 0.027, -7.658]}
           onClick={() => setPlace('s7')}
           rotation={
-            appState.vault7 === 'unlocked'
+            appState.quest7.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's8'}
+          vault={8}
           position={[-0.322, 0.027, -8.502]}
           onClick={() => setPlace('s8')}
           rotation={
-            appState.vault8 === 'unlocked'
+            appState.quest8.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's9'}
+          vault={9}
           position={[0.858, 0.851, -6.731]}
           onClick={() => setPlace('s9')}
           rotation={
-            appState.vault9 === 'unlocked'
+            appState.quest9.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
         />
         <SafeDoor
+          active={place === 's10'}
+          vault={10}
           position={[0.255, 0.851, -7.636]}
           onClick={() => setPlace('s10')}
           rotation={
-            appState.vault10 === 'unlocked'
+            appState.quest10.status === 'started'
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }

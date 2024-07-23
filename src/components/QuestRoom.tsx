@@ -235,27 +235,309 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                       activateFunc={() => {
                           setQuest('q1')
                       }}
-                      title="Quest 1"
+                      quest={1}
                       closeFunc={() => setQuest('none')}
                       resetPages={() => setPageNum(1)}
                       position={[0.804, -0.113, -0.045]}
           >
               <FilePage page={1}
+                        quest={1}
                         activePage={pageNum}
                         turnThePage={() => setPageNum( 2)}
                         position={[-0.115, 0.004, -0.002]}
               />
               <FilePage page={2}
+                        quest={1}
                         activePage={pageNum}
                         turnThePage={() => setPageNum(3)}
                         position={[-0.108, 0.003, 0.001]}
               />
               <FilePage page={3}
+                        quest={1}
                         activePage={pageNum}
                         turnThePage={() => setPageNum(1)}
                         position={[-0.118, 0.0025, 0]}
               />
           </FileFolder>
+
+          {['started', 'completed'].includes(appState.quest2.status) &&
+              <FileFolder active={quest === 'q2'}
+                          activateFunc={() => {
+                              setQuest('q2')
+                          }}
+                          quest={2}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[0.804, -0.013, -0.045]}
+              >
+                  <FilePage page={1}
+                            quest={2}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={2}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={2}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest3.status) &&
+              <FileFolder active={quest === 'q3'}
+                          activateFunc={() => {
+                              setQuest('q3')
+                          }}
+                          quest={3}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[0.804, 0.1, -0.045]}
+              >
+                  <FilePage page={1}
+                            quest={3}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={3}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={3}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest4.status) &&
+              <FileFolder active={quest === 'q4'}
+                          activateFunc={() => {
+                              setQuest('q4')
+                          }}
+                          quest={4}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[0.804, 0.2, -0.045]}
+              >
+                  <FilePage page={1}
+                            quest={4}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={4}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={4}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest5.status) &&
+              <FileFolder active={quest === 'q5'}
+                          activateFunc={() => {
+                              setQuest('q5')
+                          }}
+                          quest={5}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[0.804, 0.3, -0.045]}
+              >
+                  <FilePage page={1}
+                            quest={5}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={5}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={5}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest6.status) &&
+              <FileFolder active={quest === 'q6'}
+                          activateFunc={() => {
+                              setQuest('q6')
+                          }}
+                          quest={6}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[1, -0.113, 0.195]}
+              >
+                  <FilePage page={1}
+                            quest={6}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={6}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={6}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest7.status) &&
+              <FileFolder active={quest === 'q7'}
+                          activateFunc={() => {
+                              setQuest('q7')
+                          }}
+                          quest={7}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[1, -0.013, 0.195]}
+              >
+                  <FilePage page={1}
+                            quest={7}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={7}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={7}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest8.status) &&
+              <FileFolder active={quest === 'q8'}
+                          activateFunc={() => {
+                              setQuest('q8')
+                          }}
+                          quest={8}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[1, 0.1, 0.195]}
+              >
+                  <FilePage page={1}
+                            quest={8}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={8}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={8}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest9.status) &&
+              <FileFolder active={quest === 'q9'}
+                          activateFunc={() => {
+                              setQuest('q9')
+                          }}
+                          quest={9}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[1, 0.2, 0.195]}
+              >
+                  <FilePage page={1}
+                            quest={9}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={9}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={9}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
+
+          {['started', 'completed'].includes(appState.quest10.status) &&
+              <FileFolder active={quest === 'q10'}
+                          activateFunc={() => {
+                              setQuest('q10')
+                          }}
+                          quest={10}
+                          closeFunc={() => setQuest('none')}
+                          resetPages={() => setPageNum(1)}
+                          position={[1, 0.3, 0.195]}
+              >
+                  <FilePage page={1}
+                            quest={10}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum( 2)}
+                            position={[-0.115, 0.004, -0.002]}
+                  />
+                  <FilePage page={2}
+                            quest={10}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(3)}
+                            position={[-0.108, 0.003, 0.001]}
+                  />
+                  <FilePage page={3}
+                            quest={10}
+                            activePage={pageNum}
+                            turnThePage={() => setPageNum(1)}
+                            position={[-0.118, 0.0025, 0]}
+                  />
+              </FileFolder>
+          }
 
         <mesh geometry={nodes.SideQuestTutorial.geometry}
               position={[-1.422, 0.26, -3.976]}

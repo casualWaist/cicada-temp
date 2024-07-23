@@ -13,7 +13,7 @@ import { Canvas } from '@react-three/fiber'
 import HouseModel from '@/components/HouseModel'
 import { Web3ModalProvider } from './Web3ModalProvider'
 import { useAccount, useWriteContract } from 'wagmi'
-import { marketplace_abi } from "@/const/abis/marketplace";
+//import { marketplace_abi } from "@/const/abis/marketplace";
 import BuyHint from "@/components/BuyHInt"
 // import { postData } from "@/actions/commonAction"
 

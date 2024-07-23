@@ -3,22 +3,32 @@
 import {createContext, ReactNode, useState} from "react"
 import axios from "axios";
 
-export type VaultStatus = 'unavailable' | 'locked' | 'unlocked'
+export type SubQuestStatus = 'unavailable' | 'started' | 'hinted' | 'completed'
+export type QuestStatus = {
+    status: 'unavailable' | 'locked' | 'started' | 'completed'
+    subQ1: SubQuestStatus
+    subQ2: SubQuestStatus
+    subQ3: SubQuestStatus
+}
 
 export type AppState = {
     section: 'landing' | 'map' | 'vaults' | 'quests'
     walletConnected: boolean
     buyingHint: boolean
-    vault1: VaultStatus
-    vault2: VaultStatus
-    vault3: VaultStatus
-    vault4: VaultStatus
-    vault5: VaultStatus
-    vault6: VaultStatus
-    vault7: VaultStatus
-    vault8: VaultStatus
-    vault9: VaultStatus
-    vault10: VaultStatus
+    hintToBuy: {
+        quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+        subQ: 1 | 2 | 3
+    }
+    quest1: QuestStatus
+    quest2: QuestStatus
+    quest3: QuestStatus
+    quest4: QuestStatus
+    quest5: QuestStatus
+    quest6: QuestStatus
+    quest7: QuestStatus
+    quest8: QuestStatus
+    quest9: QuestStatus
+    quest10: QuestStatus
     walletAddress: string
 }
 
@@ -30,16 +40,70 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         section: 'landing',
         walletConnected: false,
         buyingHint: false,
-        vault1: 'unlocked',
-        vault2: 'unavailable',
-        vault3: 'unavailable',
-        vault4: 'unavailable',
-        vault5: 'unavailable',
-        vault6: 'unavailable',
-        vault7: 'unavailable',
-        vault8: 'unavailable',
-        vault9: 'unavailable',
-        vault10: 'unavailable',
+        hintToBuy: {
+            quest: 1,
+            subQ: 1
+        },
+        quest1: {
+            status: 'started',
+            subQ1: 'started',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest2: {
+            status: 'locked',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest3: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest4: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest5: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest6: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest7: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest8: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest9: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
+        quest10: {
+            status: 'unavailable',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable'
+        },
         walletAddress: ''
     });
 
