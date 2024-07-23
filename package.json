@@ -13,13 +13,18 @@
     "@react-three/fiber": "^8.16.8",
     "@tanstack/react-query": "^5.51.1",
     "@web3modal/wagmi": "^5.0.6",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "encoding": "^0.1.13",
     "next": "14.2.4",
+    "pino-pretty": "^11.2.1",
     "react": "^18",
     "react-countdown": "^2.3.5",
     "react-dom": "^18",
     "vercel": "^34.3.0",
     "viem": "^2.17.3",
-    "wagmi": "^2.10.10"
+    "wagmi": "^2.10.10",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "@types/node": "^20",

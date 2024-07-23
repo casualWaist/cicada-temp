@@ -33,13 +33,13 @@ type GLTFResult = GLTF & {
 }
 
 export function SafeDoor(props: JSX.IntrinsicElements['group']) {
-  const { nodes } = useGLTF('/safeDoor.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/safeDoor.glb') as GLTFResult
 
     useFrame(() => {
 
     })
 
-  return (
+    return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Door_1.geometry} material={nodes.Door_1.material} />
       <mesh geometry={nodes.Door_2.geometry} material={nodes.Door_2.material} />
