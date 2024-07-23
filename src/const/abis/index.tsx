@@ -1,0 +1,1 @@
+export const HINT_PRICE = 100;
