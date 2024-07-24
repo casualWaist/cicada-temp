@@ -10,7 +10,12 @@ export type QuestStatus = {
     subQ2: SubQuestStatus
     subQ3: SubQuestStatus
 }
-
+export type SQWin = {
+    lat: number
+    lon: number
+    mapX: number
+    mapY: number
+}
 export type AppState = {
     section: 'landing' | 'map' | 'vaults' | 'quests'
     walletConnected: boolean
@@ -19,6 +24,9 @@ export type AppState = {
         quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
         subQ: 1 | 2 | 3
     }
+    buyingSQ: boolean
+    numberSQSpins: number
+    sideQuestWins: SQWin[]
     quest1: QuestStatus
     quest2: QuestStatus
     quest3: QuestStatus
@@ -44,6 +52,9 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
             quest: 1,
             subQ: 1
         },
+        buyingSQ: false,
+        numberSQSpins: 0,
+        sideQuestWins: [],
         quest1: {
             status: 'started',
             subQ1: 'started',

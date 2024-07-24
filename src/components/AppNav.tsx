@@ -15,6 +15,7 @@ import { Web3ModalProvider } from './Web3ModalProvider'
 import { useAccount, useWriteContract } from 'wagmi'
 //import { marketplace_abi } from "@/const/abis/marketplace";
 import BuyHint from "@/components/BuyHInt"
+import BuySQChance from "@/components/BuySQChance"
 // import { postData } from "@/actions/commonAction"
 
 export default function AppNav () {
@@ -73,6 +74,7 @@ function AppTrack () {
       ) : null}
 
       {appState.buyingHint && <BuyHint />}
+      {appState.buyingSQ && <BuySQChance />}
 
     </div>
   )
