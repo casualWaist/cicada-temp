@@ -79,7 +79,6 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
 
     return (
         <group {...props} dispose={null}>
-            <ConnectButtons />
 
             <group onPointerOver={() => setQuestDoorHover(true)}
                    onPointerOut={() => setQuestDoorHover(false)}
@@ -109,7 +108,13 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
                       position={[-5.584, -1, -17.712]} rotation={[0, 1.045, 0]}
                 />
             </group>
-            <group onClick={() => setPlace('map')}>
+            <group onClick={() => {
+                setPlace('map')
+                setAppState({
+                    subSection: 'feature',
+                    moveFunction: () => setPlace('home')
+                })
+            }}>
                 <mesh geometry={nodes.Roadmap.geometry}
                       material={material}
                       position={[4.144, 0, -8.515]}
@@ -126,7 +131,13 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
                     />
                 </group>
             </group>
-            <group onClick={() => setPlace('map')}>
+            <group onClick={() => {
+                setPlace('tok')
+                setAppState({
+                    subSection: 'feature',
+                    moveFunction: () => setPlace('home')
+                })
+            }}>
                 <mesh geometry={nodes.Tokenomics.geometry}
                       material={material}
                       position={[0, 0, -8.515]}
@@ -278,24 +289,6 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
             >
                 <meshBasicMaterial color="black"/>
             </mesh>
-
-            {place === 'map' ?
-                <mesh position={[1, 0.5, -12.5]}
-                      rotation={[0, 0, 0]}
-                      onClick={() => setPlace('home')}>
-                    <planeGeometry args={[1, 1]}/>
-                    <meshStandardMaterial color="red"/>
-                </mesh>
-                : null}
-
-            {place === 'tok' ?
-                <mesh position={[-1, 0.5, -12.5]}
-                      rotation={[0, 0, 0]}
-                      onClick={() => setPlace('home')}>
-                    <planeGeometry args={[1, 1]}/>
-                    <meshStandardMaterial color="red"/>
-                </mesh>
-                : null}
             <directionalLight intensity={2.5} position={[5, 2, 2]}/>
             <directionalLight intensity={5.5} position={[-2, 5, -2]}/>
         </group>

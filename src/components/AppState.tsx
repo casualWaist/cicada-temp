@@ -18,6 +18,8 @@ export type SQWin = {
 }
 export type AppState = {
     section: 'landing' | 'map' | 'vaults' | 'quests'
+    subSection: 'none' | 'rev' | 'feature'
+    moveFunction: () => void
     walletConnected: boolean
     buyingHint: boolean
     hintToBuy: {
@@ -46,6 +48,8 @@ export const AppContext = createContext<AppStateContext>(null!)
 export function AppStateWrapper({ children }: { children: ReactNode }){
     const [appState, _setAppState] = useState<AppState>({
         section: 'landing',
+        subSection: 'none',
+        moveFunction: () => {},
         walletConnected: false,
         buyingHint: false,
         hintToBuy: {

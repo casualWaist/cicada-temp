@@ -16,6 +16,7 @@ import { useAccount, useWriteContract } from 'wagmi'
 //import { marketplace_abi } from "@/const/abis/marketplace";
 import BuyHint from "@/components/BuyHInt"
 import BuySQChance from "@/components/BuySQChance"
+import NavOverlay from "@/components/NavOverlay"
 // import { postData } from "@/actions/commonAction"
 
 export default function AppNav () {
@@ -75,6 +76,7 @@ function AppTrack () {
 
       {appState.buyingHint && <BuyHint />}
       {appState.buyingSQ && <BuySQChance />}
+      <NavOverlay />
 
     </div>
   )

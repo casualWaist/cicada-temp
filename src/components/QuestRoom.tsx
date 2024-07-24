@@ -7,6 +7,7 @@ import {useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {FileFolder, FilePage} from "@/components/FileFolder"
 import {use} from "i18next"
+import {Compass} from "@/components/Compass"
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -135,102 +136,64 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const camera = useThree(
         (state) => state.camera as PerspectiveCamera
     )
-    const returnButton = useRef<THREE.Mesh>(null!)
-    const revReturnButton = useRef<THREE.Mesh>(null!)
     const material = useMemo(
         () => new THREE.MeshBasicMaterial({map: roomTex}),
         [roomTex]
     )
 
     useEffect(() => {
+        if (appState.subSection === 'none') setAppState({
+            moveFunction: () => {
+                setAppState({
+                    subSection: 'rev'
+                })
+                setPlace('rev')
+            }
+        })
+        if (appState.subSection === 'rev') setAppState({
+            moveFunction: () => {
+                setAppState({
+                    subSection: 'none'
+                })
+                setPlace('home')
+            }
+        })
+    }, [appState.subSection])
+
+    useEffect(() => {
         switch (place) {
             case 'home':
                 camera.position.set(-1.05, 0.75, 2.5)
                 camera.rotation.set(-Math.PI * 0.05, -Math.PI * 0.2, 0, 'YXZ')
-                revReturnButton.current.position.set(1.5, -0.5, -1.5)
                 break
             case 'sqMap':
                 camera.position.set(-0.5, 0.25, -2.5)
                 camera.rotation.set(0, Math.PI * 0.5, 0)
-                returnButton.current.position.set(-1.5, 0.25, -3.2)
                 break
             case 'map':
                 camera.position.set(0, 0, 0)
                 camera.rotation.set(0, -Math.PI * 0.5, 0)
-                revReturnButton.current.position.set(-23, 1, -1.5)
                 break
             case 'tut':
                 camera.position.set(0.75, 0.375, -0.5)
                 camera.rotation.set(0, -Math.PI * 0.5, 0)
-                returnButton.current.position.set(3.011, 0.95, -1.244)
                 break
             case 'rev':
                 camera.position.set(0.79, 1, 0.625)
                 camera.rotation.set(-Math.PI * 0.075, Math.PI * 0.2, 0, 'YXZ')
-                returnButton.current.position.set(-2.75, 0.25, -3.45)
                 break
             case 'sqTut':
                 camera.position.set(-1, 0.25, -1.75)
                 camera.rotation.set(0, Math.PI * 0.05, 0)
-                returnButton.current.position.set(-2.75, 0.25, -3.45)
                 break
             case 'desk':
                 camera.position.set(-0.25, 0.9, 0.25)
                 camera.rotation.set(-Math.PI * 0.25, -Math.PI * 0.4, 0)
-                returnButton.current.position.set(0.65, -0.9, 0.25)
         }
     }, [place, camera])
 
     return (
         <group {...props} dispose={null}>
-
-            <mesh ref={returnButton}
-                  visible={place !== 'home'}
-                  rotation={[-Math.PI * 0.25, 0, 0]}
-                  onClick={(event) => {
-                      event.stopPropagation()
-                      setPlace('home')
-                  }}>
-                <planeGeometry args={[1, 1]}/>
-                <meshBasicMaterial side={THREE.DoubleSide} color="red"/>
-            </mesh>
-            <mesh ref={revReturnButton}
-                  visible={place !== 'rev'}
-                  rotation={[Math.PI * 0.75, Math.PI, -Math.PI * 0.1]}
-                  onClick={(event) => {
-                      event.stopPropagation()
-                      setPlace('rev')
-                  }}>
-                <planeGeometry args={[1, 1]}/>
-                <meshBasicMaterial side={THREE.DoubleSide} color="blue"/>
-            </mesh>
-            <mesh rotation={[Math.PI * 0.75, Math.PI, 0]}
-                  position={[-17, -1.885, 3]}
-                  onClick={(event) => {
-                      event.stopPropagation()
-                      setPlace('home')
-                  }}>
-                <planeGeometry args={[1, 1]}/>
-                <meshBasicMaterial side={THREE.DoubleSide} color="red"/>
-            </mesh>
-            <mesh rotation={[0, 0, 0]}
-                  position={[0, -1, 0]}
-                  onClick={(event) => {
-                      event.stopPropagation()
-                      setAppState({section: 'map'})
-                  }}>
-                <planeGeometry args={[1, 1]}/>
-                <meshBasicMaterial side={THREE.DoubleSide} color="red"/>
-            </mesh>
-            <mesh rotation={[-Math.PI * 0.75, Math.PI * 0.125, 0]}
-                  position={[-18, -0.885, 3.5]}
-                  onClick={(event) => {
-                      event.stopPropagation()
-                      setPlace('rev')
-                  }}>
-                <planeGeometry args={[1, 1]}/>
-                <meshBasicMaterial side={THREE.DoubleSide} color="blue"/>
-            </mesh>
 
             <FileFolder active={quest === 'q1'}
                         activateFunc={() => {
@@ -244,7 +207,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                 <FilePage page={1}
                           quest={1}
                           activePage={pageNum}
-                          turnThePage={() => setPageNum( 2)}
+                          turnThePage={() => setPageNum(2)}
                           position={[-0.115, 0.004, -0.002]}
                 />
                 <FilePage page={2}
@@ -274,7 +237,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={2}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -305,7 +268,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={3}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -336,7 +299,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={4}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -367,7 +330,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={5}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -398,7 +361,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={6}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -429,7 +392,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={7}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -460,7 +423,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={8}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -491,7 +454,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={9}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -522,7 +485,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                     <FilePage page={1}
                               quest={10}
                               activePage={pageNum}
-                              turnThePage={() => setPageNum( 2)}
+                              turnThePage={() => setPageNum(2)}
                               position={[-0.115, 0.004, -0.002]}
                     />
                     <FilePage page={2}
@@ -546,6 +509,15 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                   onClick={(event) => {
                       event.stopPropagation()
                       setPlace('sqTut')
+                      setAppState({
+                          subSection: 'feature',
+                            moveFunction: () => {
+                                setAppState({
+                                    subSection: 'rev'
+                                })
+                                setPlace('rev')
+                            }
+                      })
                   }}
                   rotation={[Math.PI / 2, 0, 0]}/>
             <mesh geometry={nodes.SidequestsMap.geometry}
@@ -554,13 +526,31 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                   onClick={(event) => {
                       event.stopPropagation()
                       setPlace('sqMap')
+                      setAppState({
+                          subSection: 'feature',
+                          moveFunction: () => {
+                              setAppState({
+                                  subSection: 'rev'
+                              })
+                              setPlace('rev')
+                          }
+                      })
                   }}
                   rotation={[Math.PI * 0.5, 0, -1.528]}/>
-            <SideQuestSpinner />
+            <SideQuestSpinner/>
             <group position={[3.011, 0.517, -0.444]}
                    onClick={(event) => {
                        event.stopPropagation()
                        setPlace('tut')
+                       setAppState({
+                           subSection: 'feature',
+                           moveFunction: () => {
+                               setAppState({
+                                   subSection: 'none'
+                               })
+                               setPlace('home')
+                           }
+                       })
                    }}>
                 <mesh geometry={nodes.QuestsTutorial_1.geometry} material={material}/>
                 <mesh geometry={nodes.QuestsTutorial_2.geometry} material={material}/>
@@ -642,6 +632,15 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
             <group onClick={(event) => {
                 event.stopPropagation()
                 setPlace('desk')
+                setAppState({
+                    subSection: 'feature',
+                    moveFunction: () => {
+                        setAppState({
+                            subSection: 'none'
+                        })
+                        setPlace('home')
+                    }
+                })
             }}>
                 <group position={[0.73, -1.005, -0.212]} rotation={[0, -0.977, 0]}>
                     <mesh geometry={nodes.Desk.geometry} material={material}/>
@@ -719,6 +718,8 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
             </group>
             <mesh geometry={nodes.Room_1.geometry} material={material}/>
             <mesh geometry={nodes.Room_2.geometry} material={material}/>
+            <directionalLight position={[0, 3, 5]} intensity={0.5}/>
+            <directionalLight position={[5, 3, -2]} intensity={1.5}/>
         </group>
     )
 }
@@ -743,28 +744,24 @@ function SideQuestSpinner() {
     }, [showCords])
 
     return <>
-        <mesh position={[-2.888, 0.605, -3.044]}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (chanceStatus === 'standby') {
-                      setAppState({buyingSQ: true})
-                  } else if (chanceStatus === 'spinning') {
-                      const r = Math.random()
-                      if (r < 0.05) {
-                          setChanceStatus('won')
-                          setAppState({numberSQSpins: 0})
-                      } else {
-                          setChanceStatus('standby')
-                          setAppState({numberSQSpins: appState.numberSQSpins - 1})
+        <Compass position={[-2.788, 0.605, -3.044]}
+                 open={chanceStatus === 'spinning'}
+                 onClick={(event) => {
+                      event.stopPropagation()
+                      if (chanceStatus === 'standby') {
+                          setAppState({buyingSQ: true})
+                      } else if (chanceStatus === 'spinning') {
+                          const r = Math.random()
+                          if (r < 0.05) {
+                              setChanceStatus('won')
+                              setAppState({numberSQSpins: 0})
+                          } else {
+                              setChanceStatus('standby')
+                              setAppState({numberSQSpins: appState.numberSQSpins - 1})
+                          }
                       }
-                  }
-              }}
-        >
-            <icosahedronGeometry args={[0.125, 0]}/>
-            <meshBasicMaterial color={
-                chanceStatus === 'spinning' ? "purple" : 'orange'
-            }/>
-        </mesh>
+                  }}
+        />
         {chanceStatus === 'won' &&
             <mesh position={[-2.888, 0.305, -2.044]}
                   onClick={(event) => {

@@ -84,7 +84,6 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       | 's10'
       | 'tut'
   )
-  const returnButton = useRef<THREE.Mesh>(null!)
   const vaultRoomTex = useTexture(
       '/FinalTextureVaultRoom.webp',
       (loader) => loader.flipY = false
@@ -105,57 +104,46 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       case 's1':
         camera.position.set(0, -0.792, -5.244)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(1.449, -0.792, -6.244)
         break
       case 's2':
         camera.position.set(-0.6, -0.792, -6.244)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.546, -0.792, -6.55)
         break
       case 's3':
         camera.position.set(-1.2, -0.792, -7.144)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.124, -0.792, -7.58)
         break
       case 's4':
         camera.position.set(-1.8, -0.792, -8.0)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(-0.522, -0.792, -8.402)
         break
       case 's5':
         camera.position.set(0, 0.05, -5.444)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(1.249, 0.027, -5.744)
         break
       case 's6':
         camera.position.set(-0.6, 0.05, -6.244)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.646, 0.027, -6.65)
         break
       case 's7':
         camera.position.set(-1.2, 0.05, -7.144)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.0, 0.027, -7.458)
         break
       case 's8':
         camera.position.set(-1.8, 0.05, -8.0)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(-0.122, 0.027, -8.442)
         break
       case 's9':
         camera.position.set(-0.6, 0.85, -6.244)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.658, 0.851, -6.631)
         break
       case 's10':
         camera.position.set(-1.2, 0.85, -7.144)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
-        returnButton.current.position.set(0.055, 0.851, -7.536)
         break
       case 'tut':
         camera.position.set(-1.937, -0.143, -6.879)
         camera.rotation.set(0, 0, 0)
-        returnButton.current.position.set(-1.337, -0.143, -9.879)
         break
     }
   }, [place, camera])
@@ -164,17 +152,31 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
     <group {...props} dispose={null}>
       <group>
         <SafeDoor
+            available={false}
           active={false}
           vault={1}
           position={[1.449, -0.792, -5.844]}
-          onClick={() => setPlace('s1')}
+          onClick={() => {
+            setPlace('s1')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={[0, Math.PI * 0.5, 0]}
         />
         <SafeDoor
+            available={appState.quest2.status !== 'unavailable'}
           active={place === 's2'}
           vault={2}
           position={[0.846, -0.792, -6.75]}
-          onClick={() => setPlace('s2')}
+          onClick={() => {
+            setPlace('s2')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest2.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -182,10 +184,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest3.status !== 'unavailable'}
           active={place === 's3'}
           vault={3}
           position={[0.24, -0.792, -7.658]}
-          onClick={() => setPlace('s3')}
+          onClick={() => {
+            setPlace('s3')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest3.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -193,10 +202,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest4.status !== 'unavailable'}
           active={place === 's4'}
           vault={4}
           position={[-0.322, -0.792, -8.502]}
-          onClick={() => setPlace('s4')}
+          onClick={() => {
+            setPlace('s4')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest4.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -204,10 +220,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest5.status !== 'unavailable'}
           active={place === 's5'}
           vault={5}
           position={[1.449, 0.027, -5.844]}
-          onClick={() => setPlace('s5')}
+          onClick={() => {
+            setPlace('s5')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest5.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -215,10 +238,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest6.status !== 'unavailable'}
           active={place === 's6'}
           vault={6}
           position={[0.846, 0.027, -6.75]}
-          onClick={() => setPlace('s6')}
+          onClick={() => {
+            setPlace('s6')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest6.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -226,10 +256,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest7.status !== 'unavailable'}
           active={place === 's7'}
           vault={7}
           position={[0.24, 0.027, -7.658]}
-          onClick={() => setPlace('s7')}
+          onClick={() => {
+            setPlace('s7')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest7.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -237,10 +274,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest8.status !== 'unavailable'}
           active={place === 's8'}
           vault={8}
           position={[-0.322, 0.027, -8.502]}
-          onClick={() => setPlace('s8')}
+          onClick={() => {
+            setPlace('s8')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest8.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -248,10 +292,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest9.status !== 'unavailable'}
           active={place === 's9'}
           vault={9}
           position={[0.858, 0.851, -6.731]}
-          onClick={() => setPlace('s9')}
+          onClick={() => {
+            setPlace('s9')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest9.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -259,10 +310,17 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
           }
         />
         <SafeDoor
+            available={appState.quest10.status !== 'unavailable'}
           active={place === 's10'}
           vault={10}
           position={[0.255, 0.851, -7.636]}
-          onClick={() => setPlace('s10')}
+          onClick={() => {
+            setPlace('s10')
+            setAppState({
+              subSection: 'feature',
+              moveFunction: () => {setPlace('home')}
+            })
+          }}
           rotation={
             appState.quest10.status === 'started'
               ? [0, Math.PI * 0.5, 0]
@@ -274,7 +332,13 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
         <mesh geometry={nodes.TutorialPoster.geometry}
               material={material}
               position={[-1.937, -0.143, -9.879]}
-              onClick={() => setPlace('tut')}
+              onClick={() => {
+                setPlace('tut')
+                setAppState({
+                  subSection: 'feature',
+                  moveFunction: () => {setPlace('home')}
+                })
+              }}
               rotation={[Math.PI / 2, 0, -0.571]}
         />
 
@@ -529,20 +593,6 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
         />
 
       </group>
-
-      <mesh ref={returnButton}
-            visible={place !== 'home'}
-            rotation={[0, -Math.PI * 0.33, 0]}
-            onClick={() => setPlace('home')}>
-        <planeGeometry args={[0.1, 0.1]}/>
-        <meshStandardMaterial color="red"/>
-      </mesh>
-      <mesh rotation={[0, 0, 0]}
-            position={[-1, -1.25, -8]}
-            onClick={() => setAppState({section: 'map'})}>
-        <planeGeometry args={[0.1, 0.1]}/>
-        <meshStandardMaterial color="red"/>
-      </mesh>
 
       <mesh geometry={nodes.SceneBackdrop.geometry}
             position={[-0.322, 0.027, -11.265]}>
