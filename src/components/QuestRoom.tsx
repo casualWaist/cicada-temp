@@ -8,6 +8,16 @@ import {PerspectiveCamera} from "three"
 import {FileFolder, FilePage} from "@/components/FileFolder"
 import {use} from "i18next"
 import {Compass} from "@/components/Compass"
+import QuestOne from "@/components/Quests/QuestOne"
+import QuestTwo from "@/components/Quests/QuestTwo"
+import QuestThree from "@/components/Quests/QuestThree"
+import QuestFour from "@/components/Quests/QuestFour"
+import QuestFive from "@/components/Quests/QuestFive"
+import QuestSix from "@/components/Quests/QuestSix"
+import QuestSeven from "@/components/Quests/QuestSeven"
+import QuestEight from "@/components/Quests/QuestEight"
+import QuestNine from "@/components/Quests/QuestNine"
+import QuestTen from "@/components/Quests/QuestTen"
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -131,7 +141,6 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
             | 'q9'
             | 'q10'
     )
-    const [pageNum, setPageNum] = useState(1)
     const [appState, setAppState] = useContext(AppContext)
     const camera = useThree(
         (state) => state.camera as PerspectiveCamera
@@ -201,27 +210,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                         }}
                         quest={1}
                         closeFunc={() => setQuest('none')}
-                        resetPages={() => setPageNum(1)}
                         position={[0.804, -0.113, -0.045]}
             >
-                <FilePage page={1}
-                          quest={1}
-                          activePage={pageNum}
-                          turnThePage={() => setPageNum(2)}
-                          position={[-0.115, 0.004, -0.002]}
-                />
-                <FilePage page={2}
-                          quest={1}
-                          activePage={pageNum}
-                          turnThePage={() => setPageNum(3)}
-                          position={[-0.108, 0.003, 0.001]}
-                />
-                <FilePage page={3}
-                          quest={1}
-                          activePage={pageNum}
-                          turnThePage={() => setPageNum(1)}
-                          position={[-0.118, 0.0025, 0]}
-                />
+                <QuestOne active={quest === 'q1'} />
             </FileFolder>
 
             {['started', 'completed'].includes(appState.quest2.status) &&
@@ -231,27 +222,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={2}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[0.804, -0.013, -0.045]}
                 >
-                    <FilePage page={1}
-                              quest={2}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={2}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={2}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestTwo active={quest === 'q2'} />
                 </FileFolder>
             }
 
@@ -262,27 +235,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={3}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[0.804, 0.1, -0.045]}
                 >
-                    <FilePage page={1}
-                              quest={3}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={3}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={3}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestThree active={quest === 'q3'} />
                 </FileFolder>
             }
 
@@ -293,27 +248,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={4}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[0.804, 0.2, -0.045]}
                 >
-                    <FilePage page={1}
-                              quest={4}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={4}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={4}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestFour active={quest === 'q4'} />
                 </FileFolder>
             }
 
@@ -324,27 +261,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={5}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[0.804, 0.3, -0.045]}
                 >
-                    <FilePage page={1}
-                              quest={5}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={5}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={5}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestFive active={quest === 'q5'} />
                 </FileFolder>
             }
 
@@ -355,27 +274,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={6}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[1, -0.113, 0.195]}
                 >
-                    <FilePage page={1}
-                              quest={6}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={6}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={6}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestSix active={quest === 'q6'} />
                 </FileFolder>
             }
 
@@ -386,27 +287,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={7}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[1, -0.013, 0.195]}
                 >
-                    <FilePage page={1}
-                              quest={7}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={7}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={7}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestSeven active={quest === 'q7'} />
                 </FileFolder>
             }
 
@@ -417,27 +300,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={8}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[1, 0.1, 0.195]}
                 >
-                    <FilePage page={1}
-                              quest={8}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={8}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={8}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestEight active={quest === 'q8'} />
                 </FileFolder>
             }
 
@@ -448,27 +313,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={9}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[1, 0.2, 0.195]}
                 >
-                    <FilePage page={1}
-                              quest={9}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={9}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={9}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestNine active={quest === 'q9'} />
                 </FileFolder>
             }
 
@@ -479,27 +326,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={10}
                             closeFunc={() => setQuest('none')}
-                            resetPages={() => setPageNum(1)}
                             position={[1, 0.3, 0.195]}
                 >
-                    <FilePage page={1}
-                              quest={10}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(2)}
-                              position={[-0.115, 0.004, -0.002]}
-                    />
-                    <FilePage page={2}
-                              quest={10}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(3)}
-                              position={[-0.108, 0.003, 0.001]}
-                    />
-                    <FilePage page={3}
-                              quest={10}
-                              activePage={pageNum}
-                              turnThePage={() => setPageNum(1)}
-                              position={[-0.118, 0.0025, 0]}
-                    />
+                    <QuestTen active={quest === 'q10'} />
                 </FileFolder>
             }
 
@@ -556,10 +385,10 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                 <mesh geometry={nodes.QuestsTutorial_2.geometry} material={material}/>
             </group>
 
-            <mesh geometry={nodes.Backdrop.geometry} position={[4.027, 0, -3.898]}
+            {/*<mesh geometry={nodes.Backdrop.geometry} position={[4.027, 0, -3.898]}
                   rotation={[Math.PI / 2, 0, 1]}>
                 <meshBasicMaterial color="black"/>
-            </mesh>
+            </mesh>*/}
             <mesh geometry={nodes.Bookcase.geometry} material={material} position={[-2.874, 0.155, -3.649]}
                   rotation={[0, -1.571, 0]} scale={[0.421, 0.39, 0.26]}/>
             <mesh geometry={nodes.BoxShortStack1.geometry} material={material}

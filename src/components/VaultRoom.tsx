@@ -92,6 +92,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       () => new THREE.MeshBasicMaterial({map: vaultRoomTex}),
       [vaultRoomTex]
   )
+  const buySkipTex = useTexture('/ButtonTextures/BuyASkip.webp')
 
   useEffect(() => {
     switch (place) {
@@ -106,39 +107,39 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's2':
-        camera.position.set(-0.6, -0.792, -6.244)
+        camera.position.set(-0.2, -0.752, -6.544)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's3':
-        camera.position.set(-1.2, -0.792, -7.144)
+        camera.position.set(-0.8, -0.752, -7.494)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's4':
-        camera.position.set(-1.8, -0.792, -8.0)
+        camera.position.set(-1.3, -0.752, -8.35)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's5':
-        camera.position.set(0, 0.05, -5.444)
+        camera.position.set(0.3, 0.05, -5.614)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's6':
-        camera.position.set(-0.6, 0.05, -6.244)
+        camera.position.set(-0.2, 0.05, -6.604)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's7':
-        camera.position.set(-1.2, 0.05, -7.144)
+        camera.position.set(-0.8, 0.05, -7.48)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's8':
-        camera.position.set(-1.8, 0.05, -8.0)
+        camera.position.set(-1.4, 0.05, -8.3)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's9':
-        camera.position.set(-0.6, 0.85, -6.244)
+        camera.position.set(-0.2, 0.9, -6.544)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's10':
-        camera.position.set(-1.2, 0.85, -7.144)
+        camera.position.set(-0.8, 0.85, -7.444)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 'tut':
@@ -178,11 +179,24 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest2.status === 'started'
+            ['started', 'completed'].includes(appState.quest2.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
-        />
+        >
+          {appState.skipsAvailable &&
+              <mesh position={[-0.36, 0.12, 0.01]}
+                    onClick={() => {
+                        setAppState({
+                            buyingSkip: true,
+                            skipToBuy: 2
+                        })
+                    }}
+                    rotation={[0, 0, Math.PI * 0.05]}>
+                <planeGeometry args={[0.05, 0.05]} />
+                <meshBasicMaterial map={buySkipTex}/>
+              </mesh>}
+        </SafeDoor>
         <SafeDoor
             available={appState.quest3.status !== 'unavailable'}
           active={place === 's3'}
@@ -196,11 +210,24 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest3.status === 'started'
+            ['started', 'completed'].includes(appState.quest3.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
-        />
+        >
+          {appState.skipsAvailable &&
+              <mesh position={[-0.36, 0.12, 0.01]}
+                    onClick={() => {
+                      setAppState({
+                        buyingSkip: true,
+                        skipToBuy: 3
+                      })
+                    }}
+                    rotation={[0, 0, Math.PI * 0.05]}>
+                <planeGeometry args={[0.05, 0.05]} />
+                <meshBasicMaterial map={buySkipTex}/>
+              </mesh>}
+        </SafeDoor>
         <SafeDoor
             available={appState.quest4.status !== 'unavailable'}
           active={place === 's4'}
@@ -214,11 +241,24 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest4.status === 'started'
+            ['started', 'completed'].includes(appState.quest4.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
-        />
+        >
+          {appState.skipsAvailable &&
+              <mesh position={[-0.36, 0.12, 0.01]}
+                    onClick={() => {
+                      setAppState({
+                        buyingSkip: true,
+                        skipToBuy: 4
+                      })
+                    }}
+                    rotation={[0, 0, Math.PI * 0.05]}>
+                <planeGeometry args={[0.05, 0.05]} />
+                <meshBasicMaterial map={buySkipTex}/>
+              </mesh>}
+        </SafeDoor>
         <SafeDoor
             available={appState.quest5.status !== 'unavailable'}
           active={place === 's5'}
@@ -232,7 +272,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest5.status === 'started'
+            ['started', 'completed'].includes(appState.quest5.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
@@ -250,7 +290,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest6.status === 'started'
+            ['started', 'completed'].includes(appState.quest6.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
@@ -268,7 +308,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest7.status === 'started'
+            ['started', 'completed'].includes(appState.quest7.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
@@ -286,7 +326,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest8.status === 'started'
+            ['started', 'completed'].includes(appState.quest8.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
@@ -304,7 +344,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest9.status === 'started'
+            ['started', 'completed'].includes(appState.quest9.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }
@@ -322,7 +362,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             })
           }}
           rotation={
-            appState.quest10.status === 'started'
+            ['started', 'completed'].includes(appState.quest10.status)
               ? [0, Math.PI * 0.5, 0]
               : [0, -0.983, 0]
           }

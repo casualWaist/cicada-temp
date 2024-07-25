@@ -17,6 +17,9 @@ import { useAccount, useWriteContract } from 'wagmi'
 import BuyHint from "@/components/BuyHInt"
 import BuySQChance from "@/components/BuySQChance"
 import NavOverlay from "@/components/NavOverlay"
+import EnterQPass from "@/components/EnterQPass"
+import BuyLives from "@/components/BuyLives"
+import BuySkip from "@/components/BuySkip"
 // import { postData } from "@/actions/commonAction"
 
 export default function AppNav () {
@@ -74,9 +77,12 @@ function AppTrack () {
         </div>
       ) : null}
 
+      <NavOverlay />
       {appState.buyingHint && <BuyHint />}
       {appState.buyingSQ && <BuySQChance />}
-      <NavOverlay />
+      {appState.enteringPassword && <EnterQPass />}
+      {appState.buyingLives && <BuyLives />}
+      {appState.buyingSkip && <BuySkip />}
 
     </div>
   )

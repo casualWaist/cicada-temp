@@ -52,6 +52,13 @@ export function SafeDoor({available, active, vault, ...props}:
     const checkCode = () => {
         if (code === correctCode){
             setSubmitStatus('success')
+            setAppState({
+                [questString(vault)]: {
+                    ...appState[questString(vault)],
+                    status: 'started',
+                    subQ1: 'started'
+                }
+            })
         } else {
             setSubmitStatus('failure')
         }
@@ -221,6 +228,8 @@ export function SafeDoor({available, active, vault, ...props}:
               material={nodes.Lock.material}
               position={[-0.443, 0.061, 0.012]}
         />
+
+        { props.children }
 
     </group>
 }
