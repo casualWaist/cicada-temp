@@ -42,6 +42,9 @@ export type AppState = {
     buyingSkip: boolean
     skipToBuy: 2 | 3 | 4
     skipsAvailable: boolean
+    notify: boolean
+    noteText: string
+    noteStyle: 'alert' | 'info' | 'success' | 'fail'
     quest1: QuestStatus
     quest2: QuestStatus
     quest3: QuestStatus
@@ -82,6 +85,9 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         buyingSkip:false,
         skipToBuy: 2,
         skipsAvailable: true,
+        notify: false,
+        noteText: 'Success!',
+        noteStyle: 'success',
         quest1: {
             status: 'started',
             subQ1: 'started',

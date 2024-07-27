@@ -1,11 +1,12 @@
 import * as THREE from 'three'
-import React, {useContext, useEffect, useMemo, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
-import {useThree} from "@react-three/fiber"
+import {useFrame, useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {AppContext} from "@/components/AppState"
 import ConnectButtons from "@/components/ConnectButtons"
+import {use} from "i18next"
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -51,13 +52,37 @@ type GLTFResult = GLTF & {
 
 export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const { nodes } = useGLTF('/mapRoom.glb') as GLTFResult
-    const camera = useThree((state) => state.camera as PerspectiveCamera)
+    const [camera, view] = useThree(
+        (state) => [state.camera, state.viewport] as [PerspectiveCamera, { aspect: number }]
+    )
     const [appState, setAppState] = useContext(AppContext)
     const [vaultDoorHover, setVaultDoorHover] = useState(false)
     const [questDoorHover, setQuestDoorHover] = useState(false)
     const [place, setPlace] = useState('home' as 'home' | 'tok' | 'map')
     const roomTex = useTexture('/FinalTextureMapRoom.webp', (loader) => loader.flipY = false)
     const material = useMemo(() => new THREE.MeshBasicMaterial({map: roomTex}), [roomTex])
+    const portraitNoted = useRef(window.matchMedia('(orientation: portrait)').matches)
+
+    useEffect(() => {
+        console.log('view', view)
+    }, [view])
+
+    useEffect(() => {
+        if (portraitNoted.current) {
+            portraitNoted.current = false
+            setAppState({
+                notify: true,
+                noteText: 'Please rotate your device to landscape for a better experience',
+                noteStyle: 'alert'
+            })
+        } else if (view.aspect < 1.4) {
+            setAppState({
+                notify: true,
+                noteText: 'Please use a wider screen for a better experience',
+                noteStyle: 'alert'
+            })
+        }
+    }, [])
 
     useEffect(() => {
         switch (place) {
@@ -76,6 +101,9 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
                 camera.rotation.set(0, Math.PI * 0.125, 0)
         }
     }, [place, camera])
+
+    useFrame(() => {
+    })
 
     return (
         <group {...props} dispose={null}>

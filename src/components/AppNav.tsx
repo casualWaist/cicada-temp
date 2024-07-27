@@ -20,7 +20,14 @@ import NavOverlay from "@/components/NavOverlay"
 import EnterQPass from "@/components/EnterQPass"
 import BuyLives from "@/components/BuyLives"
 import BuySkip from "@/components/BuySkip"
+import {Amatic_SC} from "next/font/google"
+import Notifications from "@/components/Notifications"
+import gsap from "gsap"
+import {useGSAP} from "@gsap/react"
 // import { postData } from "@/actions/commonAction"
+
+const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
+gsap.registerPlugin(useGSAP)
 
 export default function AppNav () {
   return (
@@ -61,7 +68,7 @@ function AppTrack () {
     }
   }, [account.isConnected])
   return (
-    <div className='absolute w-full h-full'>
+    <div className={`absolute bg-black w-full h-full ${amatic.className}`}>
       <Canvas>
         {appState.section === 'landing' ? <Landing /> : <HouseModel />}
       </Canvas>
@@ -70,7 +77,8 @@ function AppTrack () {
         <div className='absolute top-0 w-full py-16 flex flex-col items-center justify-center'>
           <w3m-button label='Connect Wallet' />
           {appState.walletConnected && (
-            <button onClick={() => setAppState({ section: 'map' })}>
+            <button className={`p-5 text-2xl ${amatic.className}`}
+                    onClick={() => setAppState({ section: 'map' })}>
               Enter
             </button>
           )}
@@ -83,6 +91,7 @@ function AppTrack () {
       {appState.enteringPassword && <EnterQPass />}
       {appState.buyingLives && <BuyLives />}
       {appState.buyingSkip && <BuySkip />}
+      {appState.notify && <Notifications />}
 
     </div>
   )

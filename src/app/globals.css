@@ -3,17 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --gold-shine: linear-gradient(0.35turn, #292524 40%, #dab655 55%, #dab655 60%, #292524 80%);
+  --dark-fade: linear-gradient(0.35turn, #1c1917 10%, #292524 55%, #292524 60%, #1c1917 80%);
 }
 
 body {
@@ -30,4 +24,12 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.darkFade {
+  background: var(--dark-fade);
+}
+
+.goldShine {
+  background: var(--gold-shine);
 }

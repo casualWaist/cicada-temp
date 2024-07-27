@@ -58,6 +58,7 @@ export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
 
     useEffect(() => {
         if (!active) setOpen(false)
+        titleTexture.needsUpdate = true
     }, [active])
 
   return (

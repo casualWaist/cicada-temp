@@ -7,18 +7,29 @@ import {useEffect, useMemo, useRef, useState} from "react"
 import * as THREE from "three"
 import {CicadaShaderUniforms, CicadaSimShaderUniforms, CicadaShader, CicadaSimShader} from "@/components/LandingMaterials"
 import Countdown from "react-countdown"
+import moment from "moment-timezone"
 
 const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
 
 export default function Landing() {
+    const targetDateCT = moment.tz('2024-08-05 12:00', 'America/Chicago')
+    const userDateTZ = targetDateCT.clone().tz(moment.tz.guess())
 
     return <>
         <Scene />
         <Float>
             <Html position={[0, -2, 1]}
-                  center transform as="h1" className={amatic.className} scale={0.25}>
-                <div style={{transform: 'scale(4)', textAlign: 'left', color: '#9b3a3a'}}>
-                    <Countdown date={new Date(2024, 8, 1)} />
+                  center transform as="h1"
+                  className={`flex items-center justify-center ${amatic.className}`}
+                  scale={0.25}>
+                <div className="p-2 min-w-[500px]"
+                     style={{
+                         transform: 'scale(4)',
+                         textAlign: 'center',
+                         textShadow: '0 0 1px #000',
+                         color: '#801b1b'
+                }}>
+                    <Countdown date={userDateTZ.toDate()} />
                 </div>
             </Html>
         </Float>
@@ -35,11 +46,16 @@ function Scene() {
     const points = useRef<THREE.Points>(null!)
     const texWorld = useTexture('/cicada-3301.png')
 
-    const tGeo = useRef(new THREE.PlaneGeometry(view.width, view.width * 0.5625, 128, 128))
+    const tGeo = useMemo(() => new THREE.PlaneGeometry(
+        view.width,
+        view.width * 0.5625,
+        128,
+        128),
+        [view])
 
     const { size, texture } = useMemo(() => {
 
-        const tMesh = new THREE.Mesh(tGeo.current)
+        const tMesh = new THREE.Mesh(tGeo)
         const size = Math.ceil(Math.sqrt(tMesh.geometry.attributes.position.array.length / 3))
         const data = new Float32Array(size * size * 4)
         for (let i = 0; i < size * size; i++) {
@@ -64,7 +80,7 @@ function Scene() {
             size: size,
             texture: new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.FloatType)
         }
-    }, [])
+    }, [tGeo])
 
     const target = useFBO(size, size, {
         minFilter: THREE.NearestFilter,
@@ -99,7 +115,7 @@ function Scene() {
         )}
         <group position={[0, 0.5, 0]} rotation={[Math.PI, 0, 0]}>
             <points ref={points} >
-                <bufferGeometry attach="geometry" {...tGeo.current} />
+                <bufferGeometry attach="geometry" {...tGeo} />
                 <CicadaShader ref={shader}
                               uPositions={texture}
                               depthWrite={false}

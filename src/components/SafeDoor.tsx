@@ -57,10 +57,18 @@ export function SafeDoor({available, active, vault, ...props}:
                     ...appState[questString(vault)],
                     status: 'started',
                     subQ1: 'started'
-                }
+                },
+                notify: true,
+                noteText: `Code Accepted!`,
+                noteStyle: 'success'
             })
         } else {
             setSubmitStatus('failure')
+            setAppState({
+                notify: true,
+                noteText: `Code Incorrect!`,
+                noteStyle: 'fail'
+            })
         }
     }
 
