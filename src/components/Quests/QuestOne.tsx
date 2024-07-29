@@ -26,7 +26,7 @@ export default function QuestOne({active}:
                       if (appState.quest1.subQ2 !== 'unavailable')
                         setActivePage(2)
                   }}
-                  position={[-0.115, 0.004, -0.002]}>
+                  position={[-0.117, 0.004, -0.002]}>
             <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
                 <planeGeometry args={[0.2, 0.2]}/>
                 <meshBasicMaterial map={subQ1Tex}/>
@@ -40,7 +40,7 @@ export default function QuestOne({active}:
                           setActivePage(3)
                       }
                   }}
-                  position={[-0.108, 0.003, 0.001]}>
+                  position={[-0.113, 0.003, 0.001]}>
             {activePage === 2 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
                 <planeGeometry args={[0.2, 0.2]}/>
                 <meshBasicMaterial map={subQ2Tex}/>
@@ -50,7 +50,7 @@ export default function QuestOne({active}:
                   quest={1}
                   activePage={activePage}
                   turnThePage={() => setActivePage(1)}
-                  position={[-0.118, 0.0025, 0]}>
+                  position={[-0.119, 0.0025, 0]}>
             {activePage === 3 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
                 <planeGeometry args={[0.2, 0.2]}/>
                 <meshBasicMaterial map={subQ3Tex}/>

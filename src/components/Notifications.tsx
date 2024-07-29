@@ -20,7 +20,7 @@ export default function Notifications() {
                 .to(container.current,
                     {y: '-100%', duration: 1, ease: 'power2.in'}
                 )
-                .call(() => setAppState({...appState, notify: false}));
+                .call(() => setAppState({notify: false}));
         },
         {dependencies: [appState.notify], scope: container})
 

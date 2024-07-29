@@ -10,6 +10,8 @@ type GLTFResult = GLTF & {
   nodes: {
     FolderBack: THREE.Mesh
     FolderFront: THREE.Mesh
+      OpenLabel: THREE.Mesh
+      OpenTrigger: THREE.Mesh
     Page: THREE.Mesh
   }
   materials: {}
@@ -45,59 +47,61 @@ export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
     }
     return [position, rotation]
   }, [active, props.position, camera.position])
-    const titleTexture = useTexture(
-        '/TextTexture.webp',
-        (loader) => {
-            loader.wrapS = loader.wrapT = THREE.RepeatWrapping
-            loader.repeat.set(0.2, 0.2)
-            const offY = quest > 5 ? 0.2 : 0
-            const offX = 0.2 * (quest - 1 % 5)
-            loader.offset.set(offX, offY)
-        }
+    const folderTex = useTexture(
+        '/paperNormal512.webp',
+        (tex) => {tex.wrapT = tex.wrapS = THREE.RepeatWrapping}
+    )
+    const material = useMemo(
+        () => new THREE.MeshStandardMaterial({
+            normalMap: folderTex,
+            roughness: 0.5,
+            color: "#c4b49a",
+            side: THREE.DoubleSide
+        }),
+        [folderTex]
     )
 
     useEffect(() => {
         if (!active) setOpen(false)
-        titleTexture.needsUpdate = true
     }, [active])
 
   return (
     <group {...props} position={localPosition} rotation={localRotation} dispose={null}>
-      <mesh geometry={nodes.FolderBack.geometry}
-            onClick={(event) => {
-                if (active){
-                    event.stopPropagation()
-                    setOpen(!open)
-                }
-            }}
-      >
-        <mesh geometry={nodes.FolderFront.geometry}
-              position={[-0.115, 0.005, 0]}
-              rotation={open ? [0, 0, Math.PI] : [0, 0, 0]}
-              onClick={(event) => {
-                activateFunc()
-                event.stopPropagation()
-              }}
+        <mesh geometry={nodes.FolderBack.geometry}
+              material={material}
         >
-            <mesh position={[0.115, 0.01, 0]}
-                  rotation={[-Math.PI * 0.5, 0, 0]}
+            <mesh geometry={nodes.FolderFront.geometry}
+                  material={material}
+                  position={open ? [-0.1145, 0.005, 0] : [-0.115, 0.005, 0]}
+                  rotation={open ? [0, 0, Math.PI] : [0, 0, 0]}
+                  onClick={(event) => {
+                      activateFunc()
+                      event.stopPropagation()
+                  }}
             >
-                <planeGeometry args={[0.05, 0.05]}/>
-                <meshBasicMaterial map={titleTexture} />
+                <FolderLabel quest={quest} normalMap={folderTex} />
             </mesh>
-            <meshBasicMaterial color="yellow" side={THREE.DoubleSide}/>
+
+            <mesh geometry={nodes.OpenTrigger.geometry}
+                  onClick={(event) => {
+                      if (active) {
+                          event.stopPropagation()
+                          setOpen(!open)
+                      }
+                  }}
+                  position={[-0.115, 0.002, 0]}>
+                <meshBasicMaterial transparent opacity={0} />
+            </mesh>
+
+            {props.children}
         </mesh>
 
-        { props.children }
-        <meshBasicMaterial color="yellow" side={THREE.BackSide} />
-      </mesh>
-
-      {active && <mesh position={[0, -0.1, 0]}
-                       rotation={[-Math.PI * 0.5, 0, 0]}
-                       onClick={(event) => {
-                         event.stopPropagation()
-                         closeFunc()
-                       }}
+        {active && <mesh position={[0, -0.1, 0]}
+                         rotation={[-Math.PI * 0.5, 0, 0]}
+                         onClick={(event) => {
+                             event.stopPropagation()
+                             closeFunc()
+                         }}
       >
         <planeGeometry args={[1, 1]}/>
         <meshBasicMaterial transparent opacity={0}/>
@@ -119,6 +123,7 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
                              JSX.IntrinsicElements['mesh'] & FilePageProps) {
   const { nodes} = useGLTF('/fileFolder.glb') as GLTFResult
   const [appState, setAppState] = useContext(AppContext)
+    const paperTex = useTexture('/paperNormal512.webp')
 
   return <mesh geometry={nodes.Page.geometry}
                onClick={(event) => {
@@ -129,7 +134,11 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
                {...props}
   >
       { props.children }
-    <meshBasicMaterial color={page > activePage ? "grey" : "white"} side={THREE.DoubleSide} />
+    <meshStandardMaterial color={page > activePage ? "grey" : "white"}
+                            normalMap={paperTex}
+                          normalScale={new THREE.Vector2(0.25, 0.25)}
+                          roughness={0.5}
+                          side={THREE.DoubleSide} />
       {page === activePage && <>
           <LivesCounter lives={appState.userLives}/>
           {appState.userLives === 0 && <BuyLivesButton/>}
@@ -143,7 +152,18 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
   </mesh>
 }
 
-function PasswordButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
+function FolderLabel({quest, normalMap}: {quest: 1|2|3|4|5|6|7|8|9|10, normalMap: THREE.Texture}) {
+    const titleTexture = useTexture(`/ButtonTextures/Quest${quest}Label.webp`)
+
+    return <mesh position={[0.115, 0.01, -0.05]}
+                 rotation={[-Math.PI * 0.5, 0, 0]}
+    >
+        <planeGeometry args={[0.05, 0.0375]}/>
+        <meshBasicMaterial map={titleTexture} transparent/>
+    </mesh>
+}
+
+function PasswordButton({quest, page}: { quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, page: 1 | 2 | 3 }) {
     const [appState, setAppState] = useContext(AppContext)
     const buttonTex = useTexture('/ButtonTextures/EnterPassword.webp')
 
@@ -166,62 +186,12 @@ function PasswordButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3
 }
 
 function LivesCounter({lives}: {lives: 10|9|8|7|6|5|4|3|2|1|0}) {
-    const lives10Tex = useTexture('/ButtonTextures/10Lives.webp')
-    const lives9Tex = useTexture('/ButtonTextures/9Lives.webp')
-    const lives8Tex = useTexture('/ButtonTextures/8Lives.webp')
-    const lives7Tex = useTexture('/ButtonTextures/7Lives.webp')
-    const lives6Tex = useTexture('/ButtonTextures/6Lives.webp')
-    const lives5Tex = useTexture('/ButtonTextures/5Lives.webp')
-    const lives4Tex = useTexture('/ButtonTextures/4Lives.webp')
-    const lives3Tex = useTexture('/ButtonTextures/3Lives.webp')
-    const lives2Tex = useTexture('/ButtonTextures/2Lives.webp')
-    const lives1Tex = useTexture('/ButtonTextures/1Lives.webp')
-    const lives0Tex = useTexture('/ButtonTextures/0Lives.webp')
-
-    const [tex, setTex] = useState(lives10Tex)
-
-    useEffect(() => {
-        switch (lives){
-            case 10:
-                setTex(lives10Tex)
-                break
-            case 9:
-                setTex(lives9Tex)
-                break
-            case 8:
-                setTex(lives8Tex)
-                break
-            case 7:
-                setTex(lives7Tex)
-                break
-            case 6:
-                setTex(lives6Tex)
-                break
-            case 5:
-                setTex(lives5Tex)
-                break
-            case 4:
-                setTex(lives4Tex)
-                break
-            case 3:
-                setTex(lives3Tex)
-                break
-            case 2:
-                setTex(lives2Tex)
-                break
-            case 1:
-                setTex(lives1Tex)
-                break
-            case 0:
-                setTex(lives0Tex)
-                break
-        }
-    }, [lives])
+    const livesTex = useTexture(`/ButtonTextures/${lives}Lives.webp`)
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
                  position={[0.05, 0.00005, 0.085]}>
         <planeGeometry args={[0.03, 0.03]}/>
-        <meshBasicMaterial map={tex} color={"#fff"}/>
+        <meshBasicMaterial map={livesTex} color={"#fff"}/>
     </mesh>
 }
 
@@ -284,8 +254,8 @@ function HintButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
                      })
                  }}
     >
-        <planeGeometry args={[0.05, 0.05]}/>
-        <meshBasicMaterial map={titleTexture} color={"#afff9e"}/>
+        <planeGeometry args={[0.05, 0.0375]}/>
+        <meshBasicMaterial map={titleTexture} transparent />
     </mesh>
 }
 

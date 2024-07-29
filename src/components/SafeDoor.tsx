@@ -4,8 +4,8 @@ Command: npx gltfjsx@6.4.1 ./public/safeDoor.glb -t
 */
 
 import * as THREE from 'three'
-import React, {useContext, useEffect, useRef, useState} from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
+import {useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {useFrame} from "@react-three/fiber"
 import {AppContext} from "@/components/AppState"
@@ -13,6 +13,7 @@ import {questString} from "@/components/FileFolder"
 
 type GLTFResult = GLTF & {
     nodes: {
+        Body: THREE.Mesh
         Door_1: THREE.Mesh
         Door_2: THREE.Mesh
         Door_3: THREE.Mesh
@@ -42,12 +43,57 @@ type SafeProps = {
 
 export function SafeDoor({available, active, vault, ...props}:
                              SafeProps & JSX.IntrinsicElements['group']) {
-    const { nodes, materials } = useGLTF('/safeDoor.glb') as GLTFResult
+    const { nodes, materials } = useGLTF('/safeFull.glb') as GLTFResult
     const [appState, setAppState] = useContext(AppContext)
     const [correctCode, setCorrectCode] = useState('121212')
     const [code, setCode] = useState('')
     const [submitStatus, setSubmitStatus] = useState(
         'standby' as 'standby' | 'short' | 'success' | 'failure'
+    )
+    const keypadTex = useTexture(
+        '/KeypadTexture.webp',
+        (loader) => {
+            loader.flipY = false
+        }
+    )
+    const keyPadMaterial = useMemo(
+        () => new THREE.MeshStandardMaterial({
+            map: keypadTex,
+            emissive: "white",
+            emissiveIntensity: 0.1,
+            emissiveMap: keypadTex,
+        }),
+        [keypadTex]
+    )
+    const keypadMetalTex = useTexture(
+        '/SafeBaseColor.webp'
+    )
+    const keypadMetalRoughness = useTexture(
+        '/SafeRoughness.webp'
+    )
+    const metalMaterial = useMemo(
+        () => new THREE.MeshStandardMaterial({
+            map: keypadMetalTex,
+            roughnessMap: keypadMetalRoughness,
+            metalness: 0.5,
+        }),
+        [keypadMetalTex]
+    )
+    const safeNormal = useTexture('/SafeNormal.webp',
+        (loader) => {
+            loader.flipY = false
+            loader.wrapS = loader.wrapT = THREE.RepeatWrapping
+        })
+    const safeMaterial = useMemo(
+        () => new THREE.MeshStandardMaterial({
+            normalMap: safeNormal,
+            roughness: 0.5,
+            normalScale: new THREE.Vector2(2, 2),
+            metalness: 0.5,
+            color: "#e8e8e8",
+            side: THREE.DoubleSide
+        }),
+        [safeNormal]
     )
     const checkCode = () => {
         if (code === correctCode){
@@ -81,172 +127,178 @@ export function SafeDoor({available, active, vault, ...props}:
     }, [code])
 
     return <group {...props} dispose={null}>
-        {active && available ? <CodeScreen status={submitStatus}
-                              screenMesh={nodes.Screen}
-                              code={code}
-            />
-            : <mesh geometry={nodes.Screen.geometry}
-                    position={[-0.293, 0.116, 0.005]}
-            >
-                <meshBasicMaterial color={
-                    appState[questString(vault)].status === 'unavailable' ? 'black' : "white"
-                }/>
-            </mesh>
-        }
+        <mesh geometry={nodes.Body.geometry} material={safeMaterial}>
+            <group position={[0.293, 0, 0.295]}>
+                {active && available ?
+                    <CodeScreen status={submitStatus}
+                                material={keyPadMaterial}
+                                screenMesh={nodes.Screen}
+                                code={code}
+                    />
+                    : <mesh geometry={nodes.Screen.geometry}
+                            position={[-0.293, 0.116, 0.005]}
+                    >
+                        <meshBasicMaterial color={
+                            appState[questString(vault)].status === 'unavailable' ? 'black' : "white"
+                        }/>
+                    </mesh>
+                }
 
-        <mesh geometry={nodes.Door_1.geometry} material={nodes.Door_1.material}/>
-        <mesh geometry={nodes.Door_2.geometry} material={nodes.Door_2.material}/>
-        <mesh geometry={nodes.Door_3.geometry} material={nodes.Door_3.material}/>
+                <mesh geometry={nodes.Door_1.geometry} material={safeMaterial}/>
+                <mesh geometry={nodes.Door_2.geometry} material={metalMaterial}/>
+                <mesh geometry={nodes.Door_3.geometry} material={metalMaterial}/>
 
-        <mesh geometry={nodes.ButtonOne.geometry}
-              material={nodes.ButtonOne.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '1')
-                  }
-              }}
-              position={[-0.321, 0.086, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonOne.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '1')
+                          }
+                      }}
+                      position={[-0.321, 0.086, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonTwo.geometry}
-              material={nodes.ButtonTwo.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '2')
-                  }
-              }}
-              position={[-0.293, 0.086, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonTwo.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '2')
+                          }
+                      }}
+                      position={[-0.293, 0.086, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonThree.geometry}
-              material={nodes.ButtonThree.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '3')
-                  }
-              }}
-              position={[-0.265, 0.086, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonThree.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '3')
+                          }
+                      }}
+                      position={[-0.265, 0.086, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonFour.geometry}
-              material={nodes.ButtonFour.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '4')
-                  }
-              }}
-              position={[-0.321, 0.058, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonFour.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '4')
+                          }
+                      }}
+                      position={[-0.321, 0.058, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonFive.geometry}
-              material={nodes.ButtonFive.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '5')
-                  }
-              }}
-              position={[-0.293, 0.058, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonFive.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '5')
+                          }
+                      }}
+                      position={[-0.293, 0.058, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonSix.geometry}
-              material={nodes.ButtonSix.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '6')
-                  }
-              }}
-              position={[-0.265, 0.058, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonSix.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '6')
+                          }
+                      }}
+                      position={[-0.265, 0.058, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonSeven.geometry}
-              material={nodes.ButtonSeven.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '7')
-                  }
-              }}
-              position={[-0.321, 0.03, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonSeven.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '7')
+                          }
+                      }}
+                      position={[-0.321, 0.03, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonEight.geometry}
-              material={nodes.ButtonEight.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '8')
-                  }
-              }}
-              position={[-0.293, 0.03, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonEight.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '8')
+                          }
+                      }}
+                      position={[-0.293, 0.03, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonNine.geometry}
-              material={nodes.ButtonNine.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '9')
-                  }
-              }}
-              position={[-0.265, 0.03, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonNine.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '9')
+                          }
+                      }}
+                      position={[-0.265, 0.03, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonZero.geometry}
-              material={nodes.ButtonZero.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length < 6) {
-                      setCode(code + '0')
-                  }
-              }}
-              position={[-0.293, 0.002, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonZero.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length < 6) {
+                              setCode(code + '0')
+                          }
+                      }}
+                      position={[-0.293, 0.002, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonStar.geometry}
-              material={nodes.ButtonStar.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (code.length > 0) {
-                      setCode(code.slice(0, -1))
-                  }
-              }}
-              position={[-0.321, 0.002, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonStar.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (code.length > 0) {
+                              setCode(code.slice(0, -1))
+                          }
+                      }}
+                      position={[-0.321, 0.002, 0.008]}
+                />
 
-        <mesh geometry={nodes.ButtonHash.geometry}
-              material={nodes.ButtonHash.material}
-              onClick={(event) => {
-                  event.stopPropagation()
-                  if (available && code.length === 6) {
-                      checkCode()
-                  } else {
-                      setSubmitStatus('short')
-                  }
-              }}
-              position={[-0.265, 0.002, 0.008]}
-        />
+                <mesh geometry={nodes.ButtonHash.geometry}
+                      material={keyPadMaterial}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (available && code.length === 6) {
+                              checkCode()
+                          } else {
+                              setSubmitStatus('short')
+                          }
+                      }}
+                      position={[-0.265, 0.002, 0.008]}
+                />
 
-        <mesh geometry={nodes.Lock.geometry}
-              material={nodes.Lock.material}
-              position={[-0.443, 0.061, 0.012]}
-        />
+                <mesh geometry={nodes.Lock.geometry}
+                      material={metalMaterial}
+                      position={[-0.443, 0.061, 0.012]}
+                />
 
-        { props.children }
-
+                { props.children }
+            </group>
+        </mesh>
     </group>
 }
 
-useGLTF.preload('/safeDoor.glb')
+useGLTF.preload('/safeFull.glb')
 
-function CodeScreen({screenMesh, code, status}:
+function CodeScreen({screenMesh, material, code, status}:
                         {
                             screenMesh: THREE.Mesh,
+                            material: THREE.MeshStandardMaterial,
                             code: string,
                             status: 'standby' | 'short' | 'success' | 'failure',
                         }) {
@@ -255,7 +307,7 @@ function CodeScreen({screenMesh, code, status}:
 
     useEffect(() => {
         const ctx = offscreenCanvas.current.getContext('2d')!
-        let fillColor = 'white'
+        let fillColor = '#919191'
         switch (status) {
             case 'short':
                 fillColor = 'yellow'
@@ -278,12 +330,15 @@ function CodeScreen({screenMesh, code, status}:
 
     return <>
         <mesh geometry={screenMesh.geometry}
-              material={screenMesh.material}
+              material={material}
               position={[-0.293, 0.116, 0.005]}
         />
         <mesh position={[-0.293, 0.116, 0.006]}>
-        <planeGeometry args={[0.09, 0.025]}/>
-            <meshBasicMaterial map={screenTexture.current} transparent opacity={0.5} />
+            <planeGeometry args={[0.09, 0.025]}/>
+            <meshBasicMaterial map={screenTexture.current}
+                               transparent
+                               blending={THREE.AdditiveBlending}
+                               opacity={0.25} />
         </mesh>
     </>
 

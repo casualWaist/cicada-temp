@@ -84,7 +84,7 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         sideQuestWins: [],
         buyingSkip:false,
         skipToBuy: 2,
-        skipsAvailable: true,
+        skipsAvailable: false,
         notify: false,
         noteText: 'Success!',
         noteStyle: 'success',
