@@ -37,7 +37,10 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const fireMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: fireTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: fireTex,
+            color: '#888888'
+        }),
         [fireTex]
     )
     const questTex = useTexture(
@@ -45,7 +48,10 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const questMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: questTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: questTex,
+            color: '#888888'
+        }),
         [questTex]
     )
     const vaultTex = useTexture(
@@ -53,7 +59,10 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const vaultMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: vaultTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: vaultTex,
+            color: '#888888'
+        }),
         [vaultTex]
     )
     const portraitNoted = useRef(window.matchMedia('(orientation: portrait)').matches)

@@ -39,7 +39,10 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const deskMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: deskTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: deskTex,
+            color: 'grey'
+        }),
         [deskTex]
     )
     const sqTex = useTexture(
@@ -47,7 +50,10 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const sqMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: sqTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: sqTex,
+            color: 'grey'
+        }),
         [sqTex]
     )
     const wallTex = useTexture(
@@ -55,7 +61,10 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
         (loader) => loader.flipY = false
     )
     const wallMaterial = useMemo(
-        () => new THREE.MeshBasicMaterial({map: wallTex}),
+        () => new THREE.MeshBasicMaterial({
+            map: wallTex,
+            color: 'grey'
+        }),
         [wallTex]
     )
     const [place, setPlace] =

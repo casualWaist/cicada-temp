@@ -40,7 +40,10 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       (loader) => loader.flipY = false
   )
   const wallsMaterial = useMemo(
-      () => new THREE.MeshBasicMaterial({map: vaultWallsTex}),
+      () => new THREE.MeshBasicMaterial({
+          map: vaultWallsTex,
+          color: 'grey'
+      }),
       [vaultWallsTex]
   )
   const vaultFCTex = useTexture(
@@ -48,7 +51,10 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       (loader) => loader.flipY = false
   )
   const fcMaterial = useMemo(
-      () => new THREE.MeshBasicMaterial({map: vaultFCTex}),
+      () => new THREE.MeshBasicMaterial({
+          map: vaultFCTex,
+          color: 'grey'
+      }),
       [vaultWallsTex]
   )
   const tutorialTex = useTexture(
@@ -56,7 +62,10 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       (loader) => loader.flipY = false
   )
   const tutorialMaterial = useMemo(
-      () => new THREE.MeshBasicMaterial({map: tutorialTex}),
+      () => new THREE.MeshBasicMaterial({
+          map: tutorialTex,
+          color: 'grey'
+      }),
       [vaultWallsTex]
   )
   const buySkipTex = useTexture('/ButtonTextures/BuyASkip.webp')
