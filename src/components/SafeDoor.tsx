@@ -47,6 +47,7 @@ export function SafeDoor({available, active, vault, ...props}:
     const [appState, setAppState] = useContext(AppContext)
     const [correctCode, setCorrectCode] = useState('121212')
     const [code, setCode] = useState('')
+    const qString = questString(vault)
     const [submitStatus, setSubmitStatus] = useState(
         'standby' as 'standby' | 'short' | 'success' | 'failure'
     )
@@ -90,7 +91,9 @@ export function SafeDoor({available, active, vault, ...props}:
             roughness: 0.5,
             normalScale: new THREE.Vector2(2, 2),
             metalness: 0.5,
-            color: "#e8e8e8",
+            emissive: '#444',
+            emissiveIntensity: 0.1,
+            color: "#656565",
             side: THREE.DoubleSide
         }),
         [safeNormal]
@@ -99,13 +102,13 @@ export function SafeDoor({available, active, vault, ...props}:
         if (code === correctCode){
             setSubmitStatus('success')
             setAppState({
-                [questString(vault)]: {
-                    ...appState[questString(vault)],
+                [qString]: {
+                    ...appState[qString],
                     status: 'started',
                     subQ1: 'started'
                 },
                 notify: true,
-                noteText: `Code Accepted!`,
+                noteText: `Code Accepted!\nCheck the Desk for the next Quest.`,
                 noteStyle: 'success'
             })
         } else {
@@ -118,6 +121,7 @@ export function SafeDoor({available, active, vault, ...props}:
         }
     }
 
+
     useEffect(() => {
         /* fetch code string for specific user and vault number */
     }, [vault])
@@ -128,7 +132,11 @@ export function SafeDoor({available, active, vault, ...props}:
 
     return <group {...props} dispose={null}>
         <mesh geometry={nodes.Body.geometry} material={safeMaterial}>
-            <group position={[0.293, 0, 0.295]}>
+            <group position={[0.293, 0, 0.295]}
+                   rotation={['started', 'completed'].includes(appState[qString].status)
+                       ? [0, Math.PI * 0.8, 0]
+                       : [0, 0, 0]
+            }>
                 {active && available ?
                     <CodeScreen status={submitStatus}
                                 material={keyPadMaterial}
@@ -139,7 +147,7 @@ export function SafeDoor({available, active, vault, ...props}:
                             position={[-0.293, 0.116, 0.005]}
                     >
                         <meshBasicMaterial color={
-                            appState[questString(vault)].status === 'unavailable' ? 'black' : "white"
+                            appState[qString].status === 'unavailable' ? 'black' : "white"
                         }/>
                     </mesh>
                 }

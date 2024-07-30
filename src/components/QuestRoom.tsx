@@ -34,6 +34,7 @@ type GLTFResult = GLTF & {
 
 export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const { nodes } = useGLTF('/questRoomFinal.glb') as GLTFResult
+    const [appState, setAppState] = useContext(AppContext)
     const deskTex = useTexture(
         '/QuestRoomDeskArea.webp',
         (loader) => loader.flipY = false
@@ -41,7 +42,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const deskMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: deskTex,
-            color: 'grey'
+            color: appState.isMobile ? '#aaa' : 'grey'
         }),
         [deskTex]
     )
@@ -52,7 +53,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const sqMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: sqTex,
-            color: 'grey'
+            color: appState.isMobile ? '#aaa' : 'grey'
         }),
         [sqTex]
     )
@@ -63,7 +64,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const wallMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: wallTex,
-            color: 'grey'
+            color: appState.isMobile ? '#aaa' : 'grey'
         }),
         [wallTex]
     )
@@ -92,7 +93,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
             | 'q9'
             | 'q10'
     )
-    const [appState, setAppState] = useContext(AppContext)
+    const [q1Open, setQ1Open] = useState(false)
+    const [q2Open, setQ2Open] = useState(false)
+    const [q3Open, setQ3Open] = useState(false)
+    const [q4Open, setQ4Open] = useState(false)
+    const [q5Open, setQ5Open] = useState(false)
+    const [q6Open, setQ6Open] = useState(false)
+    const [q7Open, setQ7Open] = useState(false)
+    const [q8Open, setQ8Open] = useState(false)
+    const [q9Open, setQ9Open] = useState(false)
+    const [q10Open, setQ10Open] = useState(false)
     const camera = useThree(
         (state) => state.camera as PerspectiveCamera
     )
@@ -156,11 +166,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             setQuest('q1')
                         }}
                         quest={1}
-                        closeFunc={() => setQuest('none')}
+                        open={q1Open}
+                        openFunc={() => setQ1Open(true)}
+                        closeFunc={() => {
+                            setQuest('none')
+                            setQ1Open(false)
+                        }}
                         position={[0.588, -0.113, -0.102]}
                         rotation={[0, -0.831, 0]}
             >
-                <QuestOne active={quest === 'q1'}/>
+                <QuestOne active={quest === 'q1'} open={q1Open}/>
             </FileFolder>
 
             {['started', 'completed'].includes(appState.quest2.status) &&
@@ -169,11 +184,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q2')
                             }}
                             quest={2}
-                            closeFunc={() => setQuest('none')}
+                            open={q2Open}
+                            openFunc={() => setQ2Open(true)}
+                            closeFunc={() => {
+                                setQ2Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.679, -0.109, 0.011]}
                             rotation={[0, -0.888, -0.036]}
                 >
-                    <QuestTwo active={quest === 'q2'}/>
+                    <QuestTwo active={quest === 'q2'} open={q2Open}/>
                 </FileFolder>
             }
 
@@ -183,11 +203,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q3')
                             }}
                             quest={3}
-                            closeFunc={() => setQuest('none')}
+                            open={q3Open}
+                            openFunc={() => setQ3Open(true)}
+                            closeFunc={() => {
+                                setQ3Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.756, -0.109, 0.123]}
                             rotation={[0, -0.909, -0.036]}
                 >
-                    <QuestThree active={quest === 'q3'}/>
+                    <QuestThree active={quest === 'q3'} open={q3Open}/>
                 </FileFolder>
             }
 
@@ -197,11 +222,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q4')
                             }}
                             quest={4}
-                            closeFunc={() => setQuest('none')}
+                            open={q4Open}
+                            openFunc={() => setQ4Open(true)}
+                            closeFunc={() => {
+                                setQ4Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.793, -0.109, 0.221]}
                             rotation={[0, -1.017, -0.036]}
                 >
-                    <QuestFour active={quest === 'q4'}/>
+                    <QuestFour active={quest === 'q4'} open={q4Open}/>
                 </FileFolder>
             }
 
@@ -211,11 +241,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q5')
                             }}
                             quest={5}
-                            closeFunc={() => setQuest('none')}
+                            open={q5Open}
+                            openFunc={() => setQ5Open(true)}
+                            closeFunc={() => {
+                                setQ5Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.88, -0.108, 0.294]}
                             rotation={[0, -0.89, -0.042]}
                 >
-                    <QuestFive active={quest === 'q5'}/>
+                    <QuestFive active={quest === 'q5'} open={q5Open}/>
                 </FileFolder>
             }
 
@@ -225,11 +260,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q6')
                             }}
                             quest={6}
-                            closeFunc={() => setQuest('none')}
+                            open={q6Open}
+                            openFunc={() => setQ6Open(true)}
+                            closeFunc={() => {
+                                setQ6Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.791, -0.104, -0.195]}
                             rotation={[-0.045, -0.888, -0.077]}
                 >
-                    <QuestSix active={quest === 'q6'}/>
+                    <QuestSix active={quest === 'q6'} open={q6Open}/>
                 </FileFolder>
             }
 
@@ -239,11 +279,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q7')
                             }}
                             quest={7}
-                            closeFunc={() => setQuest('none')}
+                            open={q7Open}
+                            openFunc={() => setQ7Open(true)}
+                            closeFunc={() => {
+                                setQ7Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.843, -0.102, -0.098]}
                             rotation={[-0.079, -1.036, -0.11]}
                 >
-                    <QuestSeven active={quest === 'q7'}/>
+                    <QuestSeven active={quest === 'q7'} open={q7Open}/>
                 </FileFolder>
             }
 
@@ -253,11 +298,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q8')
                             }}
                             quest={8}
-                            closeFunc={() => setQuest('none')}
+                            open={q8Open}
+                            openFunc={() => setQ8Open(true)}
+                            closeFunc={() => {
+                                setQ8Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.918, -0.102, -0.027]}
                             rotation={[-0.079, -1.036, -0.11]}
                 >
-                    <QuestEight active={quest === 'q8'}/>
+                    <QuestEight active={quest === 'q8'} open={q8Open}/>
                 </FileFolder>
             }
 
@@ -267,11 +317,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q9')
                             }}
                             quest={9}
-                            closeFunc={() => setQuest('none')}
+                            open={q9Open}
+                            openFunc={() => setQ9Open(true)}
+                            closeFunc={() => {
+                                setQ9Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.983, -0.1, 0.077]}
                             rotation={[-0.036, -0.856, -0.069]}
                 >
-                    <QuestNine active={quest === 'q9'}/>
+                    <QuestNine active={quest === 'q9'} open={q9Open}/>
                 </FileFolder>
             }
 
@@ -281,34 +336,45 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQuest('q10')
                             }}
                             quest={10}
-                            closeFunc={() => setQuest('none')}
+                            open={q10Open}
+                            openFunc={() => setQ10Open(true)}
+                            closeFunc={() => {
+                                setQ10Open(false)
+                                setQuest('none')
+                            }}
                             position={[0.746, -0.082, 0.022]}
                             rotation={[0.154, -0.856, 0.075]}
                 >
-                    <QuestTen active={quest === 'q10'}/>
+                    <QuestTen active={quest === 'q10'} open={q10Open}/>
                 </FileFolder>
             }
 
             <mesh geometry={nodes.SideQuestTutorial.geometry}
                   position={[-1.422, 0.26, -3.976]}
                   material={sqMaterial}
+                  onPointerEnter={() => {
+                      document.body.style.cursor = 'pointer'
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       event.stopPropagation()
-                      setPlace('sqTut')
                       setAppState({
-                          subSection: 'feature',
-                          moveFunction: () => {
-                              setAppState({
-                                  subSection: 'rev'
-                              })
-                              setPlace('rev')
-                          }
+                          tutorialView: true,
+                          tutorial: 'sideQuest'
                       })
                   }}
                   rotation={[Math.PI / 2, 0, 0]}/>
             <mesh geometry={nodes.SidequestsMap.geometry}
                   position={[-2.888, 0.305, -2.544]}
                   material={sqMaterial}
+                  onPointerEnter={() => {
+                      document.body.style.cursor = 'pointer'
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       event.stopPropagation()
                       setPlace('sqMap')
@@ -327,21 +393,27 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
             <mesh position={[3.011, 0.517, -0.444]}
                   geometry={nodes.QuestsTutorial.geometry}
                   material={wallMaterial}
+                  onPointerEnter={() => {
+                      document.body.style.cursor = 'pointer'
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       event.stopPropagation()
-                      setPlace('tut')
                       setAppState({
-                          subSection: 'feature',
-                          moveFunction: () => {
-                              setAppState({
-                                  subSection: 'none'
-                              })
-                              setPlace('home')
-                          }
+                          tutorialView: true,
+                          tutorial: 'quest'
                       })
                   }}/>
 
             <mesh geometry={nodes.DeskTop.geometry}
+                  onPointerEnter={() => {
+                      document.body.style.cursor = 'pointer'
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       event.stopPropagation()
                       setPlace('desk')
@@ -395,6 +467,12 @@ function SideQuestSpinner() {
     return <>
         <Compass position={[-2.838, 0.725, -3.074]}
                  open={chanceStatus === 'spinning'}
+                 onPointerEnter={() => {
+                     document.body.style.cursor = 'pointer'
+                 }}
+                 onPointerLeave={() => {
+                     document.body.style.cursor = 'default'
+                 }}
                  onClick={(event) => {
                       event.stopPropagation()
                       if (chanceStatus === 'standby') {
@@ -413,6 +491,12 @@ function SideQuestSpinner() {
         />
         {chanceStatus === 'won' &&
             <mesh position={[-2.888, 0.305, -2.044]}
+                  onPointerEnter={() => {
+                      document.body.style.cursor = 'pointer'
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       event.stopPropagation()
                       setShowCords('90.3849238, 23.234234')

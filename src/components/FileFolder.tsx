@@ -19,16 +19,18 @@ type GLTFResult = GLTF & {
 
 type FileFolderProps = {
   active: boolean
+  open: boolean
   quest: 1|2|3|4|5|6|7|8|9|10
   activateFunc: () => void
+  openFunc: () => void
   closeFunc: () => void
 }
 
-export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
+export function FileFolder({active, open, quest, activateFunc, openFunc, closeFunc, ...props}:
                                JSX.IntrinsicElements['group'] & FileFolderProps) {
 
   const { nodes } = useGLTF('/fileFolder.glb') as GLTFResult
-  const [open, setOpen] = useState(false)
+  const [appState, setAppState] = useContext(AppContext)
   const camera = useThree(
       (state) => state.camera as PerspectiveCamera
   )
@@ -61,19 +63,30 @@ export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
         [folderTex]
     )
 
-    useEffect(() => {
-        if (!active) setOpen(false)
-    }, [active])
-
   return (
     <group {...props} position={localPosition} rotation={localRotation} dispose={null}>
         <mesh geometry={nodes.FolderBack.geometry}
+              onPointerEnter={() => {
+                  document.body.style.cursor = 'pointer'
+              }}
+              onPointerLeave={() => {
+                  document.body.style.cursor = 'default'
+              }}
               material={material}
         >
             <mesh geometry={nodes.FolderFront.geometry}
                   material={material}
                   position={open ? [-0.1145, 0.005, 0] : [-0.115, 0.005, 0]}
                   rotation={open ? [0, 0, Math.PI] : [0, 0, 0]}
+                  onPointerEnter={(event) => {
+                      event.stopPropagation()
+                      if (!active){
+                          document.body.style.cursor = 'pointer'
+                      }
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       activateFunc()
                       event.stopPropagation()
@@ -83,10 +96,26 @@ export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
             </mesh>
 
             <mesh geometry={nodes.OpenTrigger.geometry}
+                  onPointerEnter={(event) => {
+                      event.stopPropagation()
+                      if (!active){
+                          document.body.style.cursor = 'pointer'
+                      }
+                  }}
+                  onPointerLeave={() => {
+                      document.body.style.cursor = 'default'
+                  }}
                   onClick={(event) => {
                       if (active) {
                           event.stopPropagation()
-                          setOpen(!open)
+                          if (open) {
+                              closeFunc()
+                              if (appState.folderTutorial) setAppState({
+                                  folderTutorial: false
+                              })
+                          } else {
+                              openFunc()
+                          }
                       }
                   }}
                   position={[-0.115, 0.002, 0]}>
@@ -96,16 +125,36 @@ export function FileFolder({active, quest, activateFunc, closeFunc, ...props}:
             {props.children}
         </mesh>
 
-        {active && <mesh position={[0, -0.1, 0]}
-                         rotation={[-Math.PI * 0.5, 0, 0]}
-                         onClick={(event) => {
-                             event.stopPropagation()
-                             closeFunc()
-                         }}
-      >
-        <planeGeometry args={[1, 1]}/>
-        <meshBasicMaterial transparent opacity={0}/>
-      </mesh> }
+        {active &&
+            <group position={[0, -0.1, 0]}
+                          rotation={[-Math.PI * 0.5, 0, 0]}
+                          onPointerEnter={() => {
+                              document.body.style.cursor = 'pointer'
+                          }}
+                          onPointerLeave={() => {
+                              document.body.style.cursor = 'default'
+                          }}
+                          onClick={(event) => {
+                              event.stopPropagation()
+                              closeFunc()
+                          }}>
+                {appState.folderTutorial &&
+                    <Html position={[0.2, 0.2, 0]}>
+                        <div style={{
+                            textAlign: 'center',
+                            textShadow: '0px 0px 5px black',
+                            color: 'white',
+                            padding: 20,
+                            lineHeight: appState.isMobile ? '0.9' : 'initial',
+                        }}>
+                            <h1>{`Click Flap To ${open ? 'close' : 'open'}`}</h1>
+                        </div>
+                    </Html>}
+                <mesh>
+                    <planeGeometry args={[1, 1]}/>
+                    <meshBasicMaterial transparent opacity={0}/>
+                </mesh>
+            </group> }
     </group>
   )
 }
@@ -134,13 +183,12 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
                {...props}
   >
       { props.children }
-    <meshStandardMaterial color={page > activePage ? "grey" : "white"}
+    <meshStandardMaterial color={page > activePage ? "#ddd" : "white"}
                             normalMap={paperTex}
                           normalScale={new THREE.Vector2(0.25, 0.25)}
                           roughness={0.5}
                           side={THREE.DoubleSide} />
       {page === activePage && <>
-          <LivesCounter lives={appState.userLives}/>
           {appState.userLives === 0 && <BuyLivesButton/>}
           <HintButton page={page} quest={quest}/>
           {
@@ -168,7 +216,7 @@ function PasswordButton({quest, page}: { quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 
     const buttonTex = useTexture('/ButtonTextures/EnterPassword.webp')
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.1, 0.00005, 0.1]}
+                 position={[0.05, 0.00005, 0.105]}
                  onClick={(event) => {
                      event.stopPropagation()
                      setAppState({
@@ -180,18 +228,8 @@ function PasswordButton({quest, page}: { quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 
                      })
                  }}
     >
-        <planeGeometry args={[0.05, 0.05]}/>
-        <meshBasicMaterial map={buttonTex} color={"#30fcf3"}/>
-    </mesh>
-}
-
-function LivesCounter({lives}: {lives: 10|9|8|7|6|5|4|3|2|1|0}) {
-    const livesTex = useTexture(`/ButtonTextures/${lives}Lives.webp`)
-
-    return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.05, 0.00005, 0.085]}>
-        <planeGeometry args={[0.03, 0.03]}/>
-        <meshBasicMaterial map={livesTex} color={"#fff"}/>
+        <planeGeometry args={[0.05, 0.0375]}/>
+        <meshBasicMaterial map={buttonTex} transparent/>
     </mesh>
 }
 
@@ -200,7 +238,7 @@ function BuyLivesButton() {
     const buttonTex = useTexture('/ButtonTextures/BuyLives.webp')
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.05, 0.00005, 0.115]}
+                 position={[0.05, 0.00005, 0.105]}
                  onClick={(event) => {
                      event.stopPropagation()
                      setAppState({
@@ -208,16 +246,16 @@ function BuyLivesButton() {
                      })
                  }}
     >
-        <planeGeometry args={[0.025, 0.025]}/>
-        <meshBasicMaterial map={buttonTex} color={"#3efc30"}/>
+        <planeGeometry args={[0.05, 0.0375]}/>
+        <meshBasicMaterial map={buttonTex} transparent/>
     </mesh>
 }
 
 function HintButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
     const [appState, setAppState] = useContext(AppContext)
     const buyHintTex = useTexture('ButtonTextures/BuyHint.webp')
-    const hintTextTex = useTexture('ButtonTextures/HintText.webp')
-    const completeTex = useTexture('ButtonTextures/CompleteText.webp')
+    const hintTextTex = useTexture(`SubQuestTextures/HintQ${quest}sQ${page}.webp`)
+    const completeTex = useTexture('ButtonTextures/Completed.webp')
     const [titleTexture, setTitleTexture] = useState(buyHintTex)
 
     useEffect(() => {
@@ -235,14 +273,14 @@ function HintButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
 
     if (appState[questString(quest)][subQString(page)] !== 'started') {
         return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                     position={[0.18, 0.00005, 0.1]}>
-            <planeGeometry args={[0.05, 0.05]}/>
-            <meshBasicMaterial map={titleTexture}/>
+                     position={[0.18, 0.00005, 0.105]}>
+            <planeGeometry args={[0.05, 0.0375]}/>
+            <meshBasicMaterial map={titleTexture} transparent/>
         </mesh>
     }
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.18, 0.00005, 0.1]}
+                 position={[0.18, 0.00005, 0.105]}
                  onClick={(event) => {
                      event.stopPropagation()
                      setAppState({

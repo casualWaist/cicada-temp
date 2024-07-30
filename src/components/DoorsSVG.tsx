@@ -1,7 +1,3 @@
-import {Amatic_SC} from "next/font/google"
-
-const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
-
 export function SVGDefs() {
     return <defs>
         <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -131,8 +127,7 @@ const SvgDoors = (props: JSX.IntrinsicElements['svg']) => (
                 fill: "url(#gradient3)",
             }}
         />
-        <text className={amatic.className}
-              x="151"
+        <text x="151"
               y="280"
               fontSize="90"
               textAnchor="middle"

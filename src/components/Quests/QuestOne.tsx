@@ -1,17 +1,22 @@
 import {FilePage} from "@/components/FileFolder"
-import React, {useContext, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {AppContext} from "@/components/AppState"
 import {useTexture} from "@react-three/drei"
 
-export default function QuestOne({active}:
+export default function QuestOne({active, open}:
     {
         active: boolean
+        open: boolean
     }) {
     const [appState, setAppState] = useContext(AppContext)
     const [activePage, setActivePage] = useState(1 as 1|2|3)
     const subQ1Tex = useTexture('/SubQuestTextures/Q1sQ1Texture.webp')
     const subQ2Tex = useTexture('/SubQuestTextures/Q1sQ2Texture.webp')
     const subQ3Tex = useTexture('/SubQuestTextures/Q1sQ3Texture.webp')
+
+    useEffect(() => {
+        if (!open) setActivePage(1)
+    }, [open])
 
     if (!active) return <mesh position={[0, 0.004, 0.005]} rotation={[-Math.PI * 0.5, 0, 0]}>
         <planeGeometry args={[0.2, 0.3]}/>

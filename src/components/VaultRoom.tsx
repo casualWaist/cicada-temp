@@ -83,7 +83,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's2':
-        camera.position.set(-0.2, -0.752, -6.34)
+        camera.position.set(-0.2, -0.752, -6.54)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's3':
@@ -99,7 +99,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's6':
-        camera.position.set(-0.2, 0.05, -6.604)
+        camera.position.set(-0.2, 0.05, -6.55)
         camera.rotation.set(0, -Math.PI * 0.33, 0)
         break
       case 's7':
@@ -133,7 +133,8 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             active={false}
             vault={1}
             position={[1.532, -0.792, -6.252]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s1')
               setAppState({
                 subSection: 'feature',
@@ -142,14 +143,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[0.004, -0.981, 0.002]}
         />
         <SafeDoor
             available={appState.quest2.status !== 'unavailable'}
             active={place === 's2'}
             vault={2}
             position={[0.929, -0.792, -7.157]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s2')
               setAppState({
                 subSection: 'feature',
@@ -161,16 +163,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             rotation={[0, -0.983, 0]}
         >
           {appState.skipsAvailable &&
-              <mesh position={[-0.36, 0.12, 0.01]}
+              <mesh position={[-0.38, 0.14, 0.01]}
                     onClick={() => {
                       setAppState({
                         buyingSkip: true,
                         skipToBuy: 2
                       })
-                    }}
-                    rotation={[0, 0, Math.PI * 0.05]}>
-                <planeGeometry args={[0.05, 0.05]}/>
-                <meshBasicMaterial map={buySkipTex}/>
+                    }}>
+                <planeGeometry args={[0.09, 0.09]}/>
+                <meshBasicMaterial map={buySkipTex} transparent/>
               </mesh>}
         </SafeDoor>
         <SafeDoor
@@ -178,7 +179,8 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             active={place === 's3'}
             vault={3}
             position={[0.324, -0.792, -8.066]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s3')
               setAppState({
                 subSection: 'feature',
@@ -187,19 +189,20 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[0.01, -0.983, -0.003]}
         >
           {appState.skipsAvailable &&
-              <mesh position={[-0.36, 0.12, 0.01]}
-                    onClick={() => {
+              appState.quest3.status === 'locked' &&
+              <mesh position={[-0.38, 0.14, 0.01]}
+                    onClick={(event) => {
+                      event.stopPropagation()
                       setAppState({
                         buyingSkip: true,
                         skipToBuy: 3
                       })
-                    }}
-                    rotation={[0, 0, Math.PI * 0.05]}>
-                <planeGeometry args={[0.05, 0.05]}/>
-                <meshBasicMaterial map={buySkipTex}/>
+                    }}>
+                <planeGeometry args={[0.09, 0.09]}/>
+                <meshBasicMaterial map={buySkipTex} transparent/>
               </mesh>}
         </SafeDoor>
         <SafeDoor
@@ -207,7 +210,8 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             active={place === 's4'}
             vault={4}
             position={[-0.238, -0.792, -8.909]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s4')
               setAppState({
                 subSection: 'feature',
@@ -216,19 +220,20 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[-0.007, -0.973, 0.002]}
         >
           {appState.skipsAvailable &&
-              <mesh position={[-0.36, 0.12, 0.01]}
-                    onClick={() => {
+              appState.quest4.status === 'locked' &&
+              <mesh position={[-0.38, 0.14, 0.01]}
+                    onClick={(event) => {
+                      event.stopPropagation()
                       setAppState({
                         buyingSkip: true,
                         skipToBuy: 4
                       })
-                    }}
-                    rotation={[0, 0, Math.PI * 0.05]}>
-                <planeGeometry args={[0.05, 0.05]}/>
-                <meshBasicMaterial map={buySkipTex}/>
+                    }}>
+                <planeGeometry args={[0.09, 0.09]}/>
+                <meshBasicMaterial map={buySkipTex} transparent/>
               </mesh>}
         </SafeDoor>
         <SafeDoor
@@ -236,7 +241,8 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             active={place === 's5'}
             vault={5}
             position={[1.532, 0.027, -6.252]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s5')
               setAppState({
                 subSection: 'feature',
@@ -245,14 +251,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[-0.003, -0.978, 0.002]}
         />
         <SafeDoor
             available={appState.quest6.status !== 'unavailable'}
             active={place === 's6'}
             vault={6}
             position={[0.929, 0.027, -7.157]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s6')
               setAppState({
                 subSection: 'feature',
@@ -261,14 +268,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[-0.002, -0.985, 0.015]}
         />
         <SafeDoor
             available={appState.quest7.status !== 'unavailable'}
             active={place === 's7'}
             vault={7}
             position={[0.324, 0.027, -8.066]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s7')
               setAppState({
                 subSection: 'feature',
@@ -284,7 +292,8 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
             active={place === 's8'}
             vault={8}
             position={[-0.238, 0.027, -8.909]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s8')
               setAppState({
                 subSection: 'feature',
@@ -293,14 +302,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[0.001, -0.981, 0.02]}
         />
         <SafeDoor
             available={appState.quest9.status !== 'unavailable'}
             active={place === 's9'}
             vault={9}
             position={[0.942, 0.851, -7.138]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s9')
               setAppState({
                 subSection: 'feature',
@@ -309,14 +319,15 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[-0.003, -0.99, -0.012]}
         />
         <SafeDoor
             available={appState.quest10.status !== 'unavailable'}
             active={place === 's10'}
             vault={10}
             position={[0.338, 0.851, -8.044]}
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation()
               setPlace('s10')
               setAppState({
                 subSection: 'feature',
@@ -325,7 +336,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                 }
               })
             }}
-            rotation={[0, -0.983, 0]}
+            rotation={[0.006, -0.977, -0.011]}
         />
 
 
@@ -333,12 +344,9 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
               material={tutorialMaterial}
               position={[-1.937, -0.143, -9.879]}
               onClick={() => {
-                setPlace('tut')
                 setAppState({
-                  subSection: 'feature',
-                  moveFunction: () => {
-                    setPlace('home')
-                  }
+                  tutorialView: true,
+                  tutorial: 'vault'
                 })
               }}
               rotation={[Math.PI / 2, 0, -0.571]}

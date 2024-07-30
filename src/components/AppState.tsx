@@ -45,6 +45,10 @@ export type AppState = {
     notify: boolean
     noteText: string
     noteStyle: 'alert' | 'info' | 'success' | 'fail'
+    tutorialView: boolean
+    tutorial: 'quest' | 'vault' | 'sideQuest'
+    folderTutorial: boolean
+    isMobile: boolean
     quest1: QuestStatus
     quest2: QuestStatus
     quest3: QuestStatus
@@ -63,7 +67,7 @@ export const AppContext = createContext<AppStateContext>(null!)
 
 export function AppStateWrapper({ children }: { children: ReactNode }){
     const [appState, _setAppState] = useState<AppState>({
-        section: 'landing',
+        section: 'map',
         subSection: 'none',
         moveFunction: () => {},
         walletConnected: false,
@@ -84,10 +88,14 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         sideQuestWins: [],
         buyingSkip:false,
         skipToBuy: 2,
-        skipsAvailable: false,
+        skipsAvailable: true,
         notify: false,
         noteText: 'Success!',
         noteStyle: 'success',
+        tutorialView: false,
+        tutorial: 'quest',
+        folderTutorial: true,
+        isMobile: isMobileDevice(),
         quest1: {
             status: 'started',
             subQ1: 'started',
@@ -215,3 +223,7 @@ export const AxiosProvider = ({ children }: { children: ReactNode }) => (
         {children}
     </AxiosContext.Provider>
 );
+
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}

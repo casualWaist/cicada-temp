@@ -1,7 +1,4 @@
-import {Amatic_SC} from "next/font/google"
 import {SVGDefs} from "@/components/DoorsSVG"
-
-const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
 
 const SvgArrow = (props: JSX.IntrinsicElements['svg']) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="50 150 200 200" {...props}>
@@ -35,8 +32,7 @@ const SvgArrow = (props: JSX.IntrinsicElements['svg']) => (
                 fill: "url(#gradient1)",
             }}
         />
-        <text className={amatic.className}
-              x="145"
+        <text x="145"
               y="260"
               fontSize="30"
               textAnchor="middle"

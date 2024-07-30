@@ -24,6 +24,7 @@ import {Amatic_SC} from "next/font/google"
 import Notifications from "@/components/Notifications"
 import gsap from "gsap"
 import {useGSAP} from "@gsap/react"
+import Tutorials from "@/components/Tutorials"
 // import { postData } from "@/actions/commonAction"
 
 const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
@@ -68,7 +69,7 @@ function AppTrack () {
     }
   }, [account.isConnected])
   return (
-    <div className={`absolute bg-black w-full h-full ${amatic.className}`}>
+    <div className={`fixed overflow-hidden bg-black w-full h-full ${amatic.className}`}>
       <Canvas>
         {appState.section === 'landing' ? <Landing /> : <HouseModel />}
       </Canvas>
@@ -86,6 +87,7 @@ function AppTrack () {
       ) : null}
 
       <NavOverlay />
+      {appState.tutorialView && <Tutorials />}
       {appState.buyingHint && <BuyHint />}
       {appState.buyingSQ && <BuySQChance />}
       {appState.enteringPassword && <EnterQPass />}

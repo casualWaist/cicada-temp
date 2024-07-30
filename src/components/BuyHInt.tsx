@@ -9,7 +9,7 @@ export default function BuyHint() {
     const subQString = `subQ${appState.hintToBuy.subQ}` as 'subQ1' | 'subQ2' | 'subQ3'
 
     return <div className="fixed top-0 w-screen h-screen flex justify-center items-center">
-        <div className="absolute p-[2px] goldShine w-3/4 h-3/4 max-w-[300px] max-h-[500px]">
+        <div className="absolute p-[2px] goldShine w-3/4 h-3/4 max-w-[300px] max-h-[500px] border border-[#dab655]">
             <div className="darkFade w-full h-full flex flex-col items-center justify-center">
                 <h1 className="text-5xl">Buy Hint</h1>
                 <h2 className="text-2xl">{
@@ -25,7 +25,7 @@ export default function BuyHint() {
                 <div className="absolute bottom-0 w-full flex flex-row items-center">
                     <div className="rounded-2xl p-[1px] m-6"
                          style={{background: 'var(--gold-shine)'}}>
-                        <button className="p-4 rounded-2xl text-2xl"
+                        <button className="p-2 lg:p-4 rounded-2xl text-2xl"
                                 style={{background: 'var(--dark-fade)', color: '#dab655'}}
                                 onClick={
                                     () => {

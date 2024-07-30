@@ -19,7 +19,7 @@ export default function BuySQChance() {
                 <div className="absolute bottom-0 w-full flex flex-row items-center">
                     <div className="rounded-2xl p-[1px] m-6"
                          style={{background: 'var(--gold-shine)'}}>
-                        <button className="p-4 darkFade rounded-2xl text-2xl"
+                        <button className="p-2 lg:p-4 text-[#dab665] darkFade rounded-2xl text-2xl"
                                 onClick={() => setAppState((prev) => {
                                     return {
                                         buyingSQ: false,

@@ -1,4 +1,4 @@
-import {useContext, useState} from "react"
+import {useContext, useRef, useState} from "react"
 import {AppContext} from "@/components/AppState"
 import XButton, {XFlourish} from "@/components/XButton"
 
@@ -17,6 +17,7 @@ export default function EnterQPass() {
     const nextSubQString = appState.pwToEnter.subQ === 3
         ? 'subQ3'
         : `subQ${appState.pwToEnter.subQ + 1}` as 'subQ1' | 'subQ2' | 'subQ3'
+    const inputRef = useRef<HTMLInputElement>(null!)
 
     return <div className="fixed top-0 w-screen h-screen flex justify-center items-center">
         <div className="absolute p-[2px] goldShine w-3/4 h-3/4 max-w-[300px] max-h-[500px]">
@@ -43,6 +44,15 @@ export default function EnterQPass() {
                     <form className=""
                           onSubmit={(event) => {
                               event.preventDefault()
+                              if (inputValue === '') {
+                                  setAppState({
+                                      enteringPassword: appState.userLives - 1 > 0,
+                                      notify: true,
+                                      noteText: `No Password`,
+                                      noteStyle: 'info'
+                                  })
+                                  return undefined
+                              }
                               if (inputValue === password) {
                                   setAppState({
                                       enteringPassword: false,
@@ -68,16 +78,20 @@ export default function EnterQPass() {
                                       noteText: `Password Incorrect!`,
                                       noteStyle: 'fail'
                                   })
+                                  setInputValue('')
+                                  inputRef.current.blur()
                               }
                           }}>
                         <input type="text"
+                               ref={inputRef}
+                               value={inputValue}
                                onChange={(event) =>
                                    setInputValue(event.target.value)}
-                               className="relative left-[-2px] p-4 w-full text-black text-4xl"
+                               className="relative left-[-2px] p-2 lg:p-4 w-full text-black text-xl lg:text-4xl"
                                style={{outlineColor: '#dab655'}}
                                placeholder="Enter Password"/>
                         <div className="w-fit rounded-2xl p-[1px] m-4 goldShine">
-                            <button className="p-4 darkFade bg-red-400 rounded-2xl text-2xl">
+                            <button className="p-2 lg:p-4 text-[#dab655] darkFade bg-red-400 rounded-2xl text-2xl">
                                 Submit
                             </button>
                         </div>

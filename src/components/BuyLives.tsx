@@ -20,7 +20,7 @@ export default function BuyLives() {
                 <div className="absolute bottom-0 w-full flex flex-row items-center">
                     <div className="rounded-2xl p-[1px] m-6"
                          style={{background: 'var(--gold-shine)'}}>
-                        <button className="p-4 darkFade rounded-2xl"
+                        <button className="p-2 lg:p-4 text-[#dab655] darkFade rounded-2xl"
                                 onClick={() => {
                                     setAppState({
                                         userLives: appState.userLives + 5 as 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0,

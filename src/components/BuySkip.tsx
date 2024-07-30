@@ -36,7 +36,7 @@ export default function BuySkip() {
                 <div className="absolute bottom-0 w-full">
                     <div className="w-fit rounded-2xl p-[1px] m-6"
                          style={{background: 'var(--gold-shine)'}}>
-                        <button className="p-4 darkFade rounded-2xl text-2xl" onClick={
+                        <button className="p-2 lg:p-4 text-[#dab655] darkFade rounded-2xl text-2xl" onClick={
                             () => {
                                 setAppState({
                                     buyingSkip: false,
@@ -57,7 +57,7 @@ export default function BuySkip() {
                                         subQ3: 'completed'
                                     },
                                     notify: true,
-                                    noteText: `Vault ${appState.skipToBuy} Skipped. Find the new Quest on the Desk.`,
+                                    noteText: `Vault ${appState.skipToBuy} Skipped.\nFind the new Quest on the Desk.`,
                                     noteStyle: 'success'
                                 })
                             }

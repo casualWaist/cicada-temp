@@ -39,7 +39,7 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const fireMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: fireTex,
-            color: '#888888'
+            color: appState.isMobile ? '#aaa' : '#888888'
         }),
         [fireTex]
     )
@@ -50,7 +50,7 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const questMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: questTex,
-            color: '#888888'
+            color: appState.isMobile ? '#aaa' : '#888888'
         }),
         [questTex]
     )
@@ -61,7 +61,7 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const vaultMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: vaultTex,
-            color: '#888888'
+            color: appState.isMobile ? '#aaa' : '#888888'
         }),
         [vaultTex]
     )
