@@ -1,6 +1,6 @@
 'use client'
 
-import {createContext, ReactNode, useState} from "react"
+import {createContext, ReactNode, useEffect, useState} from "react"
 import axios from "axios";
 
 export type SubQuestStatus = 'unavailable' | 'started' | 'hinted' | 'completed'
@@ -67,7 +67,7 @@ export const AppContext = createContext<AppStateContext>(null!)
 
 export function AppStateWrapper({ children }: { children: ReactNode }){
     const [appState, _setAppState] = useState<AppState>({
-        section: 'landing',
+        section: 'map',
         subSection: 'none',
         moveFunction: () => {},
         walletConnected: false,
@@ -95,7 +95,7 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         tutorialView: false,
         tutorial: 'quest',
         folderTutorial: true,
-        isMobile: isMobileDevice(),
+        isMobile: false,
         quest1: {
             status: 'started',
             subQ1: 'started',
@@ -198,6 +198,10 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
                 ...(typeof objOrFunc === 'function' ? objOrFunc(prevState) : objOrFunc)
             })))
 
+    useEffect(() => {
+        setAppState({isMobile: /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)})
+    }, [])
+
     return <AppContext.Provider value={[
         appState,
         setAppState
@@ -223,7 +227,3 @@ export const AxiosProvider = ({ children }: { children: ReactNode }) => (
         {children}
     </AxiosContext.Provider>
 );
-
-function isMobileDevice() {
-    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
