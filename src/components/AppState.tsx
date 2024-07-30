@@ -67,7 +67,7 @@ export const AppContext = createContext<AppStateContext>(null!)
 
 export function AppStateWrapper({ children }: { children: ReactNode }){
     const [appState, _setAppState] = useState<AppState>({
-        section: 'map',
+        section: 'landing',
         subSection: 'none',
         moveFunction: () => {},
         walletConnected: false,
