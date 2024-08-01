@@ -250,6 +250,7 @@ export const FileFolder = forwardRef<
     </group>
   )
 })
+FileFolder.displayName = "FileFolder"
 
 useGLTF.preload('/fileFolder.glb')
 
