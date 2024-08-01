@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
+import React, {Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {Html, useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {AppContext} from "@/components/AppState"
-import {useThree} from "@react-three/fiber"
+import {useFrame, useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {FileFolder, FilePage} from "@/components/FileFolder"
 import {use} from "i18next"
@@ -106,6 +106,47 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const camera = useThree(
         (state) => state.camera as PerspectiveCamera
     )
+    const moveToPos = useRef(new THREE.Vector3(-1.05, 0.75, 2.5))
+    const moveToRot = useRef(new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(-Math.PI * 0.175, -Math.PI * 0.45, 0, 'YXZ')
+    ))
+    const moveToFOV = useRef(30)
+
+    const resetFolders = () => {
+        switch (quest) {
+            case 'q1':
+                setQ1Open(false)
+                break
+            case 'q2':
+                setQ2Open(false)
+                break
+            case 'q3':
+                setQ3Open(false)
+                break
+            case 'q4':
+                setQ4Open(false)
+                break
+            case 'q5':
+                setQ5Open(false)
+                break
+            case 'q6':
+                setQ6Open(false)
+                break
+            case 'q7':
+                setQ7Open(false)
+                break
+            case 'q8':
+                setQ8Open(false)
+                break
+            case 'q9':
+                setQ9Open(false)
+                break
+            case 'q10':
+                setQ10Open(false)
+                break
+        }
+        setQuest('none')
+    }
 
     useEffect(() => {
         if (appState.subSection === 'none') setAppState({
@@ -129,34 +170,63 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     useEffect(() => {
         switch (place) {
             case 'home':
-                camera.position.set(-1.05, 0.75, 2.5)
-                camera.rotation.set(-Math.PI * 0.05, -Math.PI * 0.2, 0, 'YXZ')
+                moveToPos.current.set(-1.05, 0.75, 2.5)
+                moveToRot.current.setFromEuler(
+                    new THREE.Euler(-Math.PI * 0.175, -Math.PI * 0.45, 0, 'YXZ')
+                )
+                if (quest !== 'none') {
+                    resetFolders()
+                }
                 break
             case 'sqMap':
-                camera.position.set(-0.5, 0.25, -2.5)
-                camera.rotation.set(0, Math.PI * 0.5, 0)
+                moveToPos.current.set(-0.5, 0.25, -2.5)
+                moveToRot.current.set(
+                    0.1, 1.5, -0.1, 1
+                )
                 break
             case 'map':
-                camera.position.set(0, 0, 0)
-                camera.rotation.set(0, -Math.PI * 0.5, 0)
+                moveToPos.current.set(0, 0, 0)
+                moveToRot.current.setFromEuler(
+                    new THREE.Euler(0, -Math.PI * 0.5, 0, 'XYZ')
+                )
                 break
             case 'tut':
-                camera.position.set(0.75, 0.375, -0.5)
-                camera.rotation.set(0, -Math.PI * 0.5, 0)
+                moveToPos.current.set(0.75, 0.375, -0.5)
+                moveToRot.current.setFromEuler(
+                    new THREE.Euler(0, -Math.PI * 0.5, 0, 'XYZ')
+                )
                 break
             case 'rev':
-                camera.position.set(0.79, 1, 0.625)
-                camera.rotation.set(-Math.PI * 0.075, Math.PI * 0.2, 0, 'YXZ')
+                moveToPos.current.set(0.79, 1, 0.625)
+                moveToRot.current.setFromEuler(
+                    new THREE.Euler(-Math.PI * 0.15, Math.PI * 0.4, 0, 'YXZ')
+                )
+                if (quest !== 'none') {
+                    resetFolders()
+                }
                 break
             case 'sqTut':
-                camera.position.set(-1, 0.25, -1.75)
-                camera.rotation.set(0, Math.PI * 0.05, 0)
+                moveToPos.current.set(-2.338, 0.725, -3.074)
+                moveToRot.current.set(0.1, 1.5, -0.1, 1)
                 break
             case 'desk':
-                camera.position.set(-0.25, 0.9, 0.25)
-                camera.rotation.set(-Math.PI * 0.25, -Math.PI * 0.4, 0)
+                moveToPos.current.set(-0.25, 0.9, 0.1)
+                moveToRot.current.set(
+                    -1.5, -0.8, -1.65, 1
+                )
         }
     }, [place, camera])
+
+    useFrame(() => {
+        if (camera.position.distanceTo(moveToPos.current) > 0.01) {
+            camera.position.lerp(moveToPos.current, 0.05)
+            camera.rotation.x += (moveToRot.current.x - camera.rotation.x) * 0.05
+            camera.rotation.y += (moveToRot.current.y - camera.rotation.y) * 0.05
+            camera.rotation.z += (moveToRot.current.z - camera.rotation.z) * 0.05
+            camera.fov += (moveToFOV.current - camera.fov) * 0.05
+            camera.updateProjectionMatrix()
+        }
+    })
 
     return (
         <group {...props} dispose={null}>
@@ -172,8 +242,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             setQuest('none')
                             setQ1Open(false)
                         }}
-                        position={[0.588, -0.113, -0.102]}
-                        rotation={[0, -0.831, 0]}
+                        restPosition={new THREE.Vector3(0.588, -0.113, -0.102)}
+                        position={place === 'desk'
+                            ? [0.2, 0.475, 0.1]
+                            : [-0.7, 0.65, 2]
+                        }
+                        restRotation={new THREE.Euler(0, -0.831, 0)}
+                        rotation={place === 'desk'
+                            ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                            : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                        }
             >
                 <QuestOne active={quest === 'q1'} open={q1Open}/>
             </FileFolder>
@@ -190,8 +268,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ2Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.679, -0.109, 0.011]}
-                            rotation={[0, -0.888, -0.036]}
+                            restPosition={new THREE.Vector3(0.679, -0.109, 0.011)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(0, -0.888, -0.036)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestTwo active={quest === 'q2'} open={q2Open}/>
                 </FileFolder>
@@ -209,8 +295,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ3Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.756, -0.109, 0.123]}
-                            rotation={[0, -0.909, -0.036]}
+                            restPosition={new THREE.Vector3(0.756, -0.103, 0.123)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(0, -0.909, -0.036)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestThree active={quest === 'q3'} open={q3Open}/>
                 </FileFolder>
@@ -228,8 +322,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ4Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.793, -0.109, 0.221]}
-                            rotation={[0, -1.017, -0.036]}
+                            restPosition={new THREE.Vector3(0.793, -0.096, 0.221)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(0, -1.017, -0.036)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestFour active={quest === 'q4'} open={q4Open}/>
                 </FileFolder>
@@ -247,8 +349,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ5Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.88, -0.108, 0.294]}
-                            rotation={[0, -0.89, -0.042]}
+                            restPosition={new THREE.Vector3(0.88, -0.09, 0.294)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(0, -0.89, -0.042)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestFive active={quest === 'q5'} open={q5Open}/>
                 </FileFolder>
@@ -266,8 +376,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ6Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.791, -0.104, -0.195]}
-                            rotation={[-0.045, -0.888, -0.077]}
+                            restPosition={new THREE.Vector3(0.81, -0.107, -0.21)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(-0.059, -0.888, -0.057)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestSix active={quest === 'q6'} open={q6Open}/>
                 </FileFolder>
@@ -285,8 +403,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ7Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.843, -0.102, -0.098]}
-                            rotation={[-0.079, -1.036, -0.11]}
+                            restPosition={new THREE.Vector3(0.843, -0.1, -0.098)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(-0.079, -1.036, -0.11)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestSeven active={quest === 'q7'} open={q7Open}/>
                 </FileFolder>
@@ -304,8 +430,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ8Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.918, -0.102, -0.027]}
-                            rotation={[-0.079, -1.036, -0.11]}
+                            restPosition={new THREE.Vector3(0.918, -0.091, -0.027)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(-0.079, -1.036, -0.11)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestEight active={quest === 'q8'} open={q8Open}/>
                 </FileFolder>
@@ -323,8 +457,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ9Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.983, -0.1, 0.077]}
-                            rotation={[-0.036, -0.856, -0.069]}
+                            restPosition={new THREE.Vector3(0.989, -0.085, 0.076)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(-0.036, -0.856, -0.069)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestNine active={quest === 'q9'} open={q9Open}/>
                 </FileFolder>
@@ -342,8 +484,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                                 setQ10Open(false)
                                 setQuest('none')
                             }}
-                            position={[0.746, -0.082, 0.022]}
-                            rotation={[0.154, -0.856, 0.075]}
+                            restPosition={new THREE.Vector3(0.746, -0.068, 0.022)}
+                            position={place === 'desk'
+                                ? [0.2, 0.475, 0.1]
+                                : [-0.7, 0.65, 2]
+                            }
+                            restRotation={new THREE.Euler(0.154, -0.856, 0.075)}
+                            rotation={place === 'desk'
+                                ? [Math.PI * 0.6, -Math.PI * 0.4, Math.PI * 0.58]
+                                : [Math.PI * 0.3, -Math.PI * 0.14, Math.PI * 0.15]
+                            }
                 >
                     <QuestTen active={quest === 'q10'} open={q10Open}/>
                 </FileFolder>
@@ -389,7 +539,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                       })
                   }}
                   rotation={[Math.PI * 0.5, 0, -1.528]}/>
-            <SideQuestSpinner/>
+            <SideQuestSpinner setPlace={setPlace}/>
             <mesh position={[3.011, 0.517, -0.444]}
                   geometry={nodes.QuestsTutorial.geometry}
                   material={wallMaterial}
@@ -439,15 +589,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                   material={sqMaterial}/>
 
 
-            <directionalLight position={[0, 3, 5]} intensity={2}/>
-            <directionalLight position={[5, 3, -2]} intensity={1.5}/>
+            <directionalLight position={[-1, 3, 5]} intensity={2}/>
+            <directionalLight position={[1, 3, -2]} intensity={1.5}/>
         </group>
     )
 }
 
 useGLTF.preload('/questRoomFinal.glb')
 
-function SideQuestSpinner() {
+function SideQuestSpinner({setPlace}:
+  {setPlace: Dispatch<SetStateAction<"map" | "rev" | "home" | "sqMap" | "tut" | "sqTut" | "desk">>}) {
     const [appState, setAppState] = useContext(AppContext)
     const [chanceStatus, setChanceStatus] = useState(
         'standby' as 'standby' | 'spinning' | 'won'
@@ -455,18 +606,20 @@ function SideQuestSpinner() {
     const [showCords, setShowCords] = useState(
         '' as '' | '90.3849238, 23.234234'
     )
+    const [needleRotation, setNeedleRotation] = useState(0)
 
     useEffect(() => {
         if (appState.numberSQSpins > 0) setChanceStatus('spinning')
     }, [appState.numberSQSpins])
 
     useEffect(() => {
-        if (showCords !== '') setTimeout(() => setShowCords(''), 2000)
+        if (showCords !== '') setTimeout(() => setShowCords(''), 7000)
     }, [showCords])
 
     return <>
         <Compass position={[-2.838, 0.725, -3.074]}
-                 open={chanceStatus === 'spinning'}
+                 chanceStatus={chanceStatus}
+                 needleRotation={needleRotation}
                  onPointerEnter={() => {
                      document.body.style.cursor = 'pointer'
                  }}
@@ -479,13 +632,29 @@ function SideQuestSpinner() {
                           setAppState({buyingSQ: true})
                       } else if (chanceStatus === 'spinning') {
                           const r = Math.random()
-                          if (r < 0.05) {
-                              setChanceStatus('won')
-                              setAppState({numberSQSpins: 0})
-                          } else {
-                              setChanceStatus('standby')
-                              setAppState({numberSQSpins: appState.numberSQSpins - 1})
-                          }
+                          setNeedleRotation(Math.PI * 14 + Math.PI * 2 * r - Math.PI * 2 * 0.025)
+                          setPlace('sqTut')
+                          setTimeout(() => {
+                              setNeedleRotation(0)
+                              if (r < 0.05) {
+                                  setChanceStatus('won')
+                                  setPlace('sqMap')
+                                  setAppState({
+                                      numberSQSpins: 0,
+                                      notify: true,
+                                      noteText: 'You won a side quest!\nCheck the map for Coordinates.',
+                                      noteStyle: 'success'
+                                  })
+                              } else {
+                                  setChanceStatus('standby')
+                                  setAppState({
+                                      numberSQSpins: appState.numberSQSpins - 1,
+                                      notify: true,
+                                      noteText: 'Spin Failed!',
+                                      noteStyle: 'fail'
+                                  })
+                              }
+                          }, 4250 )
                       }
                   }}
         />

@@ -65,7 +65,18 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
         }),
         [vaultTex]
     )
-    const portraitNoted = useRef(window.matchMedia('(orientation: portrait)').matches)
+    const portraitNoted = useRef(
+        window.matchMedia('(orientation: portrait)').matches
+    )
+    const moveToPos = useRef(new THREE.Vector3(0, 0, -6.5))
+    const moveToRot = useRef(new THREE.Euler(Math.PI * 0.05, 0, 0))
+    const moveToFOV = useRef(45)
+    const questDoorOpen = useRef(Math.PI * 0.25)
+    const questDoorClosed = useRef(0.686)
+    const vaultDoorOpen = useRef(-Math.PI * 0.25)
+    const vaultDoorClosed = useRef(0.686)
+    const questDoorRef = useRef<THREE.Mesh>(null!)
+    const vaultDoorRef = useRef<THREE.Mesh>(null!)
 
     useEffect(() => {
         if (portraitNoted.current) {
@@ -87,22 +98,50 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     useEffect(() => {
         switch (place) {
             case 'home':
-                camera.position.set(0, 0, -5)
-                camera.rotation.set(Math.PI * 0.05, 0, 0)
-                camera.fov = 35
-                camera.updateProjectionMatrix()
+                moveToPos.current.set(0, 0, -6.5)
+                moveToRot.current.set(Math.PI * 0.05, 0, 0)
+                moveToFOV.current = 45
                 break
             case 'tok':
-                camera.position.set(-3, 0.75, -10.5)
-                camera.rotation.set(0, -Math.PI * 0.125, 0)
+                moveToPos.current.set(-3.27, 0.7, -10.5)
+                moveToRot.current.set(0, -Math.PI * 0.125, 0)
+                moveToFOV.current = 25
                 break
             case 'map':
-                camera.position.set(3, 0.75, -10.5)
-                camera.rotation.set(0, Math.PI * 0.125, 0)
+                moveToPos.current.set(3.25, 0.72, -10.5)
+                moveToRot.current.set(0, Math.PI * 0.125, 0)
+                moveToFOV.current = 25
         }
     }, [place, camera])
 
     useFrame(() => {
+        if (camera.position.distanceTo(moveToPos.current) > 0.01) {
+            camera.position.lerp(moveToPos.current, 0.05)
+            camera.rotation.x += (moveToRot.current.x - camera.rotation.x) * 0.05
+            camera.rotation.y += (moveToRot.current.y - camera.rotation.y) * 0.05
+            camera.rotation.z += (moveToRot.current.z - camera.rotation.z) * 0.05
+            camera.fov += (moveToFOV.current - camera.fov) * 0.05
+            camera.updateProjectionMatrix()
+        }
+        if (questDoorHover) {
+            questDoorRef.current.rotation.y += (
+                questDoorOpen.current - questDoorRef.current.rotation.y) * 0.03
+        } else {
+            if (questDoorRef.current.rotation.y - questDoorClosed.current > 0.001) {
+                questDoorRef.current.rotation.y += (
+                    questDoorClosed.current - questDoorRef.current.rotation.y) * 0.03
+            }
+        }
+        if (vaultDoorHover) {
+            vaultDoorRef.current.rotation.y += (
+                vaultDoorOpen.current - vaultDoorRef.current.rotation.y) * 0.03
+        } else {
+            if (vaultDoorClosed.current - vaultDoorRef.current.rotation.y > 0.001) {
+                vaultDoorRef.current.rotation.y += (
+                    vaultDoorClosed.current - vaultDoorRef.current.rotation.y) * 0.03
+            }
+        }
+
     })
 
     return (
@@ -121,9 +160,10 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
             </mesh>
 
             <mesh geometry={nodes.DoorQuests.geometry}
+                  ref={questDoorRef}
                   material={questMaterial}
                   position={[6.911, 0.724, -19.638]}
-                  rotation={questDoorHover ? [0, Math.PI * 0.25, 0] : [0, -0.62, 0]}
+                  rotation={[0, -0.62, 0]}
             />
 
             <mesh geometry={nodes.VaultRoomTrigger.geometry}
@@ -138,9 +178,10 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
             </mesh>
 
             <mesh geometry={nodes.DoorVaults.geometry}
+                  ref={vaultDoorRef}
                   material={vaultMaterial}
                   position={[-6.063, 0.241, -16.933]}
-                  rotation={vaultDoorHover ? [0, -Math.PI * 0.25, 0] : [0, 0.686, 0]}
+                  rotation={[0, 0.686, 0]}
             />
 
             <mesh geometry={nodes.Roadmap.geometry}

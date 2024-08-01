@@ -1,10 +1,12 @@
 import * as THREE from 'three'
-import React, {useContext, useEffect, useMemo, useState} from 'react'
+import React, {forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
 import {Html, useGLTF, useTexture} from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {AppContext} from "@/components/AppState"
+import gsap from "gsap"
+import {useGSAP} from "@gsap/react"
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -18,37 +20,38 @@ type GLTFResult = GLTF & {
 }
 
 type FileFolderProps = {
-  active: boolean
-  open: boolean
-  quest: 1|2|3|4|5|6|7|8|9|10
-  activateFunc: () => void
-  openFunc: () => void
-  closeFunc: () => void
+    active: boolean
+    open: boolean
+    quest: 1|2|3|4|5|6|7|8|9|10
+    restPosition?: THREE.Vector3
+    restRotation?: THREE.Euler
+    activateFunc: () => void
+    openFunc: () => void
+    closeFunc: () => void
 }
 
-export function FileFolder({active, open, quest, activateFunc, openFunc, closeFunc, ...props}:
-                               JSX.IntrinsicElements['group'] & FileFolderProps) {
+export const FileFolder = forwardRef<
+    THREE.Group,
+    JSX.IntrinsicElements['group'] & FileFolderProps
+>((
+    {
+        active,
+        open,
+        quest,
+        restPosition = new THREE.Vector3(0, 0, 0),
+        restRotation = new THREE.Euler(0, 0, 0),
+        activateFunc,
+        openFunc,
+        closeFunc,
+        ...props
+    }:
+        JSX.IntrinsicElements['group'] & FileFolderProps, ref) => {
 
-  const { nodes } = useGLTF('/fileFolder.glb') as GLTFResult
-  const [appState, setAppState] = useContext(AppContext)
-  const camera = useThree(
+    const { nodes } = useGLTF('/fileFolder.glb') as GLTFResult
+    const [appState, setAppState] = useContext(AppContext)
+    const camera = useThree(
       (state) => state.camera as PerspectiveCamera
-  )
-  const [localPosition, localRotation] = useMemo(() => {
-    const position = active
-        ? camera.position.clone()
-        : props.position! as THREE.Vector3
-    const rotation = active
-        ? camera.rotation.clone()
-        : new THREE.Euler(0, 0, 0,)
-    if (active){
-      const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion)
-      const targetPos = forward.multiplyScalar(0.5).add(camera.position)
-      rotation.x = Math.PI * 0.25
-      position.set(targetPos.x, targetPos.y, targetPos.z)
-    }
-    return [position, rotation]
-  }, [active, props.position, camera.position])
+    )
     const folderTex = useTexture(
         '/paperNormal512.webp',
         (tex) => {tex.wrapT = tex.wrapS = THREE.RepeatWrapping}
@@ -63,8 +66,92 @@ export function FileFolder({active, open, quest, activateFunc, openFunc, closeFu
         [folderTex]
     )
 
+    const localRef = useRef<THREE.Group>(null!)
+    useImperativeHandle(ref, () => localRef.current)
+    const frontRef = useRef<THREE.Mesh>(null!)
+
+    useGSAP(() => {
+        const p = new THREE.Vector3()
+        const r = new THREE.Euler()
+        if (active) {
+            if (props.position instanceof THREE.Vector3) {
+                p.copy(props.position)
+            } else {
+                if (props.position instanceof Array) {
+                    p.set(props.position[0], props.position[1], props.position[2])
+                }
+            }
+            if (props.rotation instanceof THREE.Euler) {
+                r.copy(props.rotation)
+            } else {
+                if (props.rotation instanceof Array) {
+                    r.set(props.rotation[0], props.rotation[1], props.rotation[2])
+                }
+            }
+        } else {
+            p.copy(restPosition)
+            r.copy(restRotation)
+        }
+        const d = localRef.current.position.distanceTo(new THREE.Vector3(0, 0, 0))
+        gsap.to(localRef.current.position, {
+            duration: d < 0.01 ? 0.01 : 1.5,
+            x: p.x,
+            y: p.y,
+            z: p.z,
+            ease: 'power2.out',
+        })
+        gsap.to(localRef.current.rotation, {
+            duration: d < 0.01 ? 0.01 : 1.5,
+            x: r.x,
+            y: r.y,
+            z: r.z,
+            ease: 'power2.out',
+        })
+    }, [props.position, props.rotation])
+
+    useEffect(() => {
+        if (frontRef.current) {
+            frontRef.current.position.set(-0.115, 0.005, 0)
+            frontRef.current.rotation.set(0, 0, 0)
+        }
+    }, [])
+
+    useGSAP(() => {
+        if (open) {
+            gsap.to(frontRef.current.position, {
+                duration: 0.75,
+                x: -0.1145,
+                y: 0.005,
+                z: 0,
+                ease: 'power2.out',
+            })
+            gsap.to(frontRef.current.rotation, {
+                duration: 0.75,
+                x: 0,
+                y: 0,
+                z: Math.PI,
+                ease: 'power2.out',
+            })
+        } else {
+            gsap.to(frontRef.current.position, {
+                duration: 0.75,
+                x: -0.115,
+                y: 0.005,
+                z: 0,
+                ease: 'power2.out',
+            })
+            gsap.to(frontRef.current.rotation, {
+                duration: 0.75,
+                x: 0,
+                y: 0,
+                z: 0,
+                ease: 'power2.out',
+            })
+        }
+    }, [open])
+
   return (
-    <group {...props} position={localPosition} rotation={localRotation} dispose={null}>
+    <group ref={localRef} dispose={null}>
         <mesh geometry={nodes.FolderBack.geometry}
               onPointerEnter={() => {
                   document.body.style.cursor = 'pointer'
@@ -75,9 +162,8 @@ export function FileFolder({active, open, quest, activateFunc, openFunc, closeFu
               material={material}
         >
             <mesh geometry={nodes.FolderFront.geometry}
+                  ref={frontRef}
                   material={material}
-                  position={open ? [-0.1145, 0.005, 0] : [-0.115, 0.005, 0]}
-                  rotation={open ? [0, 0, Math.PI] : [0, 0, 0]}
                   onPointerEnter={(event) => {
                       event.stopPropagation()
                       if (!active){
@@ -139,31 +225,37 @@ export function FileFolder({active, open, quest, activateFunc, openFunc, closeFu
                               closeFunc()
                           }}>
                 {appState.folderTutorial &&
-                    <Html position={[0.2, 0.2, 0]}>
+                    <Html position={[0.13, 0.1, 0]}>
                         <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
                             textAlign: 'center',
                             textShadow: '0px 0px 5px black',
                             color: 'white',
                             padding: 20,
                             lineHeight: appState.isMobile ? '0.9' : 'initial',
                         }}>
-                            <h1>{`Click Flap To ${open ? 'close' : 'open'}`}</h1>
+                            <svg className="w-[2em] h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor"
+                                      d="m3 3l18 18M3 3c.676.676 1.923 1.11 3.039 1.379c1.49.359 3.036.424 4.559.252c1.182-.134 2.484-.4 3.009-.924M3 3c.676.676 1.11 1.923 1.379 3.039c.359 1.49.424 3.036.252 4.559c-.134 1.182-.4 2.484-.924 3.009"/>
+                            </svg>
+                            <h1 className="lg:text-2xl">{`Click Flap To ${open ? 'close' : 'open'}`}</h1>
                         </div>
                     </Html>}
                 <mesh>
                     <planeGeometry args={[1, 1]}/>
                     <meshBasicMaterial transparent opacity={0}/>
                 </mesh>
-            </group> }
+            </group>}
     </group>
   )
-}
+})
 
 useGLTF.preload('/fileFolder.glb')
 
 type FilePageProps = {
-    quest: 1|2|3|4|5|6|7|8|9|10
-    page: 1|2|3
+    quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+    page: 1 | 2|3
     activePage: number
     turnThePage: () => void
 }

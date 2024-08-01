@@ -6,20 +6,28 @@ import {useGSAP} from "@gsap/react"
 export default function Notifications() {
     const [appState, setAppState] = useContext(AppContext)
     const container = useRef<HTMLDivElement>(null!)
+    const timelineRef = useRef<gsap.core.Timeline>()
 
     useGSAP(() => {
+        if (timelineRef.current) timelineRef.current.kill()
             const tl = gsap.timeline();
             tl.fromTo(container.current,
                 {y: '-100%'},
                 {y: '0%', duration: 1, ease: 'power2.out'}
             )
-                .to(container.current, {duration: 5})
+                .to(container.current, {duration: 3.5})
                 .to(container.current,
                     {y: '-100%', duration: 1, ease: 'power2.in'}
                 )
                 .call(() => setAppState({notify: false}));
-        },
-        {dependencies: [appState.notify, appState.noteText], scope: container})
+            timelineRef.current = tl;
+
+        return () => {
+            if (timelineRef.current) {
+                timelineRef.current.kill()
+            }
+        }
+    }, {dependencies: [appState.notify, appState.noteText], scope: container})
 
     if (appState.noteStyle === 'alert') return (
         <div ref={container} className="pointer-events-none absolute top-0 w-full flex justify-center">

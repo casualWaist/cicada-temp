@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
-import { useThree } from '@react-three/fiber'
+import {useFrame, useThree} from '@react-three/fiber'
 import { PerspectiveCamera } from 'three'
 import { AppContext } from '@/components/AppState'
 import { SafeDoor } from '@/components/SafeDoor'
@@ -69,61 +69,75 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
       [vaultWallsTex]
   )
   const buySkipTex = useTexture('/ButtonTextures/BuyASkip.webp')
+  const moveToPos = useRef(new THREE.Vector3(0, 0, 0))
+  const moveToRot = useRef(new THREE.Euler(0, 0, 0))
+  const moveToFOV = useRef(30)
 
   useEffect(() => {
     switch (place) {
       case 'home':
-        camera.position.set(0, 0, 0)
-        camera.rotation.set(0, 0, 0)
-        camera.fov = 27
-        camera.updateProjectionMatrix()
+        moveToPos.current.set(0, 0, 0)
+        moveToRot.current.set(0, 0, 0)
+        moveToFOV.current = 30
         break
       case 's1':
-        camera.position.set(0, -0.792, -5.244)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(0, -0.792, -5.244)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's2':
-        camera.position.set(-0.2, -0.752, -6.54)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.2, -0.752, -6.54)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's3':
-        camera.position.set(-0.8, -0.752, -7.494)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.8, -0.752, -7.494)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's4':
-        camera.position.set(-1.3, -0.752, -8.35)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-1.3, -0.752, -8.35)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's5':
-        camera.position.set(0.3, 0.05, -5.614)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(0.3, 0.05, -5.614)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's6':
-        camera.position.set(-0.2, 0.05, -6.55)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.2, 0.05, -6.55)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's7':
-        camera.position.set(-0.8, 0.05, -7.48)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.8, 0.05, -7.48)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's8':
-        camera.position.set(-1.4, 0.05, -8.3)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-1.4, 0.05, -8.3)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's9':
-        camera.position.set(-0.2, 0.9, -6.544)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.2, 0.9, -6.544)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 's10':
-        camera.position.set(-0.8, 0.85, -7.444)
-        camera.rotation.set(0, -Math.PI * 0.33, 0)
+        moveToPos.current.set(-0.8, 0.85, -7.444)
+        moveToRot.current.set(0, -Math.PI * 0.33, 0)
         break
       case 'tut':
-        camera.position.set(-1.937, -0.143, -6.879)
-        camera.rotation.set(0, 0, 0)
+        moveToPos.current.set(-1.937, -0.143, -6.879)
+        moveToRot.current.set(0, 0, 0)
         break
     }
   }, [place, camera])
+
+
+    useFrame(() => {
+        if (camera.position.distanceTo(moveToPos.current) > 0.01) {
+            camera.position.lerp(moveToPos.current, 0.05)
+            camera.rotation.x += (moveToRot.current.x - camera.rotation.x) * 0.05
+            camera.rotation.y += (moveToRot.current.y - camera.rotation.y) * 0.05
+            camera.rotation.z += (moveToRot.current.z - camera.rotation.z) * 0.05
+            camera.fov += (moveToFOV.current - camera.fov) * 0.05
+            camera.updateProjectionMatrix()
+        }
+    })
 
   return (
     <group {...props} dispose={null}>
@@ -171,7 +185,7 @@ export function VaultRoom (props: JSX.IntrinsicElements['group']) {
                       })
                     }}>
                 <planeGeometry args={[0.09, 0.09]}/>
-                <meshBasicMaterial map={buySkipTex} transparent/>
+                <meshBasicMaterial map={buySkipTex} color={'#888'} transparent/>
               </mesh>}
         </SafeDoor>
         <SafeDoor

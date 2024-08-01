@@ -24,7 +24,7 @@ export default function EnterQPass() {
             <div className="darkFade w-full h-full">
                 <XFlourish className="absolute left-0 top-0 w-full h-[100px]"/>
                 <h1 className="w-full h-[40px] flex pl-4 items-center text-2xl">
-                    {`Password for Quest ${appState.hintToBuy.quest} Page ${appState.hintToBuy.subQ}`}
+                    {`Password for Quest ${appState.pwToEnter.quest} Page ${appState.pwToEnter.subQ}`}
                 </h1>
                 <div className="absolute right-0 top-0 w-full">
                     <XButton className="absolute right-0"

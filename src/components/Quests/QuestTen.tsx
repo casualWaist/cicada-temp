@@ -18,48 +18,49 @@ export default function QuestTen({active, open}:
         if (!open) setActivePage(1)
     }, [open])
 
-    if (!active) return <mesh position={[0, 0.004, 0.005]} rotation={[-Math.PI * 0.5, 0, 0]}>
-        <planeGeometry args={[0.2, 0.3]}/>
-        <meshBasicMaterial color={'#fff'}/>
-    </mesh>
-
     return <>
-        <FilePage page={1}
-                  quest={10}
-                  activePage={activePage}
-                  turnThePage={() => {
-                      if (appState.quest10.subQ2 !== 'unavailable')
-                        setActivePage(2)
-                  }}
-                  position={[-0.115, 0.004, -0.002]}>
-            <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
-                <planeGeometry args={[0.2, 0.2]}/>
-                <meshBasicMaterial map={subQ1Tex}/>
-            </mesh>
-        </FilePage>
-        <FilePage page={2}
-                  quest={10}
-                  activePage={activePage}
-                  turnThePage={() => {
-                      if (appState.quest10.subQ3 !== 'unavailable') {
-                          setActivePage(3)
-                      }
-                  }}
-                  position={[-0.108, 0.003, 0.001]}>
-            {activePage === 2 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
-                <planeGeometry args={[0.2, 0.2]}/>
-                <meshBasicMaterial map={subQ2Tex}/>
-            </mesh>}
-        </FilePage>
-        <FilePage page={3}
-                  quest={10}
-                  activePage={activePage}
-                  turnThePage={() => setActivePage(1)}
-                  position={[-0.118, 0.0025, 0]}>
-            {activePage === 3 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
-                <planeGeometry args={[0.2, 0.2]}/>
-                <meshBasicMaterial map={subQ3Tex}/>
-            </mesh>}
-        </FilePage>
+        {!active && <mesh position={[0, 0.004, 0]} rotation={[-Math.PI * 0.5, 0, 0]}>
+            <planeGeometry args={[0.22, 0.29]}/>
+            <meshBasicMaterial color={'#fff'}/>
+        </mesh>}
+        <group visible={active}>
+            <FilePage page={1}
+                      quest={10}
+                      activePage={activePage}
+                      turnThePage={() => {
+                          if (appState.quest10.subQ2 !== 'unavailable')
+                            setActivePage(2)
+                      }}
+                      position={[-0.115, 0.004, -0.002]}>
+                <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.2, 0.2]}/>
+                    <meshBasicMaterial map={subQ1Tex}/>
+                </mesh>
+            </FilePage>
+            <FilePage page={2}
+                      quest={10}
+                      activePage={activePage}
+                      turnThePage={() => {
+                          if (appState.quest10.subQ3 !== 'unavailable') {
+                              setActivePage(3)
+                          }
+                      }}
+                      position={[-0.108, 0.003, 0.001]}>
+                {activePage === 2 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.2, 0.2]}/>
+                    <meshBasicMaterial map={subQ2Tex}/>
+                </mesh>}
+            </FilePage>
+            <FilePage page={3}
+                      quest={10}
+                      activePage={activePage}
+                      turnThePage={() => setActivePage(1)}
+                      position={[-0.118, 0.0025, 0]}>
+                {activePage === 3 && <mesh position={[0.115, 0.000025, -0.025]} rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.2, 0.2]}/>
+                    <meshBasicMaterial map={subQ3Tex}/>
+                </mesh>}
+            </FilePage>
+        </group>
     </>
 }
