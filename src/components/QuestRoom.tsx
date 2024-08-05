@@ -661,7 +661,7 @@ function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" |
         />
         {appState.sideQuestWins.length > 0 &&
             appState.sideQuestWins.map((win, i) => {
-                return <mesh position={[-2.888, 0.305, -2.044]}
+                return <mesh key={`sQMesh${i}`} position={[-2.888, 0.305, -2.044]}
                   onPointerEnter={() => {document.body.style.cursor = 'pointer'}}
                   onPointerLeave={() => {document.body.style.cursor = 'default'}}
                   onClick={(event) => {
@@ -674,8 +674,8 @@ function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" |
                   }}
                   rotation={[0, 0, Math.PI * 0.5]}
             >
-                <cylinderGeometry args={[0.01, 0.01, 0.01, 16]}/>
-                <meshBasicMaterial color="yellow"/>
+                <cylinderGeometry key={`sQGeo${i}`} args={[0.01, 0.01, 0.01, 16]}/>
+                <meshBasicMaterial key={`sQMat${i}`} color="yellow"/>
             </mesh>})}
         {showCords !== '' && <Html position={[-2.888, 0.305, -2.044]}>
             <div style={{
