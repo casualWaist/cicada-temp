@@ -9,7 +9,7 @@ export default function XButton(props: JSX.IntrinsicElements["button"]) {
             viewBox="0 0 100 100"
             className="w-[100px] h-[100px]"
         >
-            <SVGDefs />
+            <SVGDefs/>
             <path
                 d="m87.495 50 12.505.013"
                 style={{
@@ -145,8 +145,8 @@ export function XFlourish(props: JSX.IntrinsicElements["svg"]) {
         <path d="m96.2 52.232l75.9 0.001"
               style={{
                   stroke: "url(#gradient1)",
-                    fill: "none",
-                    strokeWidth: ".25px",
+                  fill: "none",
+                  strokeWidth: ".25px",
               }}
         />
         <path

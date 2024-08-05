@@ -1,9 +1,9 @@
 'use client'
 
-import { MaterialNode, MaterialProps } from "@react-three/fiber"
+import {MaterialNode, MaterialProps} from "@react-three/fiber"
 import * as THREE from 'three'
-import { extend, useFrame } from '@react-three/fiber'
-import { shaderMaterial } from '@react-three/drei'
+import {extend, useFrame} from '@react-three/fiber'
+import {shaderMaterial} from '@react-three/drei'
 import vertex from '@/shaders/landingVert.glsl'
 import fragment from '@/shaders/landingFrag.glsl'
 import React, {forwardRef, useImperativeHandle, useRef} from 'react'
@@ -12,7 +12,7 @@ const CicadaSimShaderImp = shaderMaterial({
         uPositions: new THREE.DataTexture(),
         uTime: 0,
         uCurlFreq: 0.25,
-    },`
+    }, `
     uniform float uTime;
     varying vec2 vUv;
     varying vec2 nUv;
@@ -235,7 +235,7 @@ const CicadaSimShaderImp = shaderMaterial({
     }`
 )
 
-extend({ CicadaSimShaderImp })
+extend({CicadaSimShaderImp})
 
 declare global {
     namespace JSX {
@@ -253,9 +253,10 @@ export type CicadaSimShaderUniforms = {
 
 type SimProps = CicadaSimShaderUniforms & MaterialProps
 
-export const CicadaSimShader = forwardRef(({ ...props }: SimProps, ref) => {
+export const CicadaSimShader = forwardRef(({...props}: SimProps, ref) => {
     const localRef = useRef<THREE.ShaderMaterial & {
-        uTime: number, uPositions: THREE.DataTexture, uCurlFreq: number}>(null!)
+        uTime: number, uPositions: THREE.DataTexture, uCurlFreq: number
+    }>(null!)
 
     useImperativeHandle(ref, () => localRef.current)
 
@@ -263,7 +264,7 @@ export const CicadaSimShader = forwardRef(({ ...props }: SimProps, ref) => {
         localRef.current.uTime += delta
         localRef.current.uCurlFreq = THREE.MathUtils.lerp(localRef.current.uCurlFreq, 0.25, 0.1)
     })
-    return <cicadaSimShaderImp key={CicadaSimShaderImp.key} ref={localRef} {...props} attach='material' />
+    return <cicadaSimShaderImp key={CicadaSimShaderImp.key} ref={localRef} {...props} attach='material'/>
 })
 CicadaSimShader.displayName = 'CicadaSimShader'
 
@@ -279,14 +280,16 @@ const CicadaShaderImp = shaderMaterial({
     uTexture: new THREE.Texture(),
     uColor: new THREE.Color(0.83, 0.74, 0.55),
     uResolution: typeof window !== 'undefined' ? new THREE.Vector2(window.innerWidth, window.innerHeight) : new THREE.Vector2(1, 1),
-}, vertex, fragment, (imp) => { if (imp) {
-    //imp.wireframe = true
-    //imp.side = THREE.DoubleSide
-    //imp.depthWrite = false
-    //imp.blending = THREE.AdditiveBlending
-} })
+}, vertex, fragment, (imp) => {
+    if (imp) {
+        //imp.wireframe = true
+        //imp.side = THREE.DoubleSide
+        //imp.depthWrite = false
+        //imp.blending = THREE.AdditiveBlending
+    }
+})
 
-extend({ CicadaShaderImp })
+extend({CicadaShaderImp})
 
 declare global {
     namespace JSX {
@@ -312,9 +315,10 @@ export type CicadaShaderUniforms = {
 
 export type Props = CicadaShaderUniforms & MaterialProps
 
-export const CicadaShader = forwardRef(({ ...props }: Props, ref) => {
+export const CicadaShader = forwardRef(({...props}: Props, ref) => {
     const localRef = useRef<THREE.ShaderMaterial & {
-        uTime: number, uProgress: number, uMouse: THREE.Vector2, uColor:THREE.Color, uResolution?: THREE.Vector2}>(null!)
+        uTime: number, uProgress: number, uMouse: THREE.Vector2, uColor: THREE.Color, uResolution?: THREE.Vector2
+    }>(null!)
 
     useImperativeHandle(ref, () => localRef.current)
 
@@ -325,6 +329,6 @@ export const CicadaShader = forwardRef(({ ...props }: Props, ref) => {
         else if (localRef.current.uProgress < 0.98) localRef.current.uProgress += 0.0002
         else if (localRef.current.uProgress < 1) localRef.current.uProgress += 0.00002
     })
-    return <cicadaShaderImp key={CicadaShaderImp.key} ref={localRef} {...props} attach='material' />
+    return <cicadaShaderImp key={CicadaShaderImp.key} ref={localRef} {...props} attach='material'/>
 })
 CicadaShader.displayName = 'CicadaShader'

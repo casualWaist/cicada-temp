@@ -7,15 +7,13 @@ export type SubQuestStatus = 'unavailable' | 'started' | 'hinted' | 'completed'
 export type QuestStatus = {
     status: 'unavailable' | 'locked' | 'started' | 'completed'
     subQ1: SubQuestStatus
-    pw1: string
     subQ2: SubQuestStatus
-    pw2: string
     subQ3: SubQuestStatus
-    pw3: string
 }
 export type SQWin = {
     lat: number
     lon: number
+    ytLink: string
     mapX: number
     mapY: number
 }
@@ -24,6 +22,7 @@ export type AppState = {
     subSection: 'none' | 'rev' | 'feature'
     moveFunction: () => void
     walletConnected: boolean
+    jackpot: number
     userLives: 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
     buyingLives: boolean
     buyingHint: boolean
@@ -36,9 +35,18 @@ export type AppState = {
         quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
         subQ: 1 | 2 | 3
     }
+    showQuestWin: boolean
+    questWinToShow: {
+        vaultCode: number
+        lat: number
+        lon: number
+        ytLink: string
+    }
     buyingSQ: boolean
     numberSQSpins: number
     sideQuestWins: SQWin[]
+    showSQWin: boolean
+    sQWinToShow: SQWin
     buyingSkip: boolean
     skipToBuy: 2 | 3 | 4
     skipsAvailable: boolean
@@ -47,6 +55,11 @@ export type AppState = {
     noteStyle: 'alert' | 'info' | 'success' | 'fail'
     tutorialView: boolean
     tutorial: 'quest' | 'vault' | 'sideQuest'
+    imageView: boolean
+    imageToView: {
+        quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+        subQ: 1 | 2 | 3
+    }
     folderTutorial: boolean
     isMobile: boolean
     quest1: QuestStatus
@@ -62,15 +75,17 @@ export type AppState = {
     walletAddress: string
 }
 
-type AppStateContext = [ AppState, (objOrFunc: Partial<AppState> | ((prevState: AppState) => Partial<AppState>)) => void ]
+type AppStateContext = [AppState, (objOrFunc: Partial<AppState> | ((prevState: AppState) => Partial<AppState>)) => void]
 export const AppContext = createContext<AppStateContext>(null!)
 
-export function AppStateWrapper({ children }: { children: ReactNode }){
+export function AppStateWrapper({children}: { children: ReactNode }) {
     const [appState, _setAppState] = useState<AppState>({
-        section: 'map',
+        section: 'landing',
         subSection: 'none',
-        moveFunction: () => {},
+        moveFunction: () => {
+        },
         walletConnected: false,
+        jackpot: 0.00,
         userLives: 10,
         buyingLives: false,
         buyingHint: false,
@@ -83,10 +98,33 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
             quest: 1,
             subQ: 1
         },
+        showQuestWin: false,
+        questWinToShow: {
+            vaultCode: 0,
+            lat: 0,
+            lon: 0,
+            ytLink: ''
+        },
         buyingSQ: false,
         numberSQSpins: 0,
-        sideQuestWins: [],
-        buyingSkip:false,
+        sideQuestWins: [
+            {
+                lat: 90.03782,
+                lon: 30.2839,
+                mapX: 0.5,
+                mapY: 0.5,
+                ytLink: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+            }
+        ],
+        showSQWin: false,
+        sQWinToShow: {
+            lat: 0,
+            lon: 0,
+            ytLink: '',
+            mapX: 0,
+            mapY: 0
+        },
+        buyingSkip: false,
         skipToBuy: 2,
         skipsAvailable: true,
         notify: false,
@@ -94,97 +132,72 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
         noteStyle: 'success',
         tutorialView: false,
         tutorial: 'quest',
+        imageView: false,
+        imageToView: {
+            quest: 1,
+            subQ: 1
+        },
         folderTutorial: true,
         isMobile: false,
         quest1: {
-            status: 'started',
-            subQ1: 'started',
-            pw1: 'q1p1',
-            subQ2: 'unavailable',
-            pw2: 'q1p2',
-            subQ3: 'unavailable',
-            pw3: 'q1p3'
+            status: 'completed',
+            subQ1: 'completed',
+            subQ2: 'completed',
+            subQ3: 'completed',
         },
         quest2: {
-            status: 'locked',
-            subQ1: 'unavailable',
-            pw1: 'q2p1',
+            status: 'started',
+            subQ1: 'started',
             subQ2: 'unavailable',
-            pw2: 'q2p2',
             subQ3: 'unavailable',
-            pw3: 'q2p3'
         },
         quest3: {
-            status: 'unavailable',
+            status: 'locked',
             subQ1: 'unavailable',
-            pw1: 'q3p1',
             subQ2: 'unavailable',
-            pw2: 'q3p2',
             subQ3: 'unavailable',
-            pw3: 'q3p3'
         },
         quest4: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q4p1',
             subQ2: 'unavailable',
-            pw2: 'q4p2',
             subQ3: 'unavailable',
-            pw3: 'q4p3'
         },
         quest5: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q5p1',
             subQ2: 'unavailable',
-            pw2: 'q5p2',
             subQ3: 'unavailable',
-            pw3: 'q5p3'
         },
         quest6: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q6p1',
             subQ2: 'unavailable',
-            pw2: 'q6p2',
             subQ3: 'unavailable',
-            pw3: 'q6p3'
         },
         quest7: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q7p1',
             subQ2: 'unavailable',
-            pw2: 'q7p2',
             subQ3: 'unavailable',
-            pw3: 'q7p3'
         },
         quest8: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q8p1',
             subQ2: 'unavailable',
-            pw2: 'q8p2',
             subQ3: 'unavailable',
-            pw3: 'q8p3'
         },
         quest9: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q9p1',
             subQ2: 'unavailable',
-            pw2: 'q9p2',
             subQ3: 'unavailable',
-            pw3: 'q9p3'
         },
         quest10: {
             status: 'unavailable',
             subQ1: 'unavailable',
-            pw1: 'q10p1',
             subQ2: 'unavailable',
-            pw2: 'q10p2',
             subQ3: 'unavailable',
-            pw3: 'q10p3'
         },
         walletAddress: ''
     });
@@ -212,7 +225,7 @@ export function AppStateWrapper({ children }: { children: ReactNode }){
 
 export const AxiosInstance = axios.create({
     baseURL: process.env.SERVER_API_ADDRESS, // Replace with your API base URL
-    timeout: 1000,
+    timeout: 60000,
     headers: {
         'Content-Type': 'application/json',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -222,7 +235,7 @@ export const AxiosInstance = axios.create({
 
 export const AxiosContext = createContext(AxiosInstance);
 
-export const AxiosProvider = ({ children }: { children: ReactNode }) => (
+export const AxiosProvider = ({children}: { children: ReactNode }) => (
     <AxiosContext.Provider value={AxiosInstance}>
         {children}
     </AxiosContext.Provider>

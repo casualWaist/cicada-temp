@@ -1,11 +1,12 @@
 import * as THREE from 'three'
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {useGLTF, useTexture} from '@react-three/drei'
-import { GLTF } from 'three-stdlib'
-import {AppContext} from "@/components/AppState"
 import {FileFolder, questString} from "@/components/FileFolder"
 import gsap from "gsap"
 import {useGSAP} from "@gsap/react"
+import {GLTF} from 'three-stdlib'
+import {AppContext, AxiosContext} from "@/components/AppState"
+import {useNotification} from "@/hooks/useNotification";
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -37,13 +38,15 @@ type SafeProps = {
     vault: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 }
 
-export function SafeDoor({available, active, vault, ...props}:
-                             SafeProps & JSX.IntrinsicElements['group']) {
-    const { nodes, materials } = useGLTF('/safeFull.glb') as GLTFResult
-    const [appState, setAppState] = useContext(AppContext)
-    const [correctCode, setCorrectCode] = useState('121212')
-    const [code, setCode] = useState('')
-    const qString = questString(vault)
+export function SafeDoor({available, active, vault, ...props}: SafeProps & JSX.IntrinsicElements['group']) {
+    const {nodes, materials} = useGLTF('/safeFull.glb') as GLTFResult;
+    const [appState, setAppState] = useContext(AppContext);
+    const [correctCode, setCorrectCode] = useState('121212');
+    const [code, setCode] = useState('');
+    const qString = questString(vault);
+    const axios = useContext(AxiosContext);
+    const notify = useNotification();
+
     const [submitStatus, setSubmitStatus] = useState(
         'standby' as 'standby' | 'short' | 'success' | 'failure'
     )
@@ -72,37 +75,25 @@ export function SafeDoor({available, active, vault, ...props}:
         (loader) => {
             loader.flipY = false
         }
-    )
-    const keyPadMaterial = useMemo(
-        () => new THREE.MeshStandardMaterial({
+    );
+    const keyPadMaterial = useMemo(() => new THREE.MeshStandardMaterial({
             map: keypadTex,
             emissive: "white",
             emissiveIntensity: 0.1,
             emissiveMap: keypadTex,
-        }),
-        [keypadTex]
-    )
-    const keypadMetalTex = useTexture(
-        '/SafeBaseColor.webp'
-    )
-    const keypadMetalRoughness = useTexture(
-        '/SafeRoughness.webp'
-    )
-    const metalMaterial = useMemo(
-        () => new THREE.MeshStandardMaterial({
+        }), [keypadTex]);
+    const keypadMetalTex = useTexture('/SafeBaseColor.webp');
+    const keypadMetalRoughness = useTexture('/SafeRoughness.webp');
+    const metalMaterial = useMemo(() => new THREE.MeshStandardMaterial({
             map: keypadMetalTex,
             roughnessMap: keypadMetalRoughness,
             metalness: 0.5,
-        }),
-        [keypadMetalTex]
-    )
-    const safeNormal = useTexture('/SafeNormal.webp',
-        (loader) => {
+        }), [keypadMetalTex]);
+    const safeNormal = useTexture('/SafeNormal.webp', (loader) => {
             loader.flipY = false
             loader.wrapS = loader.wrapT = THREE.RepeatWrapping
-        })
-    const safeMaterial = useMemo(
-        () => new THREE.MeshStandardMaterial({
+        });
+    const safeMaterial = useMemo(() => new THREE.MeshStandardMaterial({
             normalMap: safeNormal,
             roughness: 0.5,
             normalScale: new THREE.Vector2(2, 2),
@@ -234,26 +225,23 @@ export function SafeDoor({available, active, vault, ...props}:
         }
     }, [keyPressed])
 
-    const checkCode = () => {
-        if (code === correctCode){
-            setSubmitStatus('success')
-            setAppState({
-                [qString]: {
+    const checkCode = async () => {
+        try {
+            const response = await axios.post('/vault/check_code', {code, vault});
+            if (Boolean(!!response.data.status)) {
+                setSubmitStatus('success')
+                setAppState({[qString]: {
                     ...appState[qString],
                     status: 'started',
                     subQ1: 'started'
-                },
-                notify: true,
-                noteText: `Code Accepted!\nCheck the Desk for the next Quest.`,
-                noteStyle: 'success'
-            })
-        } else {
-            setSubmitStatus('failure')
-            setAppState({
-                notify: true,
-                noteText: `Code Incorrect!`,
-                noteStyle: 'fail'
-            })
+                }})
+            }
+            notify("success", `Code Accepted!\nCheck the Desk for the next Quest.`);
+            let questData = await axios.get("/quest/get_quest_status");
+            setAppState({...questData.data});
+        } catch (err: any) {
+            setSubmitStatus('failure');
+            notify("fail", "Code Incorrect");
         }
     }
 
@@ -484,10 +472,18 @@ export function SafeDoor({available, active, vault, ...props}:
                       material={keyPadMaterial}
                       onClick={(event) => {
                           event.stopPropagation()
-                          if (available && code.length === 6) {
-                              checkCode()
+                          if (appState.walletConnected){
+                              if (available && code.length === 6) {
+                                  checkCode()
+                              } else {
+                                  setSubmitStatus('short')
+                              }
                           } else {
-                              setSubmitStatus('short')
+                              setAppState({
+                                  notify: true,
+                                  noteText: "Wallet not connected",
+                                  noteStyle: "alert"
+                              })
                           }
                           setKeyPressed('#')
                       }}
@@ -500,7 +496,7 @@ export function SafeDoor({available, active, vault, ...props}:
                       position={[-0.443, 0.061, 0.012]}
                 />
 
-                { props.children }
+                {props.children}
             </group>
         </mesh>
     </group>
@@ -553,7 +549,7 @@ function CodeScreen({screenMesh, material, code, status}:
             <meshBasicMaterial map={screenTexture.current}
                                transparent
                                blending={THREE.AdditiveBlending}
-                               opacity={0.25} />
+                               opacity={0.25}/>
         </mesh>
     </>
 

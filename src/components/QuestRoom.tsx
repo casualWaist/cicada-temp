@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import React, {Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {Html, useGLTF, useTexture} from '@react-three/drei'
-import { GLTF } from 'three-stdlib'
-import {AppContext} from "@/components/AppState"
+import {GLTF} from 'three-stdlib'
+import {AppContext, AxiosContext} from "@/components/AppState"
 import {useFrame, useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {FileFolder, FilePage} from "@/components/FileFolder"
@@ -18,6 +18,8 @@ import QuestSeven from "@/components/Quests/QuestSeven"
 import QuestEight from "@/components/Quests/QuestEight"
 import QuestNine from "@/components/Quests/QuestNine"
 import QuestTen from "@/components/Quests/QuestTen"
+import {useNotification} from "@/hooks/useNotification";
+import {allWalletsSvg} from "@web3modal/ui/dist/types/src/assets/svg/all-wallets";
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -33,8 +35,10 @@ type GLTFResult = GLTF & {
 }
 
 export function QuestRoom(props: JSX.IntrinsicElements['group']) {
-    const { nodes } = useGLTF('/questRoomFinal.glb') as GLTFResult
+    const {nodes} = useGLTF('/questRoomFinal.glb') as GLTFResult
     const [appState, setAppState] = useContext(AppContext)
+    const axios = useContext(AxiosContext);
+
     const deskTex = useTexture(
         '/QuestRoomDeskArea.webp',
         (loader) => loader.flipY = false
@@ -68,31 +72,8 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
         }),
         [wallTex]
     )
-    const [place, setPlace] =
-        useState(
-            'home' as
-                'home'
-                | 'sqMap'
-                | 'map'
-                | 'tut'
-                | 'sqTut'
-                | 'rev'
-                | 'desk'
-        )
-    const [quest, setQuest] = useState(
-        'none' as
-            'none'
-            | 'q1'
-            | 'q2'
-            | 'q3'
-            | 'q4'
-            | 'q5'
-            | 'q6'
-            | 'q7'
-            | 'q8'
-            | 'q9'
-            | 'q10'
-    )
+    const [place, setPlace] = useState('home' as 'home' | 'sqMap' | 'map' | 'tut' | 'sqTut' | 'rev' | 'desk')
+    const [quest, setQuest] = useState('none' as 'none' | 'q1' | 'q2' | 'q3' | 'q4' | 'q5' | 'q6' | 'q7' | 'q8' | 'q9' | 'q10')
     const [q1Open, setQ1Open] = useState(false)
     const [q2Open, setQ2Open] = useState(false)
     const [q3Open, setQ3Open] = useState(false)
@@ -167,6 +148,17 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
         })
     }, [appState.subSection])
 
+    const checkSideQuestChance = async () => {
+        let response = await axios.get("/quest/check_side_quest_chance");
+        console.log(response.data.exists_sidequest_chance)
+        if (response.data.exists_sidequest_chance) {
+            console.log(true)
+            setAppState({numberSQSpins: 1});
+        } else {
+            console.log("false")
+            setAppState({numberSQSpins: appState.numberSQSpins - 1});
+        }
+    };
     useEffect(() => {
         switch (place) {
             case 'home':
@@ -182,8 +174,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                 moveToPos.current.set(-0.5, 0.25, -2.5)
                 moveToRot.current.set(
                     0.1, 1.5, -0.1, 1
-                )
-                break
+                );
+                checkSideQuestChance();
+                break;
             case 'map':
                 moveToPos.current.set(0, 0, 0)
                 moveToRot.current.setFromEuler(
@@ -597,24 +590,24 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
 
 useGLTF.preload('/questRoomFinal.glb')
 
-function SideQuestSpinner({setPlace}:
-  {setPlace: Dispatch<SetStateAction<"map" | "rev" | "home" | "sqMap" | "tut" | "sqTut" | "desk">>}) {
+function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" | "rev" | "home" | "sqMap" | "tut" | "sqTut" | "desk">>}) {
+    const axios = useContext(AxiosContext);
+    const notify = useNotification();
     const [appState, setAppState] = useContext(AppContext)
     const [chanceStatus, setChanceStatus] = useState(
         'standby' as 'standby' | 'spinning' | 'won'
     )
-    const [showCords, setShowCords] = useState(
-        '' as '' | '90.3849238, 23.234234'
-    )
-    const [needleRotation, setNeedleRotation] = useState(0)
+    const [showCords, setShowCords] = useState<string>('');
+    const [needleRotation, setNeedleRotation] = useState(0);
 
     useEffect(() => {
         if (appState.numberSQSpins > 0) setChanceStatus('spinning')
     }, [appState.numberSQSpins])
 
-    useEffect(() => {
+
+    /*useEffect(() => {
         if (showCords !== '') setTimeout(() => setShowCords(''), 7000)
-    }, [showCords])
+    }, [showCords])*/
 
     return <>
         <Compass position={[-2.838, 0.725, -3.074]}
@@ -628,53 +621,62 @@ function SideQuestSpinner({setPlace}:
                  }}
                  onClick={(event) => {
                       event.stopPropagation()
-                      if (chanceStatus === 'standby') {
-                          setAppState({buyingSQ: true})
-                      } else if (chanceStatus === 'spinning') {
-                          const r = Math.random()
-                          setNeedleRotation(Math.PI * 14 + Math.PI * 2 * r - Math.PI * 2 * 0.025)
-                          setPlace('sqTut')
-                          setTimeout(() => {
-                              setNeedleRotation(0)
-                              if (r < 0.05) {
-                                  setChanceStatus('won')
-                                  setPlace('sqMap')
-                                  setAppState({
-                                      numberSQSpins: 0,
-                                      notify: true,
-                                      noteText: 'You won a side quest!\nCheck the map for Coordinates.',
-                                      noteStyle: 'success'
-                                  })
-                              } else {
-                                  setChanceStatus('standby')
-                                  setAppState({
-                                      numberSQSpins: appState.numberSQSpins - 1,
-                                      notify: true,
-                                      noteText: 'Spin Failed!',
-                                      noteStyle: 'fail'
-                                  })
-                              }
-                          }, 4250 )
-                      }
+                     if (appState.walletConnected) {
+                         if (chanceStatus === 'standby') {
+                             setAppState({buyingSQ: true})
+                         } else if (chanceStatus === 'spinning') {
+                             const r = Math.random()
+                             setNeedleRotation(Math.PI * 14 + Math.PI * 2 * r - Math.PI * 2 * 0.025)
+                             setPlace('sqTut')
+                             setTimeout(() => {
+                                 setNeedleRotation(0)
+                                 if (r < 0.05) {
+                                     setChanceStatus('won')
+                                     setPlace('sqMap')
+                                     setAppState({
+                                         numberSQSpins: 0,
+                                         notify: true,
+                                         noteText: 'You won a side quest!\nCheck the map for Coordinates.',
+                                         noteStyle: 'success'
+                                     })
+                                 } else {
+                                     setChanceStatus('standby')
+                                     setAppState({
+                                         numberSQSpins: appState.numberSQSpins - 1,
+                                         notify: true,
+                                         noteText: 'Spin Failed!',
+                                         noteStyle: 'fail'
+                                     })
+                                 }
+                             }, 4250 )
+                         }
+                     } else {
+                         setAppState({
+                             notify: true,
+                             noteText: "Wallet not connected",
+                             noteStyle: "alert"
+                         })
+                     }
                   }}
         />
-        {chanceStatus === 'won' &&
-            <mesh position={[-2.888, 0.305, -2.044]}
-                  onPointerEnter={() => {
-                      document.body.style.cursor = 'pointer'
-                  }}
-                  onPointerLeave={() => {
-                      document.body.style.cursor = 'default'
-                  }}
+        {appState.sideQuestWins.length > 0 &&
+            appState.sideQuestWins.map((win, i) => {
+                return <mesh position={[-2.888, 0.305, -2.044]}
+                  onPointerEnter={() => {document.body.style.cursor = 'pointer'}}
+                  onPointerLeave={() => {document.body.style.cursor = 'default'}}
                   onClick={(event) => {
+                      event.stopPropagation();
                       event.stopPropagation()
-                      setShowCords('90.3849238, 23.234234')
+                      setAppState({
+                          showSQWin: true,
+                          sQWinToShow: win
+                      })
                   }}
                   rotation={[0, 0, Math.PI * 0.5]}
             >
                 <cylinderGeometry args={[0.01, 0.01, 0.01, 16]}/>
                 <meshBasicMaterial color="yellow"/>
-            </mesh>}
+            </mesh>})}
         {showCords !== '' && <Html position={[-2.888, 0.305, -2.044]}>
             <div style={{
                 position: 'absolute',

@@ -1,22 +1,20 @@
 import * as THREE from 'three'
 import React, {forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
 import {Html, useGLTF, useTexture} from '@react-three/drei'
-import { GLTF } from 'three-stdlib'
-import {useThree} from "@react-three/fiber"
-import {PerspectiveCamera} from "three"
+import {GLTF} from 'three-stdlib'
 import {AppContext} from "@/components/AppState"
 import gsap from "gsap"
 import {useGSAP} from "@gsap/react"
 
 type GLTFResult = GLTF & {
-  nodes: {
-    FolderBack: THREE.Mesh
-    FolderFront: THREE.Mesh
-      OpenLabel: THREE.Mesh
-      OpenTrigger: THREE.Mesh
-    Page: THREE.Mesh
-  }
-  materials: {}
+    nodes: {
+        FolderBack: THREE.Mesh
+        FolderFront: THREE.Mesh
+        OpenLabel: THREE.Mesh
+        OpenTrigger: THREE.Mesh
+        Page: THREE.Mesh
+    }
+    materials: {}
 }
 
 type FileFolderProps = {
@@ -49,12 +47,11 @@ export const FileFolder = forwardRef<
 
     const { nodes } = useGLTF('/fileFolder.glb') as GLTFResult
     const [appState, setAppState] = useContext(AppContext)
-    const camera = useThree(
-      (state) => state.camera as PerspectiveCamera
-    )
     const folderTex = useTexture(
         '/paperNormal512.webp',
-        (tex) => {tex.wrapT = tex.wrapS = THREE.RepeatWrapping}
+        (tex) => {
+            tex.wrapT = tex.wrapS = THREE.RepeatWrapping
+        }
     )
     const material = useMemo(
         () => new THREE.MeshStandardMaterial({
@@ -118,20 +115,22 @@ export const FileFolder = forwardRef<
 
     useGSAP(() => {
         if (open) {
-            gsap.to(frontRef.current.position, {
-                duration: 0.75,
-                x: -0.1145,
-                y: 0.005,
-                z: 0,
-                ease: 'power2.out',
-            })
-            gsap.to(frontRef.current.rotation, {
-                duration: 0.75,
-                x: 0,
-                y: 0,
-                z: Math.PI,
-                ease: 'power2.out',
-            })
+            if (frontRef.current.rotation.z !== 3.14) {
+                gsap.to(frontRef.current.position, {
+                    duration: 0.75,
+                    x: -0.1145,
+                    y: 0.005,
+                    z: 0,
+                    ease: 'power2.out',
+                })
+                gsap.to(frontRef.current.rotation, {
+                    duration: 0.75,
+                    x: 0,
+                    y: 0,
+                    z: 3.14,
+                    ease: 'power2.out',
+                })
+            }
         } else {
             gsap.to(frontRef.current.position, {
                 duration: 0.75,
@@ -181,49 +180,49 @@ export const FileFolder = forwardRef<
                 <FolderLabel quest={quest} normalMap={folderTex} />
             </mesh>
 
-            <mesh geometry={nodes.OpenTrigger.geometry}
-                  onPointerEnter={(event) => {
-                      event.stopPropagation()
-                      if (!active){
-                          document.body.style.cursor = 'pointer'
-                      }
-                  }}
-                  onPointerLeave={() => {
-                      document.body.style.cursor = 'default'
-                  }}
-                  onClick={(event) => {
-                      if (active) {
+                <mesh geometry={nodes.OpenTrigger.geometry}
+                      onPointerEnter={(event) => {
                           event.stopPropagation()
-                          if (open) {
-                              closeFunc()
+                          if (!active) {
+                              document.body.style.cursor = 'pointer'
+                          }
+                      }}
+                      onPointerLeave={() => {
+                          document.body.style.cursor = 'default'
+                      }}
+                      onClick={(event) => {
+                          if (active) {
+                              event.stopPropagation()
                               if (appState.folderTutorial) setAppState({
                                   folderTutorial: false
                               })
-                          } else {
-                              openFunc()
+                              if (open) {
+                                  closeFunc()
+                              } else {
+                                  openFunc()
+                              }
                           }
-                      }
-                  }}
-                  position={[-0.115, 0.002, 0]}>
-                <meshBasicMaterial transparent opacity={0} />
-            </mesh>
+                      }}
+                      position={[-0.115, 0.002, 0]}>
+                    <meshBasicMaterial transparent opacity={0}/>
+                </mesh>
 
-            {props.children}
-        </mesh>
+                {props.children}
+            </mesh>
 
         {active &&
             <group position={[0, -0.1, 0]}
-                          rotation={[-Math.PI * 0.5, 0, 0]}
-                          onPointerEnter={() => {
-                              document.body.style.cursor = 'pointer'
-                          }}
-                          onPointerLeave={() => {
-                              document.body.style.cursor = 'default'
-                          }}
-                          onClick={(event) => {
-                              event.stopPropagation()
-                              closeFunc()
-                          }}>
+                      rotation={[-Math.PI * 0.5, 0, 0]}
+                      onPointerEnter={() => {
+                          document.body.style.cursor = 'pointer'
+                      }}
+                      onPointerLeave={() => {
+                          document.body.style.cursor = 'default'
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          closeFunc()
+                      }}>
                 {appState.folderTutorial &&
                     <Html position={[0.13, 0.1, 0]}>
                         <div style={{
@@ -250,50 +249,68 @@ export const FileFolder = forwardRef<
     </group>
   )
 })
-FileFolder.displayName = "FileFolder"
 
 useGLTF.preload('/fileFolder.glb')
 
 type FilePageProps = {
     quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-    page: 1 | 2|3
+    page: 1 | 2 | 3
     activePage: number
     turnThePage: () => void
 }
 
 export function FilePage({quest, page, activePage, turnThePage, ...props}:
                              JSX.IntrinsicElements['mesh'] & FilePageProps) {
-  const { nodes} = useGLTF('/fileFolder.glb') as GLTFResult
-  const [appState, setAppState] = useContext(AppContext)
+    const {nodes} = useGLTF('/fileFolder.glb') as GLTFResult
+    const [appState, setAppState] = useContext(AppContext)
     const paperTex = useTexture('/paperNormal512.webp')
+    const pageRef = useRef<THREE.Mesh>(null!)
 
-  return <mesh geometry={nodes.Page.geometry}
-               onClick={(event) => {
-                   event.stopPropagation()
-                   turnThePage()
-               }}
-               rotation={page < activePage ? [0, 0, Math.PI] : [0, 0, 0]}
-               {...props}
-  >
-      { props.children }
-    <meshStandardMaterial color={page > activePage ? "#ddd" : "white"}
-                            normalMap={paperTex}
-                          normalScale={new THREE.Vector2(0.25, 0.25)}
-                          roughness={0.5}
-                          side={THREE.DoubleSide} />
-      {page === activePage && <>
-          {appState.userLives === 0 && <BuyLivesButton/>}
-          <HintButton page={page} quest={quest}/>
-          {
-              ['started', 'hinted'].includes(appState[questString(quest)][subQString(page)])
-              && appState.userLives > 0
-              && <PasswordButton page={page} quest={quest}/>
-          }
-      </>}
-  </mesh>
+    useGSAP(() => {
+        if (page < activePage) {
+            if (pageRef.current.rotation.z !== Math.PI) {
+                gsap.to(pageRef.current.rotation, {
+                    duration: 0.75,
+                    z: page === 2 ? Math.PI * 0.97 : Math.PI,
+                    ease: 'power2.out',
+                })
+            }
+        } else {
+            if (pageRef.current.rotation.z !== 0) {
+                gsap.to(pageRef.current.rotation, {
+                    duration: 0.75,
+                    z: 0,
+                    ease: 'power2.out',
+                })
+            }
+        }
+    }, [activePage])
+
+    return <mesh geometry={nodes.Page.geometry}
+                 ref={pageRef}
+                 onClick={(event) => {
+                     event.stopPropagation()
+                     turnThePage()
+                 }}
+                 {...props}
+    >
+        {props.children}
+        <meshStandardMaterial color={page > activePage ? "#ddd" : "white"}
+                              normalMap={paperTex}
+                              normalScale={new THREE.Vector2(0.25, 0.25)}
+                              roughness={0.5}
+                              side={THREE.DoubleSide}/>
+            {appState.userLives === 0 && <BuyLivesButton active={page === activePage}/>}
+            <HintButton active={page === activePage} page={page} quest={quest}/>
+            {
+                ['started', 'hinted'].includes(appState[questString(quest)][subQString(page)])
+                && appState.userLives > 0
+                && <PasswordButton active={page === activePage} page={page} quest={quest}/>
+            }
+    </mesh>
 }
 
-function FolderLabel({quest, normalMap}: {quest: 1|2|3|4|5|6|7|8|9|10, normalMap: THREE.Texture}) {
+function FolderLabel({quest, normalMap}: { quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, normalMap: THREE.Texture }) {
     const titleTexture = useTexture(`/ButtonTextures/Quest${quest}Label.webp`)
 
     return <mesh position={[0.115, 0.01, -0.05]}
@@ -304,33 +321,47 @@ function FolderLabel({quest, normalMap}: {quest: 1|2|3|4|5|6|7|8|9|10, normalMap
     </mesh>
 }
 
-function PasswordButton({quest, page}: { quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, page: 1 | 2 | 3 }) {
+function PasswordButton({quest, page, active}: {
+    quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+    page: 1 | 2 | 3,
+    active: boolean
+}) {
     const [appState, setAppState] = useContext(AppContext)
     const buttonTex = useTexture('/ButtonTextures/EnterPassword.webp')
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.05, 0.00005, 0.105]}
+                 visible={active}
+                 position={[0.19, 0.00005, 0.08]}
                  onClick={(event) => {
                      event.stopPropagation()
-                     setAppState({
-                         enteringPassword: true,
-                         pwToEnter: {
-                             quest: quest,
-                             subQ: page
-                         }
-                     })
+                     if (appState.walletConnected) {
+                         setAppState({
+                             enteringPassword: true,
+                             pwToEnter: {
+                                 quest: quest,
+                                 subQ: page
+                             }
+                         })
+                     } else {
+                         setAppState({
+                             notify: true,
+                             noteText: "Wallet not connected",
+                             noteStyle: "alert"
+                         })
+                     }
                  }}
     >
-        <planeGeometry args={[0.05, 0.0375]}/>
+        <planeGeometry args={[0.0375, 0.028125]}/>
         <meshBasicMaterial map={buttonTex} transparent/>
     </mesh>
 }
 
-function BuyLivesButton() {
+function BuyLivesButton({active}: {active: boolean}) {
     const [appState, setAppState] = useContext(AppContext)
     const buttonTex = useTexture('/ButtonTextures/BuyLives.webp')
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
+                 visible={active}
                  position={[0.05, 0.00005, 0.105]}
                  onClick={(event) => {
                      event.stopPropagation()
@@ -344,56 +375,107 @@ function BuyLivesButton() {
     </mesh>
 }
 
-function HintButton({quest, page}: {quest: 1|2|3|4|5|6|7|8|9|10, page: 1|2|3}) {
+function HintButton({quest, page, active}: {
+    quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+    page: 1 | 2 | 3,
+    active: boolean
+}) {
     const [appState, setAppState] = useContext(AppContext)
     const buyHintTex = useTexture('ButtonTextures/BuyHint.webp')
     const hintTextTex = useTexture(`SubQuestTextures/HintQ${quest}sQ${page}.webp`)
     const completeTex = useTexture('ButtonTextures/Completed.webp')
+    const winTex = useTexture('ButtonTextures/ShowWinnings.webp')
     const [titleTexture, setTitleTexture] = useState(buyHintTex)
 
     useEffect(() => {
-        switch (appState[questString(quest)][subQString(page)]){
+        switch (appState[questString(quest)][subQString(page)]) {
             case 'hinted':
                 setTitleTexture(hintTextTex)
                 break
             case 'completed':
-                setTitleTexture(completeTex)
+                if (page === 3){
+                    setTitleTexture(winTex)
+                } else {
+                    setTitleTexture(completeTex)
+                }
                 break
             default:
                 setTitleTexture(buyHintTex)
         }
     }, [appState[questString(quest)][subQString(page)]])
 
+    if (page === 3 && appState[questString(quest)][subQString(page)] === 'completed') {
+        return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
+                     visible={active}
+                     onPointerEnter={() => {
+                         document.body.style.cursor = 'pointer'
+                     }}
+                     onPointerLeave={() => {
+                         document.body.style.cursor = 'default'
+                     }}
+                     onClick={() => {
+                        setAppState({
+                            showQuestWin: true,
+                            questWinToShow: {
+                                vaultCode: 121212,
+                                lat: 90.0001,
+                                lon: 30.0001,
+                                ytLink: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                            }
+                        })
+                     }}
+                     position={[0.18, 0.00005, 0.11]}>
+            <planeGeometry args={[0.05, 0.0375]}/>
+            <meshBasicMaterial map={titleTexture} transparent/>
+        </mesh>
+    }
+
     if (appState[questString(quest)][subQString(page)] !== 'started') {
         return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                     position={[0.18, 0.00005, 0.105]}>
+                     visible={active}
+                     position={[0.19, 0.00005, 0.119]}>
             <planeGeometry args={[0.05, 0.0375]}/>
             <meshBasicMaterial map={titleTexture} transparent/>
         </mesh>
     }
 
     return <mesh rotation={[-Math.PI * 0.5, 0, 0]}
-                 position={[0.18, 0.00005, 0.105]}
+                 position={[0.19, 0.00005, 0.119]}
+                 visible={active}
+                 onPointerEnter={() => {
+                     document.body.style.cursor = 'pointer'
+                 }}
+                 onPointerLeave={() => {
+                     document.body.style.cursor = 'default'
+                 }}
                  onClick={(event) => {
                      event.stopPropagation()
-                     setAppState({
-                         buyingHint: true,
-                         hintToBuy: {
-                             quest:quest,
-                             subQ: page
-                         }
-                     })
+                     if (appState.walletConnected) {
+                         setAppState({
+                             buyingHint: true,
+                             hintToBuy: {
+                                 quest: quest,
+                                 subQ: page
+                             }
+                         })
+                     } else {
+                         setAppState({
+                             notify: true,
+                             noteText: "Wallet not connected",
+                             noteStyle: "alert"
+                         })
+                     }
                  }}
     >
-        <planeGeometry args={[0.05, 0.0375]}/>
-        <meshBasicMaterial map={titleTexture} transparent />
+        <planeGeometry args={[0.025, 0.01875]}/>
+        <meshBasicMaterial map={titleTexture} transparent/>
     </mesh>
 }
 
-export function questString(quest: 1|2|3|4|5|6|7|8|9|10): 'quest1' | 'quest2' | 'quest3' | 'quest4' | 'quest5' | 'quest6' | 'quest7' | 'quest8' | 'quest9' | 'quest10' {
+export function questString(quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10): 'quest1' | 'quest2' | 'quest3' | 'quest4' | 'quest5' | 'quest6' | 'quest7' | 'quest8' | 'quest9' | 'quest10' {
     return `quest${quest}` as 'quest1' | 'quest2' | 'quest3' | 'quest4' | 'quest5' | 'quest6' | 'quest7' | 'quest8' | 'quest9' | 'quest10'
 }
 
-function subQString(page: 1|2|3): 'subQ1' | 'subQ2' | 'subQ3' {
+function subQString(page: 1 | 2 | 3): 'subQ1' | 'subQ2' | 'subQ3' {
     return `subQ${page}` as 'subQ1' | 'subQ2' | 'subQ3'
 }

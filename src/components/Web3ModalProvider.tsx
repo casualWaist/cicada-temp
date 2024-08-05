@@ -1,10 +1,10 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import {createWeb3Modal} from '@web3modal/wagmi/react'
+import {defaultWagmiConfig} from '@web3modal/wagmi/react/config'
 
-import { WagmiProvider } from 'wagmi'
-import { bscTestnet, mainnet, sepolia } from 'wagmi/chains'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { http, createConfig } from 'wagmi'
+import {WagmiProvider} from 'wagmi'
+import {bscTestnet, mainnet, sepolia} from 'wagmi/chains'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {http, createConfig} from 'wagmi'
 import {ReactNode} from 'react'
 
 // 0. Setup queryClient
@@ -41,7 +41,7 @@ createWeb3Modal({
     enableOnramp: true // Optional - false as default
 })
 
-export function Web3ModalProvider({ children }: { children: ReactNode }) {
+export function Web3ModalProvider({children}: { children: ReactNode }) {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

@@ -22,11 +22,11 @@ export function Compass({chanceStatus, needleRotation = 0, ...props}:
     const { nodes, materials } = useGLTF('/compassFinal.glb') as GLTFResult
     const texture = useTexture(
         '/Compass1K.webp',
-(loader) => loader.flipY = false
+        (loader) => loader.flipY = false
     )
     const normalTex = useTexture(
         '/CompassNormal1K.webp',
-(loader) => loader.flipY = false
+        (loader) => loader.flipY = false
     )
     const material = useMemo(() => {
         return new THREE.MeshStandardMaterial({
@@ -69,7 +69,7 @@ export function Compass({chanceStatus, needleRotation = 0, ...props}:
                       ref={spinnerRef}
                       material={material}/>
             </mesh>
-            <meshBasicMaterial color={'#000'} />
+            <meshBasicMaterial color={'#000'}/>
         </mesh>
     </group>
 }

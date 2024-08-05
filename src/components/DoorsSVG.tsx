@@ -23,7 +23,7 @@ export function SVGDefs() {
 
 const SvgDoors = (props: JSX.IntrinsicElements['svg']) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" {...props}>
-        <SVGDefs />
+        <SVGDefs/>
         <path
             d="M51.153 30.8h393.628v444.922H51.153z"
             style={{

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react'
 import {useGLTF, useTexture} from '@react-three/drei'
-import { GLTF } from 'three-stdlib'
+import {GLTF} from 'three-stdlib'
 import {useFrame, useThree} from "@react-three/fiber"
 import {PerspectiveCamera} from "three"
 import {AppContext} from "@/components/AppState"
@@ -24,7 +24,7 @@ type GLTFResult = GLTF & {
 }
 
 export function MapRoom(props: JSX.IntrinsicElements['group']) {
-    const { nodes } = useGLTF('/mapRoomFinal.glb') as GLTFResult
+    const {nodes} = useGLTF('/mapRoomFinal.glb') as GLTFResult
     const [camera, view] = useThree(
         (state) => [state.camera, state.viewport] as [PerspectiveCamera, { aspect: number }]
     )
@@ -50,7 +50,7 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const questMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: questTex,
-            color: appState.isMobile ? '#aaa' : '#888888'
+            color: appState.isMobile ? '#bbb' : '#aaa'
         }),
         [questTex]
     )
@@ -61,7 +61,7 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
     const vaultMaterial = useMemo(
         () => new THREE.MeshBasicMaterial({
             map: vaultTex,
-            color: appState.isMobile ? '#aaa' : '#888888'
+            color: appState.isMobile ? '#bbb' : '#aaa'
         }),
         [vaultTex]
     )
@@ -146,7 +146,6 @@ export function MapRoom(props: JSX.IntrinsicElements['group']) {
 
     return (
         <group {...props} dispose={null}>
-
             <mesh geometry={nodes.QuestDoorTrigger.geometry}
                   material={nodes.QuestDoorTrigger.material}
                   onPointerOver={() => setQuestDoorHover(true)}

@@ -4,12 +4,12 @@ import {AppContext} from "@/components/AppState"
 import {useTexture} from "@react-three/drei"
 
 export default function QuestEight({active, open}:
-    {
-        open: boolean
-        active: boolean
-    }) {
+       {
+           open: boolean
+           active: boolean
+       }) {
     const [appState, setAppState] = useContext(AppContext)
-    const [activePage, setActivePage] = useState(1 as 1|2|3)
+    const [activePage, setActivePage] = useState(1 as 1 | 2 | 3)
     const subQ1Tex = useTexture('/SubQuestTextures/Q8sQ1Texture.webp')
     const subQ2Tex = useTexture('/SubQuestTextures/Q8sQ2Texture.webp')
     const subQ3Tex = useTexture('/SubQuestTextures/Q8sQ3Texture.webp')

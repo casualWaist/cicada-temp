@@ -1,19 +1,15 @@
 'use client'
 
 import {
-  AxiosContext,
-  AppContext,
-  AppStateWrapper,
-  AxiosProvider,
-  AxiosInstance
+    AppContext,
+    AppStateWrapper,
+    AxiosProvider,
 } from '@/components/AppState'
 import Landing from '@/components/Landing'
-import { useContext, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
+import {useContext} from 'react'
+import {Canvas} from '@react-three/fiber'
 import HouseModel from '@/components/HouseModel'
-import { Web3ModalProvider } from './Web3ModalProvider'
-import { useAccount, useWriteContract } from 'wagmi'
-//import { marketplace_abi } from "@/const/abis/marketplace";
+import {Web3ModalProvider} from './Web3ModalProvider'
 import BuyHint from "@/components/BuyHInt"
 import BuySQChance from "@/components/BuySQChance"
 import NavOverlay from "@/components/NavOverlay"
@@ -25,76 +21,55 @@ import Notifications from "@/components/Notifications"
 import gsap from "gsap"
 import {useGSAP} from "@gsap/react"
 import Tutorials from "@/components/Tutorials"
-// import { postData } from "@/actions/commonAction"
+import ImageViewer from "@/components/ImageViewer"
+import SideQuestWin from "@/components/SideQuestWin"
+import QuestWin from "@/components/QuestWin"
 
 const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
 gsap.registerPlugin(useGSAP)
 
-export default function AppNav () {
-  return (
-    <AppStateWrapper>
-      <AxiosProvider>
-        <Web3ModalProvider>
-          <AppTrack />
-        </Web3ModalProvider>
-      </AxiosProvider>
-    </AppStateWrapper>
-  )
+export default function AppNav() {
+    return (
+        <AppStateWrapper>
+            <AxiosProvider>
+                <Web3ModalProvider>
+                    <AppTrack/>
+                </Web3ModalProvider>
+            </AxiosProvider>
+        </AppStateWrapper>
+    )
 }
 
-function AppTrack () {
-  const [appState, setAppState] = useContext(AppContext)
-  const axios = useContext(AxiosContext)
-  const account = useAccount()
-  const { writeContract } = useWriteContract()
+function AppTrack() {
+    const [appState, setAppState] = useContext(AppContext);
 
-  useEffect(() => {
-    const registerWalletAddress = async () => {
-      try {
-        const response = await axios.post('/auth/register_wallet_address', {});
-        console.log(response)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    if (account.isConnected && account.address) {
-      setAppState({ walletAddress: account.address });
-      setAppState({ walletConnected: true });
-      AxiosInstance.defaults.headers.account_address = account.address;
-      // registerWalletAddress();
-    }
+    return (
+        <div className={`fixed overflow-hidden bg-black w-full h-full ${amatic.className}`}>
+            <Canvas>
+                {appState.section === 'landing' ? <Landing/> : <HouseModel/>}
+            </Canvas>
 
-    if (!account.isConnected) {
-      setAppState({ walletConnected: false })
-    }
-  }, [account.isConnected])
-  return (
-    <div className={`fixed overflow-hidden bg-black w-full h-full ${amatic.className}`}>
-      <Canvas>
-        {appState.section === 'landing' ? <Landing /> : <HouseModel />}
-      </Canvas>
+            {appState.section === 'landing' ? (
+                <div className='absolute top-0 w-full py-16 flex flex-col items-center justify-center'>
+                    <button className={`p-5 text-2xl ${amatic.className}`}
+                            onClick={() => setAppState({section: 'map'})}>
+                        Enter
+                    </button>
+                </div>
+            ) : null}
 
-      {appState.section === 'landing' ? (
-        <div className='absolute top-0 w-full py-16 flex flex-col items-center justify-center'>
-          <w3m-button label='Connect Wallet' />
-          {appState.walletConnected && (
-            <button className={`p-5 text-2xl ${amatic.className}`}
-                    onClick={() => setAppState({ section: 'map' })}>
-              Enter
-            </button>
-          )}
+            <NavOverlay/>
+            {appState.tutorialView && <Tutorials/>}
+            {appState.buyingHint && <BuyHint/>}
+            {appState.buyingSQ && <BuySQChance/>}
+            {appState.enteringPassword && <EnterQPass/>}
+            {appState.buyingLives && <BuyLives/>}
+            {appState.buyingSkip && <BuySkip/>}
+            {appState.showQuestWin && <QuestWin/>}
+            {appState.showSQWin && <SideQuestWin/>}
+            {appState.imageView && <ImageViewer/>}
+            {appState.notify && <Notifications/>}
+
         </div>
-      ) : null}
-
-      <NavOverlay />
-      {appState.tutorialView && <Tutorials />}
-      {appState.buyingHint && <BuyHint />}
-      {appState.buyingSQ && <BuySQChance />}
-      {appState.enteringPassword && <EnterQPass />}
-      {appState.buyingLives && <BuyLives />}
-      {appState.buyingSkip && <BuySkip />}
-      {appState.notify && <Notifications />}
-
-    </div>
-  )
+    )
 }

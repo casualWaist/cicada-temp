@@ -2,21 +2,26 @@
 
 import {createPortal, useFrame, useThree} from "@react-three/fiber"
 import {Float, Html, useFBO, useTexture} from "@react-three/drei"
-import { Amatic_SC } from "next/font/google"
+import {Amatic_SC} from "next/font/google"
 import {useEffect, useMemo, useRef, useState} from "react"
 import * as THREE from "three"
-import {CicadaShaderUniforms, CicadaSimShaderUniforms, CicadaShader, CicadaSimShader} from "@/components/LandingMaterials"
+import {
+    CicadaShaderUniforms,
+    CicadaSimShaderUniforms,
+    CicadaShader,
+    CicadaSimShader
+} from "@/components/LandingMaterials"
 import Countdown from "react-countdown"
 import moment from "moment-timezone"
 
 const amatic = Amatic_SC({subsets: ['latin'], weight: ['400', '700']})
 
 export default function Landing() {
-    const targetDateCT = moment.tz('2024-08-05 12:00', 'America/Chicago')
+    const targetDateCT = moment.tz('2024-08-12 12:00', 'America/Chicago')
     const userDateTZ = targetDateCT.clone().tz(moment.tz.guess())
 
     return <>
-        <Scene />
+        <Scene/>
         <Float>
             <Html position={[0, -2, 1]}
                   center transform as="h1"
@@ -28,8 +33,8 @@ export default function Landing() {
                          textAlign: 'center',
                          textShadow: '0 0 1px #000',
                          color: '#801b1b'
-                }}>
-                    <Countdown date={userDateTZ.toDate()} />
+                     }}>
+                    <Countdown date={userDateTZ.toDate()}/>
                 </div>
             </Html>
         </Float>
@@ -47,13 +52,13 @@ function Scene() {
     const texWorld = useTexture('/cicada-3301.png')
 
     const tGeo = useMemo(() => new THREE.PlaneGeometry(
-        view.width,
-        view.width * 0.5625,
-        128,
-        128),
+            view.width,
+            view.width * 0.5625,
+            128,
+            128),
         [view])
 
-    const { size, texture } = useMemo(() => {
+    const {size, texture} = useMemo(() => {
 
         const tMesh = new THREE.Mesh(tGeo)
         const size = Math.ceil(Math.sqrt(tMesh.geometry.attributes.position.array.length / 3))
@@ -109,12 +114,12 @@ function Scene() {
         {createPortal(
             <mesh>
                 <planeGeometry args={[2, 2]}/>
-                <CicadaSimShader ref={simShader} />
+                <CicadaSimShader ref={simShader}/>
             </mesh>,
             simScene
         )}
         <group position={[0, 0.5, 0]} rotation={[Math.PI, 0, 0]}>
-            <points ref={points} >
+            <points ref={points}>
                 <bufferGeometry attach="geometry" {...tGeo} />
                 <CicadaShader ref={shader}
                               uPositions={texture}

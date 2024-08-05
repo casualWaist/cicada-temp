@@ -32,7 +32,7 @@ export default function Notifications() {
     if (appState.noteStyle === 'alert') return (
         <div ref={container} className="pointer-events-none absolute top-0 w-full flex justify-center">
             <div className="p-2 max-w-[300px] text-2xl">
-                <div className="bg-red-500 text-white p-2 rounded-md">
+                <div className="darkFade text-red-500 p-2 rounded-md">
                     <p className="text-center whitespace-pre-line">
                         {appState.noteText}
                     </p>
