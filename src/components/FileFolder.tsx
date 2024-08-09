@@ -306,13 +306,13 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
                              setAppState({
                                  [questString(quest)]: {
                                      ...appState[questString(quest)],
-                                     [subQString(page + 1)]: stringUpdate()
+                                     [subQString(page + 1 as 1|2|3)]: stringUpdate()
                                  }
                              })
                          } else {
                              setAppState({
-                                 [questString(quest + 1)]: {
-                                     ...appState[questString(quest + 1)],
+                                 [questString(quest + 1 as 1|2|3)]: {
+                                     ...appState[questString(quest + 1 as 1|2|3)],
                                      status: 'started',
                                      [subQString(1)]: stringUpdate()
                                  }
