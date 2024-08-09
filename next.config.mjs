@@ -17,8 +17,6 @@ const nextConfig = {
         })
         return config
     },
-};
-module.exports = {
     typescript: {
         // !! WARN !!
         // Dangerously allow production builds to successfully complete even if
@@ -26,6 +24,6 @@ module.exports = {
         // !! WARN !!
         ignoreBuildErrors: true,
     },
-}
+};
 
 export default nextConfig;
