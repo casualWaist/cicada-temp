@@ -140,19 +140,19 @@ export function AppStateWrapper({children}: { children: ReactNode }) {
         folderTutorial: true,
         isMobile: false,
         quest1: {
-            status: 'completed',
-            subQ1: 'completed',
-            subQ2: 'completed',
-            subQ3: 'completed',
-        },
-        quest2: {
             status: 'started',
             subQ1: 'started',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
         },
-        quest3: {
+        quest2: {
             status: 'locked',
+            subQ1: 'unavailable',
+            subQ2: 'unavailable',
+            subQ3: 'unavailable',
+        },
+        quest3: {
+            status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',

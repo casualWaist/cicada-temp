@@ -11,9 +11,11 @@ export default function QuestOne({active, open}:
     const [appState, setAppState] = useContext(AppContext)
     const [activePage, setActivePage] = useState(1 as 1|2|3)
     const subQ1Tex = useTexture('/SubQuestTextures/Q1sQ1Texture.webp')
-    const ffPic = useTexture('/SubQuestTextures/Q1sQ1Image.webp')
+    const sQ1Pic = useTexture('/SubQuestTextures/Q1sQ1Image.webp')
     const subQ2Tex = useTexture('/SubQuestTextures/Q1sQ2Texture.webp')
+    const sQ2Pic = useTexture('/SubQuestTextures/Q1sQ2Image.webp')
     const subQ3Tex = useTexture('/SubQuestTextures/Q1sQ3Texture.webp')
+    const sQ3Pic = useTexture('/SubQuestTextures/Q1sQ3Image.webp')
 
     useEffect(() => {
         if (!open) setActivePage(1)
@@ -37,18 +39,22 @@ export default function QuestOne({active, open}:
                     <planeGeometry args={[0.2, 0.2]}/>
                     <meshBasicMaterial map={subQ1Tex} transparent/>
                 </mesh>
-                <mesh position={[0.085, 0.000025, 0.1]}
+                <mesh position={[0.085, 0.000025, 0.09]}
                       onClick={(event) => {
                           event.stopPropagation()
-                          setAppState({
-                          imageView: true,
-                          imageToView: {
-                              quest: 1,
-                              subQ: 1}
-                      })}}
+                          if (activePage === 1){
+                              setAppState({
+                                  imageView: true,
+                                  imageToView: {
+                                      quest: 1,
+                                      subQ: 1
+                                  }
+                              })
+                          }
+                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
-                    <planeGeometry args={[0.08, 0.06]}/>
-                    <meshBasicMaterial map={ffPic}/>
+                    <planeGeometry args={[0.1, 0.0778]}/>
+                    <meshBasicMaterial map={sQ1Pic}/>
                 </mesh>
             </FilePage>
             <FilePage page={2}
@@ -66,6 +72,24 @@ export default function QuestOne({active, open}:
                     <planeGeometry args={[0.2, 0.2]}/>
                     <meshBasicMaterial map={subQ2Tex} transparent/>
                 </mesh>
+                <mesh position={[0.085, 0.000025, 0.09]}
+                      visible={activePage === 2}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 2) {
+                              setAppState({
+                                  imageView: true,
+                                  imageToView: {
+                                      quest: 1,
+                                      subQ: 2
+                                  }
+                              })
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.12, 0.06318]}/>
+                    <meshBasicMaterial map={sQ2Pic}/>
+                </mesh>
             </FilePage>
             <FilePage page={3}
                       quest={1}
@@ -77,6 +101,24 @@ export default function QuestOne({active, open}:
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.2, 0.2]}/>
                     <meshBasicMaterial map={subQ3Tex} transparent/>
+                </mesh>
+                <mesh position={[0.085, 0.000025, 0.09]}
+                      visible={activePage === 3}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 3) {
+                              setAppState({
+                                  imageView: true,
+                                  imageToView: {
+                                      quest: 1,
+                                      subQ: 3
+                                  }
+                              })
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.11, 0.0786]}/>
+                    <meshBasicMaterial map={sQ3Pic}/>
                 </mesh>
             </FilePage>
         </group>

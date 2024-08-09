@@ -9,12 +9,11 @@ export default function ImageViewer() {
                    onClick={() => setAppState({
                        imageView: false
                    })}>
-        <div className="absolute w-3/4 h-3/4 max-w-[1024px] max-h-[727px]">
-                <Image src={`/SubQuestTextures/Q${appState.imageToView.quest}sQ${appState.imageToView.subQ}Image.webp`}
-                       className="max-w-3/4 max-h-3/4"
-                       fill
-                       objectFit={"contain"}
-                       alt="Vault Tutorial"/>
+        <div className="w-full h-3/4 max-w-[497px] max-h-[497px]
+            lg:max-h-[1024px] lg:max-w-[727px] flex justify-center items-center">
+            <img src={`/SubQuestTextures/Q${appState.imageToView.quest}sQ${appState.imageToView.subQ}Image.webp`}
+                 className=""
+                 alt="Vault Tutorial"/>
         </div>
 
     </button>

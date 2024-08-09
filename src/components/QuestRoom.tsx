@@ -20,6 +20,7 @@ import QuestNine from "@/components/Quests/QuestNine"
 import QuestTen from "@/components/Quests/QuestTen"
 import {useNotification} from "@/hooks/useNotification";
 import {allWalletsSvg} from "@web3modal/ui/dist/types/src/assets/svg/all-wallets";
+import {getAxiosErrorMsg} from "@/utils/errorHandler";
 
 type GLTFResult = GLTF & {
     nodes: {
@@ -38,6 +39,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     const {nodes} = useGLTF('/questRoomFinal.glb') as GLTFResult
     const [appState, setAppState] = useContext(AppContext)
     const axios = useContext(AxiosContext);
+    const notify = useNotification();
 
     const deskTex = useTexture(
         '/QuestRoomDeskArea.webp',
@@ -149,14 +151,16 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
     }, [appState.subSection])
 
     const checkSideQuestChance = async () => {
-        let response = await axios.get("/quest/check_side_quest_chance");
-        console.log(response.data.exists_sidequest_chance)
-        if (response.data.exists_sidequest_chance) {
-            console.log(true)
-            setAppState({numberSQSpins: 1});
-        } else {
-            console.log("false")
-            setAppState({numberSQSpins: appState.numberSQSpins - 1});
+        try {
+            let response = await axios.get("/quest/check_side_quest_chance");
+            setAppState({sideQuestWins: response.data.coordinates});
+            if (response.data.exists_sidequest_chance) {
+                setAppState({numberSQSpins: 1});
+            } else {
+                setAppState({numberSQSpins: appState.numberSQSpins - 1});
+            }
+        } catch (error) {
+            notify('fail', getAxiosErrorMsg(error));
         }
     };
     useEffect(() => {
@@ -230,7 +234,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                         }}
                         quest={1}
                         open={q1Open}
-                        openFunc={() => setQ1Open(true)}
+                        openFunc={() => {
+                            setQ1Open(true);
+                            setAppState({
+                                questWinToShow: {
+                                    ...appState.questWinToShow,
+                                    vaultCode: appState.quest1.vaultCode,
+                                    lat: appState.quest1.latitude,
+                                    lon: appState.quest1.longitude,
+                                    ytLink: appState.quest1.ytLink
+                                }
+                            })
+                        }}
                         closeFunc={() => {
                             setQuest('none')
                             setQ1Open(false)
@@ -256,7 +271,19 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={2}
                             open={q2Open}
-                            openFunc={() => setQ2Open(true)}
+                            openFunc={() => {
+                                setQ2Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest2.vaultCode,
+                                        lat: appState.quest2.latitude,
+                                        lon: appState.quest2.longitude,
+                                        ytLink: appState.quest2.ytLink
+                                    }
+                                })
+
+                            }}
                             closeFunc={() => {
                                 setQ2Open(false)
                                 setQuest('none')
@@ -278,12 +305,21 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
 
             {['started', 'completed'].includes(appState.quest3.status) &&
                 <FileFolder active={quest === 'q3'}
-                            activateFunc={() => {
-                                setQuest('q3')
-                            }}
+                            activateFunc={() => setQuest('q3')}
                             quest={3}
                             open={q3Open}
-                            openFunc={() => setQ3Open(true)}
+                            openFunc={() => {
+                                setQ3Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest3.vaultCode,
+                                        lat: appState.quest3.latitude,
+                                        lon: appState.quest3.longitude,
+                                        ytLink: appState.quest3.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ3Open(false)
                                 setQuest('none')
@@ -305,12 +341,21 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
 
             {['started', 'completed'].includes(appState.quest4.status) &&
                 <FileFolder active={quest === 'q4'}
-                            activateFunc={() => {
-                                setQuest('q4')
-                            }}
+                            activateFunc={() => setQuest('q4')}
                             quest={4}
                             open={q4Open}
-                            openFunc={() => setQ4Open(true)}
+                            openFunc={() => {
+                                setQ4Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest4.vaultCode,
+                                        lat: appState.quest4.latitude,
+                                        lon: appState.quest4.longitude,
+                                        ytLink: appState.quest4.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ4Open(false)
                                 setQuest('none')
@@ -337,7 +382,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={5}
                             open={q5Open}
-                            openFunc={() => setQ5Open(true)}
+                            openFunc={() => {
+                                setQ5Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest5.vaultCode,
+                                        lat: appState.quest5.latitude,
+                                        lon: appState.quest5.longitude,
+                                        ytLink: appState.quest5.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ5Open(false)
                                 setQuest('none')
@@ -364,7 +420,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={6}
                             open={q6Open}
-                            openFunc={() => setQ6Open(true)}
+                            openFunc={() => {
+                                setQ6Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest6.vaultCode,
+                                        lat: appState.quest6.latitude,
+                                        lon: appState.quest6.longitude,
+                                        ytLink: appState.quest6.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ6Open(false)
                                 setQuest('none')
@@ -391,7 +458,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={7}
                             open={q7Open}
-                            openFunc={() => setQ7Open(true)}
+                            openFunc={() => {
+                                setQ7Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest7.vaultCode,
+                                        lat: appState.quest7.latitude,
+                                        lon: appState.quest7.longitude,
+                                        ytLink: appState.quest7.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ7Open(false)
                                 setQuest('none')
@@ -418,7 +496,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={8}
                             open={q8Open}
-                            openFunc={() => setQ8Open(true)}
+                            openFunc={() => {
+                                setQ8Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest8.vaultCode,
+                                        lat: appState.quest8.latitude,
+                                        lon: appState.quest8.longitude,
+                                        ytLink: appState.quest8.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ8Open(false)
                                 setQuest('none')
@@ -445,7 +534,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={9}
                             open={q9Open}
-                            openFunc={() => setQ9Open(true)}
+                            openFunc={() => {
+                                setQ9Open(true)
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest9.vaultCode,
+                                        lat: appState.quest9.latitude,
+                                        lon: appState.quest9.longitude,
+                                        ytLink: appState.quest9.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ9Open(false)
                                 setQuest('none')
@@ -472,7 +572,18 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             }}
                             quest={10}
                             open={q10Open}
-                            openFunc={() => setQ10Open(true)}
+                            openFunc={() => {
+                                appState.joinBefore >= 10 ? setQ10Open(true) : notify("alert", "You can open this quest on day 10.")
+                                setAppState({
+                                    questWinToShow: {
+                                        ...appState.questWinToShow,
+                                        vaultCode: appState.quest10.vaultCode,
+                                        lat: appState.quest10.latitude,
+                                        lon: appState.quest10.longitude,
+                                        ytLink: appState.quest10.ytLink
+                                    }
+                                })
+                            }}
                             closeFunc={() => {
                                 setQ10Open(false)
                                 setQuest('none')
@@ -590,7 +701,9 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
 
 useGLTF.preload('/questRoomFinal.glb')
 
-function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" | "rev" | "home" | "sqMap" | "tut" | "sqTut" | "desk">>}) {
+function SideQuestSpinner({setPlace}: {
+    setPlace: Dispatch<SetStateAction<"map" | "rev" | "home" | "sqMap" | "tut" | "sqTut" | "desk">>
+}) {
     const axios = useContext(AxiosContext);
     const notify = useNotification();
     const [appState, setAppState] = useContext(AppContext)
@@ -619,36 +732,32 @@ function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" |
                  onPointerLeave={() => {
                      document.body.style.cursor = 'default'
                  }}
-                 onClick={(event) => {
-                      event.stopPropagation()
+                 onClick={async (event) => {
+                     event.stopPropagation()
                      if (appState.walletConnected) {
                          if (chanceStatus === 'standby') {
                              setAppState({buyingSQ: true})
                          } else if (chanceStatus === 'spinning') {
-                             const r = Math.random()
-                             setNeedleRotation(Math.PI * 14 + Math.PI * 2 * r - Math.PI * 2 * 0.025)
-                             setPlace('sqTut')
-                             setTimeout(() => {
-                                 setNeedleRotation(0)
-                                 if (r < 0.05) {
-                                     setChanceStatus('won')
-                                     setPlace('sqMap')
-                                     setAppState({
-                                         numberSQSpins: 0,
-                                         notify: true,
-                                         noteText: 'You won a side quest!\nCheck the map for Coordinates.',
-                                         noteStyle: 'success'
-                                     })
-                                 } else {
-                                     setChanceStatus('standby')
-                                     setAppState({
-                                         numberSQSpins: appState.numberSQSpins - 1,
-                                         notify: true,
-                                         noteText: 'Spin Failed!',
-                                         noteStyle: 'fail'
-                                     })
-                                 }
-                             }, 4250 )
+                             try {
+                                 let response = await axios.post("/quest/spend_side_quest_chance");
+                                 const r = response.data.random / 100;
+                                 setNeedleRotation(Math.PI * 14 + Math.PI * 2 * r - Math.PI * 2 * 0.025)
+                                 setPlace('sqTut')
+                                 setTimeout(() => {
+                                     if (r < 0.05) {
+                                         notify("success", 'You won a side quest!\nCheck the map for Coordinates.');
+                                         setChanceStatus('won');
+                                         setPlace('sqMap');
+                                         setShowCords(`${response.data.latitude}, ${response.data.longitude}`)
+                                     } else {
+                                         setChanceStatus('standby')
+                                         notify("fail", response.data.msg || "Unfortunately, Spin Failed!\nYou lost your chance.");
+                                     }
+                                 }, 4250);
+                             } catch (error) {
+                                 setChanceStatus('standby')
+                                 notify('fail', getAxiosErrorMsg(error));
+                             }
                          }
                      } else {
                          setAppState({
@@ -657,26 +766,31 @@ function SideQuestSpinner({setPlace}: {setPlace: Dispatch<SetStateAction<"map" |
                              noteStyle: "alert"
                          })
                      }
-                  }}
+                 }}
         />
         {appState.sideQuestWins.length > 0 &&
             appState.sideQuestWins.map((win, i) => {
-                return <mesh key={`sQMesh${i}`} position={[-2.888, 0.305, -2.044]}
-                  onPointerEnter={() => {document.body.style.cursor = 'pointer'}}
-                  onPointerLeave={() => {document.body.style.cursor = 'default'}}
-                  onClick={(event) => {
-                      event.stopPropagation();
-                      event.stopPropagation()
-                      setAppState({
-                          showSQWin: true,
-                          sQWinToShow: win
-                      })
-                  }}
-                  rotation={[0, 0, Math.PI * 0.5]}
-            >
-                <cylinderGeometry key={`sQGeo${i}`} args={[0.01, 0.01, 0.01, 16]}/>
-                <meshBasicMaterial key={`sQMat${i}`} color="yellow"/>
-            </mesh>})}
+                return <mesh key={`sQMesh${i}`} position={[-2.888, win.mapY, win.mapX]}
+                             onPointerEnter={() => {
+                                 document.body.style.cursor = 'pointer'
+                             }}
+                             onPointerLeave={() => {
+                                 document.body.style.cursor = 'default'
+                             }}
+                             onClick={(event) => {
+                                 event.stopPropagation();
+                                 event.stopPropagation()
+                                 setAppState({
+                                     showSQWin: true,
+                                     sQWinToShow: win,
+                                 })
+                             }}
+                             rotation={[0, 0, Math.PI * 0.5]}
+                >
+                    <cylinderGeometry key={`sQGeo${i}`} args={[0.01, 0.01, 0.075, 16]}/>
+                    <meshBasicMaterial key={`sQMat${i}`} color="#dab665"/>
+                </mesh>
+            })}
         {showCords !== '' && <Html position={[-2.888, 0.305, -2.044]}>
             <div style={{
                 position: 'absolute',

@@ -286,11 +286,47 @@ export function FilePage({quest, page, activePage, turnThePage, ...props}:
         }
     }, [activePage])
 
+    function stringUpdate() {
+        switch (appState[questString(quest)][subQString(page)]){
+            case "started":
+                return "hinted"
+            case "hinted":
+                return "completed"
+            default:
+                return "started"
+        }
+    }
+
     return <mesh geometry={nodes.Page.geometry}
                  ref={pageRef}
                  onClick={(event) => {
                      event.stopPropagation()
-                     turnThePage()
+                     if (appState[questString(quest)][subQString(page)] === 'completed') {
+                         if (page < 3) {
+                             setAppState({
+                                 [questString(quest)]: {
+                                     ...appState[questString(quest)],
+                                     [subQString(page + 1)]: stringUpdate()
+                                 }
+                             })
+                         } else {
+                             setAppState({
+                                 [questString(quest + 1)]: {
+                                     ...appState[questString(quest + 1)],
+                                     status: 'started',
+                                     [subQString(1)]: stringUpdate()
+                                 }
+                             })
+                         }
+                         turnThePage()
+                     } else {
+                         setAppState({
+                             [questString(quest)]: {
+                                    ...appState[questString(quest)],
+                                    [subQString(page)]: stringUpdate()
+                             }
+                         })
+                     }
                  }}
                  {...props}
     >
