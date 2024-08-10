@@ -2,6 +2,7 @@ import {FilePage} from "@/components/FileFolder"
 import React, {useContext, useEffect, useState} from "react"
 import {AppContext} from "@/components/AppState"
 import {useTexture} from "@react-three/drei"
+import {SRGBColorSpace} from "three"
 
 export default function QuestTen({active, open}:
     {
@@ -16,6 +17,8 @@ export default function QuestTen({active, open}:
     const sQ2Pic = useTexture('/SubQuestTextures/Q10sQ2Image.webp')
     const subQ3Tex = useTexture('/SubQuestTextures/Q10sQ3Texture.webp')
     const sQ3Pic = useTexture('/SubQuestTextures/Q10sQ3Image.webp')
+    const dlButton = useTexture('/ButtonTextures/DownloadButton.webp',
+        (tex) => {tex.colorSpace = SRGBColorSpace})
 
     useEffect(() => {
         if (!open) setActivePage(1)
@@ -40,21 +43,31 @@ export default function QuestTen({active, open}:
                     <meshBasicMaterial map={subQ1Tex} transparent/>
                 </mesh>
                 <mesh position={[0.085, 0.000025, 0.0975]}
-                      onClick={(event) => {
-                          event.stopPropagation()
-                          if (activePage === 1) {
-                              setAppState({
-                                  imageView: true,
-                                  imageToView: {
-                                      quest: 10,
-                                      subQ: 1
-                                  }
-                              })
-                          }
-                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.07, 0.07]}/>
                     <meshBasicMaterial map={sQ1Pic}/>
+                </mesh>
+                <mesh position={[0.132, 0.000025, 0.122]}
+                      onPointerEnter={() => {
+                          document.body.style.cursor = 'pointer'
+                      }}
+                      onPointerLeave={() => {
+                          document.body.style.cursor = 'default'
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 1) {
+                              const link = document.createElement('a')
+                              link.href = '/SubQuestTextures/Q10sQ1ImageHQ.png'
+                              link.download = 'Q10sQ1ImageHQ.png'
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.015, 0.015]}/>
+                    <meshBasicMaterial map={dlButton} transparent/>
                 </mesh>
             </FilePage>
             <FilePage page={2}
@@ -74,21 +87,36 @@ export default function QuestTen({active, open}:
                 </mesh>
                 <mesh position={[0.085, 0.000025, 0.09]}
                       visible={activePage === 2}
-                      onClick={(event) => {
-                          event.stopPropagation()
-                          if (activePage === 2) {
-                              setAppState({
-                                  imageView: true,
-                                  imageToView: {
-                                      quest: 10,
-                                      subQ: 2
-                                  }
-                              })
-                          }
-                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.08, 0.08]}/>
                     <meshBasicMaterial map={sQ2Pic}/>
+                </mesh>
+                <mesh position={[0.138, 0.000025, 0.12]}
+                      visible={activePage === 2}
+                      onPointerEnter={() => {
+                          if (activePage === 2) {
+                              document.body.style.cursor = 'pointer'
+                          }
+                      }}
+                      onPointerLeave={() => {
+                          if (activePage === 2) {
+                              document.body.style.cursor = 'default'
+                          }
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 2) {
+                              const link = document.createElement('a')
+                              link.href = '/SubQuestTextures/Q10sQ2ImageHQ.png'
+                              link.download = 'Q10sQ2ImageHQ.png'
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.015, 0.015]}/>
+                    <meshBasicMaterial map={dlButton} transparent/>
                 </mesh>
             </FilePage>
             <FilePage page={3}
@@ -104,21 +132,36 @@ export default function QuestTen({active, open}:
                 </mesh>
                 <mesh position={[0.08, 0.000025, 0.075]}
                       visible={activePage === 3}
-                      onClick={(event) => {
-                          event.stopPropagation()
-                          if (activePage === 3) {
-                              setAppState({
-                                  imageView: true,
-                                  imageToView: {
-                                      quest: 10,
-                                      subQ: 3
-                                  }
-                              })
-                          }
-                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.11, 0.11]}/>
                     <meshBasicMaterial map={sQ3Pic}/>
+                </mesh>
+                <mesh position={[0.145, 0.000025, 0.12]}
+                      visible={activePage === 3}
+                      onPointerEnter={() => {
+                          if (activePage === 3) {
+                              document.body.style.cursor = 'pointer'
+                          }
+                      }}
+                      onPointerLeave={() => {
+                          if (activePage === 3) {
+                              document.body.style.cursor = 'default'
+                          }
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 3) {
+                              const link = document.createElement('a')
+                              link.href = '/SubQuestTextures/Q10sQ3ImageHQ.png'
+                              link.download = 'Q10sQ3ImageHQ.png'
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.015, 0.015]}/>
+                    <meshBasicMaterial map={dlButton} transparent/>
                 </mesh>
             </FilePage>
         </group>

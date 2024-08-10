@@ -2,6 +2,7 @@ import {FilePage} from "@/components/FileFolder"
 import React, {useContext, useEffect, useState} from "react"
 import {AppContext} from "@/components/AppState"
 import {useTexture} from "@react-three/drei"
+import {SRGBColorSpace} from "three"
 
 export default function QuestTwo({active, open}:
     {
@@ -16,6 +17,8 @@ export default function QuestTwo({active, open}:
     const sQ2Pic = useTexture('/SubQuestTextures/Q2sQ2Image.webp')
     const subQ3Tex = useTexture('/SubQuestTextures/Q2sQ3Texture.webp')
     const sQ3Pic = useTexture('/SubQuestTextures/Q2sQ3Image.webp')
+    const dlButton = useTexture('/ButtonTextures/DownloadButton.webp',
+        (tex) => {tex.colorSpace = SRGBColorSpace})
 
     useEffect(() => {
         if (!open) setActivePage(1)
@@ -66,23 +69,38 @@ export default function QuestTwo({active, open}:
                     <planeGeometry args={[0.2, 0.2]}/>
                     <meshBasicMaterial map={subQ2Tex} transparent/>
                 </mesh>
-                <mesh position={[0.085, 0.000025, 0.08]}
+                <mesh position={[0.08, 0.000025, 0.082]}
                       visible={activePage === 2}
-                      onClick={(event) => {
-                          event.stopPropagation()
-                          if (activePage === 2) {
-                              setAppState({
-                                  imageView: true,
-                                  imageToView: {
-                                      quest: 2,
-                                      subQ: 2
-                                  }
-                              })
-                          }
-                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.12, 0.08]}/>
                     <meshBasicMaterial map={sQ2Pic}/>
+                </mesh>
+                <mesh position={[0.15, 0.000025, 0.115]}
+                      visible={activePage === 2}
+                      onPointerEnter={() => {
+                          if (activePage === 2) {
+                              document.body.style.cursor = 'pointer'
+                          }
+                      }}
+                      onPointerLeave={() => {
+                          if (activePage === 2) {
+                              document.body.style.cursor = 'default'
+                          }
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 2) {
+                              const link = document.createElement('a')
+                              link.href = '/SubQuestTextures/Q2sQ2ImageHQ.jpg'
+                              link.download = 'Q2sQ2ImageHQ.jpg'
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.015, 0.015]}/>
+                    <meshBasicMaterial map={dlButton} transparent/>
                 </mesh>
             </FilePage>
             <FilePage page={3}
@@ -98,21 +116,36 @@ export default function QuestTwo({active, open}:
                 </mesh>
                 <mesh position={[0.085, 0.000025, 0.1]}
                       visible={activePage === 3}
-                      onClick={(event) => {
-                          event.stopPropagation()
-                          if (activePage === 3) {
-                              setAppState({
-                                  imageView: true,
-                                  imageToView: {
-                                      quest: 2,
-                                      subQ: 3
-                                  }
-                              })
-                          }
-                      }}
                       rotation={[-Math.PI * 0.5, 0, 0]}>
                     <planeGeometry args={[0.08, 0.0668]}/>
                     <meshBasicMaterial map={sQ3Pic}/>
+                </mesh>
+                <mesh position={[0.135, 0.000025, 0.125]}
+                      visible={activePage === 3}
+                      onPointerEnter={() => {
+                          if (activePage === 3) {
+                              document.body.style.cursor = 'pointer'
+                          }
+                      }}
+                      onPointerLeave={() => {
+                          if (activePage === 3) {
+                              document.body.style.cursor = 'default'
+                          }
+                      }}
+                      onClick={(event) => {
+                          event.stopPropagation()
+                          if (activePage === 3) {
+                              const link = document.createElement('a')
+                              link.href = '/SubQuestTextures/Q2sQ3ImageHQ.png'
+                              link.download = 'Q2sQ3ImageHQ.png'
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                          }
+                      }}
+                      rotation={[-Math.PI * 0.5, 0, 0]}>
+                    <planeGeometry args={[0.015, 0.015]}/>
+                    <meshBasicMaterial map={dlButton} transparent/>
                 </mesh>
             </FilePage>
         </group>

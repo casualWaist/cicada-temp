@@ -8,7 +8,11 @@ export type QuestStatus = {
     status: 'unavailable' | 'locked' | 'started' | 'completed'
     subQ1: SubQuestStatus
     subQ2: SubQuestStatus
-    subQ3: SubQuestStatus
+    subQ3: SubQuestStatus,
+    vaultCode: string | number,
+    latitude: number,
+    longitude: number,
+    ytLink: string
 }
 export type SQWin = {
     lat: number
@@ -37,7 +41,7 @@ export type AppState = {
     }
     showQuestWin: boolean
     questWinToShow: {
-        vaultCode: number
+        vaultCode: number | string
         lat: number
         lon: number
         ytLink: string
@@ -55,11 +59,6 @@ export type AppState = {
     noteStyle: 'alert' | 'info' | 'success' | 'fail'
     tutorialView: boolean
     tutorial: 'quest' | 'vault' | 'sideQuest'
-    imageView: boolean
-    imageToView: {
-        quest: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-        subQ: 1 | 2 | 3
-    }
     folderTutorial: boolean
     isMobile: boolean
     quest1: QuestStatus
@@ -72,7 +71,8 @@ export type AppState = {
     quest8: QuestStatus
     quest9: QuestStatus
     quest10: QuestStatus
-    walletAddress: string
+    walletAddress: string,
+    joinBefore: number
 }
 
 type AppStateContext = [AppState, (objOrFunc: Partial<AppState> | ((prevState: AppState) => Partial<AppState>)) => void]
@@ -107,15 +107,7 @@ export function AppStateWrapper({children}: { children: ReactNode }) {
         },
         buyingSQ: false,
         numberSQSpins: 0,
-        sideQuestWins: [
-            {
-                lat: 90.03782,
-                lon: 30.2839,
-                mapX: 0.5,
-                mapY: 0.5,
-                ytLink: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            }
-        ],
+        sideQuestWins: [],
         showSQWin: false,
         sQWinToShow: {
             lat: 0,
@@ -126,17 +118,12 @@ export function AppStateWrapper({children}: { children: ReactNode }) {
         },
         buyingSkip: false,
         skipToBuy: 2,
-        skipsAvailable: true,
+        skipsAvailable: false,
         notify: false,
         noteText: 'Success!',
         noteStyle: 'success',
         tutorialView: false,
         tutorial: 'quest',
-        imageView: false,
-        imageToView: {
-            quest: 1,
-            subQ: 1
-        },
         folderTutorial: true,
         isMobile: false,
         quest1: {
@@ -144,62 +131,103 @@ export function AppStateWrapper({children}: { children: ReactNode }) {
             subQ1: 'started',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest2: {
             status: 'locked',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest3: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest4: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest5: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest6: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest7: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest8: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest9: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
         quest10: {
             status: 'unavailable',
             subQ1: 'unavailable',
             subQ2: 'unavailable',
             subQ3: 'unavailable',
+            vaultCode: "",
+            latitude: 0,
+            longitude: 0,
+            ytLink: ""
         },
-        walletAddress: ''
+        walletAddress: '',
+        joinBefore: 0
     });
 
     const [walletAddress, setWalletAddress] = useState('');
@@ -224,12 +252,11 @@ export function AppStateWrapper({children}: { children: ReactNode }) {
 }
 
 export const AxiosInstance = axios.create({
-    baseURL: process.env.SERVER_API_ADDRESS, // Replace with your API base URL
+    baseURL: process.env.SERVER_API_ADDRESS,
     timeout: 60000,
     headers: {
         'Content-Type': 'application/json',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        account_address: ""
     },
 });
 

@@ -573,7 +573,7 @@ export function QuestRoom(props: JSX.IntrinsicElements['group']) {
                             quest={10}
                             open={q10Open}
                             openFunc={() => {
-                                appState.joinBefore >= 10 ? setQ10Open(true) : notify("alert", "You can open this quest on day 10.")
+                                setQ10Open(true)
                                 setAppState({
                                     questWinToShow: {
                                         ...appState.questWinToShow,
